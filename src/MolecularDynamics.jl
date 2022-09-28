@@ -1,5 +1,5 @@
 module MolecularDynamics
 
-# Write your package code here.
+include("particles.jl")
 
 end
