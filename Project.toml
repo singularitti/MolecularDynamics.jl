@@ -4,6 +4,7 @@ authors = ["Qi Zhang <qz2280@columbia.edu>"]
 version = "0.1.0"
 
 [deps]
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
