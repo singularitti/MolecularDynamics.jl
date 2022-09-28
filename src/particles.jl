@@ -1,7 +1,14 @@
 using StaticArrays: MVector
 
 export Particle, SimulationCell
-export distance, list_interacting_particles, eachparticle, boxsize, boxlength
+export distance,
+    list_interacting_particles,
+    eachparticle,
+    boxsize,
+    boxlength,
+    init_positions!,
+    init_velocities!,
+    init!
 
 mutable struct Particle
     position::MVector{3,Float64}
@@ -42,9 +49,33 @@ function list_interacting_particles(cell::SimulationCell)
     return map(Base.Fix1(list_interacting_particles, cell), eachindex(cell.particles))
 end
 
-boxsize(cell::SimulationCell) = length(cell.particles) / cell.density
+function init_positions!(cell::SimulationCell)
+    L = boxlength(cell)
+    for particle in eachparticle(cell)
+        particle.position = L * rand(3)
+    end
+    @assert unique(cell.particles) == cell.particles
+    return cell
+end
+
+function init_velocities!(cell::SimulationCell)
+    for particle in eachparticle(cell)
+        particle.velocity = zeros(MVector{3,Float64})
+    end
+    return cell
+end
+
+function init!(cell)
+    init_positions!(cell)
+    init_velocities!(cell)
+    return cell
+end
+
+boxsize(cell::SimulationCell) = particlenumber(cell) / cell.density
 
 boxlength(cell::SimulationCell) = cbrt(boxsize(cell))
+
+particlenumber(cell::SimulationCell) = length(cell.particles)
 
 struct EachParticle
     cell::SimulationCell
