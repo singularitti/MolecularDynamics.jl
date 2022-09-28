@@ -1,17 +1,11 @@
 export VelocityVerlet
-export damp!, take_one_step!, take_n_steps!, velocities, positions
+export take_one_step!, take_n_steps!, velocities, positions
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
 
 struct StepTracker
     data::Matrix{Particle}
-end
-
-function damp!(particles, n, Δt)
-    take_n_steps!(particles, n, Δt, VelocityVerlet())
-    init_velocities!(particles)
-    return particles
 end
 
 function take_one_step!(cell::SimulationCell, i, Δt, ::VelocityVerlet)

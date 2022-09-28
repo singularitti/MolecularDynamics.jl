@@ -8,7 +8,8 @@ export distance,
     boxlength,
     init_positions!,
     init_velocities!,
-    init!
+    init!,
+    damp!
 
 mutable struct Particle
     position::MVector{3,Float64}
@@ -67,6 +68,12 @@ function init!(cell)
     init_positions!(cell)
     init_velocities!(cell)
     return cell
+end
+
+function damp!(particles, n, Δt)
+    take_n_steps!(particles, n, Δt, VelocityVerlet())
+    init_velocities!(particles)
+    return particles
 end
 
 boxsize(cell::SimulationCell) = particlenumber(cell) / cell.density
