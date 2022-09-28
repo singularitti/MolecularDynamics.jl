@@ -32,7 +32,7 @@ function list_interacting_particles(cell::SimulationCell, i)
     return map(filter(!=(i), eachindex(cell.particles))) do j
         particleᵢ, particleⱼ = cell.particles[[i, j]]
         𝐫ᵢⱼ, L = particleⱼ.position - particleᵢ.position, boxlength(cell)
-        coordinates = map(𝐫ᵢⱼ) do xᵢⱼ  # Finid the nearest image of particle `j`
+        position = map(𝐫ᵢⱼ) do xᵢⱼ  # Finid the nearest image of particle `j`
             if xᵢⱼ > L / 2
                 xᵢⱼ - L
             elseif xᵢⱼ < -L / 2
@@ -41,7 +41,7 @@ function list_interacting_particles(cell::SimulationCell, i)
                 xᵢⱼ
             end
         end
-        Particle(coordinates)
+        Particle(position, particleⱼ.velocity)
     end
 end
 function list_interacting_particles(cell::SimulationCell)
