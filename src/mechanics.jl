@@ -5,8 +5,8 @@ function potential_energy(particle::Particle, particle′::Particle)
 end
 function potential_energy(particles)
     total = 0
-    for (i, particleᵢ) in enumerate(particles[begin:(end-1)])
-        for particleⱼ in particles[(i+1):end]
+    for (i, particleᵢ) in enumerate(particles[begin:(end - 1)])
+        for particleⱼ in particles[(i + 1):end]
             total += potential_energy(particleᵢ, particleⱼ)
         end
     end
