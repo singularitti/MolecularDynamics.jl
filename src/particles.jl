@@ -20,7 +20,7 @@ function distance(particle::Particle, particle′::Particle)
     return sqrt(sum(abs2, particle.position - particle′.position))
 end
 
-function apply_periodic_bc(x, L)
+function apply_pbc(x, L)
     return if x > L / 2
         x + L
     elseif x < -L / 2
@@ -34,7 +34,7 @@ function list_interacting_particles(cell::SimulationCell, i)
     return map(filter(!=(i), eachindex(cell.particles))) do j
         particleᵢ, particleⱼ = cell.particles[[i, j]]
         Δ𝐫 = particleᵢ.position - particleⱼ.position
-        coordinates = map(Base.Fix1(apply_periodic_bc, Δ𝐫), boxlength(cell))
+        coordinates = map(Base.Fix2(apply_pbc, boxlength(cell)), Δ𝐫)
         Particle(coordinates)
     end
 end
