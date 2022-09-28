@@ -3,6 +3,9 @@ uuid = "085142b3-cc26-4e6c-8f6b-431a83ab87f1"
 authors = ["Qi Zhang <qz2280@columbia.edu>"]
 version = "0.1.0"
 
+[deps]
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
 [compat]
 julia = "1"
 
