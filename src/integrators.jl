@@ -15,15 +15,13 @@ function damp!(particles, n, Δt)
 end
 
 function take_one_step!(cell::SimulationCell, i, Δt, ::VelocityVerlet)
-    particles = cell.particles
-    particles[i].velocity += accelerationof(cell, i) * Δt / 2  # 𝐯(t + Δt / 2)
-    particles[i].position += particles[i].velocity * Δt  # 𝐫(t + Δt)
-    map!(
-        Base.Fix2(apply_pbc, boxlength(cell)), particles[i].position, particles[i].position
-    )
+    particle = cell.particles[i]
+    particle.velocity += accelerationof(cell, i) * Δt / 2  # 𝐯(t + Δt / 2)
+    particle.position += particle.velocity * Δt  # 𝐫(t + Δt)
+    map!(Base.Fix2(mod, boxlength(cell)), particle.position, particle.position)
     𝐚 = accelerationof(cell, i)  # 𝐚(t + Δt)
-    particles[i].velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
-    return particles
+    particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
+    return cell
 end
 function take_one_step!(cell::SimulationCell, Δt, ::VelocityVerlet)
     for i in eachindex(cell.particles)
