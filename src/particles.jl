@@ -38,6 +38,9 @@ function list_interacting_particles(cell::SimulationCell, i)
         Particle(coordinates)
     end
 end
+function list_interacting_particles(cell::SimulationCell)
+    return map(Base.Fix1(list_interacting_particles, cell), eachindex(cell.particles))
+end
 
 boxsize(cell::SimulationCell) = length(cell.particles) / cell.density
 
