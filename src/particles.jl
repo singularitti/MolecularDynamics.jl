@@ -31,14 +31,14 @@ end
 function list_interacting_particles(cell::SimulationCell, i)
     return map(filter(!=(i), eachindex(cell.particles))) do j
         particleᵢ, particleⱼ = cell.particles[[i, j]]
-        Δ𝐫, L = particleⱼ.position - particleᵢ.position, boxlength(cell)
-        coordinates = map(Δ𝐫) do Δr  # Finid the nearest image of particle `j`
-            if Δr > L / 2
-                Δr - L
-            elseif Δr < -L / 2
-                Δr + L
+        𝐫ᵢⱼ, L = particleⱼ.position - particleᵢ.position, boxlength(cell)
+        coordinates = map(𝐫ᵢⱼ) do xᵢⱼ  # Finid the nearest image of particle `j`
+            if xᵢⱼ > L / 2
+                xᵢⱼ - L
+            elseif xᵢⱼ < -L / 2
+                xᵢⱼ + L
             else  # abs(x) < L / 2
-                Δr
+                xᵢⱼ
             end
         end
         Particle(coordinates)
