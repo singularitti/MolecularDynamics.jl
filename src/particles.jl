@@ -1,6 +1,6 @@
 using StaticArrays: MVector
 
-export Particle, SimulationCell
+export Particle, Cell
 export distance,
     list_neighbors,
     eachparticle,
@@ -19,7 +19,7 @@ mutable struct Particle
     Particle() = new()  # Incomplete initialization
 end
 
-struct SimulationCell
+struct Cell
     particles::Vector{Particle}
     density::Float64
 end
@@ -28,7 +28,7 @@ function distance(particle::Particle, particle′::Particle)
     return sqrt(sum(abs2, particle.position - particle′.position))
 end
 
-function list_neighbors(cell::SimulationCell, i)
+function list_neighbors(cell::Cell, i)
     return map(filter(!=(i), eachindex(cell.particles))) do j
         particleᵢ, particleⱼ = cell.particles[[i, j]]
         𝐫ᵢⱼ, L = particleⱼ.position - particleᵢ.position, boxlength(cell)
@@ -44,11 +44,11 @@ function list_neighbors(cell::SimulationCell, i)
         Particle(position, particleⱼ.velocity)
     end
 end
-function list_neighbors(cell::SimulationCell)
+function list_neighbors(cell::Cell)
     return map(Base.Fix1(list_neighbors, cell), eachindex(cell.particles))
 end
 
-function init_positions!(cell::SimulationCell)
+function init_positions!(cell::Cell)
     L = boxlength(cell)
     for particle in eachparticle(cell)
         particle.position = L * rand(3)
@@ -57,7 +57,7 @@ function init_positions!(cell::SimulationCell)
     return cell
 end
 
-function init_velocities!(cell::SimulationCell)
+function init_velocities!(cell::Cell)
     for particle in eachparticle(cell)
         particle.velocity = zeros(MVector{3,Float64})
     end
@@ -76,17 +76,17 @@ function damp!(cell, n, Δt)
     return cell
 end
 
-boxsize(cell::SimulationCell) = particlenumber(cell) / cell.density
+boxsize(cell::Cell) = particlenumber(cell) / cell.density
 
-boxlength(cell::SimulationCell) = cbrt(boxsize(cell))
+boxlength(cell::Cell) = cbrt(boxsize(cell))
 
-particlenumber(cell::SimulationCell) = length(cell.particles)
+particlenumber(cell::Cell) = length(cell.particles)
 
 struct EachParticle
-    cell::SimulationCell
+    cell::Cell
 end
 
-eachparticle(cell::SimulationCell) = EachParticle(cell)
+eachparticle(cell::Cell) = EachParticle(cell)
 
 # Similar to https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1028-L1032
 function Base.iterate(iter::EachParticle, state=1)

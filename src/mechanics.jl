@@ -27,7 +27,7 @@ function acceleration(particle::Particle)
     end
 end
 
-function accelerationof(cell::SimulationCell, i)
+function accelerationof(cell::Cell, i)
     particles = list_neighbors(cell, i)
     return sum(acceleration(cell.particles[i]), particles)
 end
