@@ -1,3 +1,5 @@
+export potential_energy, kinetic_energy, total_energy, acceleration, accelerationof
+
 function potential_energy(particle::Particle, particle′::Particle)
     r = distance(particle, particle′)
     η = 1 / r^6

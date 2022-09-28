@@ -1,7 +1,7 @@
 using StaticArrays: MVector
 
 export Particle, SimulationCell
-export distance
+export distance, list_interacting_particles, eachparticle, boxsize, boxlength
 
 mutable struct Particle
     position::MVector{3,Float64}
