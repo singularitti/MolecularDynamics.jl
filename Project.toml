@@ -1,6 +1,6 @@
 name = "MolecularDynamics"
 uuid = "085142b3-cc26-4e6c-8f6b-431a83ab87f1"
-authors = ["singularitti <singularitti@outlook.com> and contributors"]
+authors = ["Qi Zhang <qz2280@columbia.edu>"]
 version = "0.1.0"
 
 [compat]
