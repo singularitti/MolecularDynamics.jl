@@ -2,7 +2,7 @@ using StaticArrays: MVector
 
 export Particle, SimulationCell
 export distance,
-    list_interacting_particles,
+    list_neighbors,
     eachparticle,
     boxsize,
     boxlength,
@@ -28,7 +28,7 @@ function distance(particle::Particle, particle′::Particle)
     return sqrt(sum(abs2, particle.position - particle′.position))
 end
 
-function list_interacting_particles(cell::SimulationCell, i)
+function list_neighbors(cell::SimulationCell, i)
     return map(filter(!=(i), eachindex(cell.particles))) do j
         particleᵢ, particleⱼ = cell.particles[[i, j]]
         𝐫ᵢⱼ, L = particleⱼ.position - particleᵢ.position, boxlength(cell)
@@ -44,8 +44,8 @@ function list_interacting_particles(cell::SimulationCell, i)
         Particle(position, particleⱼ.velocity)
     end
 end
-function list_interacting_particles(cell::SimulationCell)
-    return map(Base.Fix1(list_interacting_particles, cell), eachindex(cell.particles))
+function list_neighbors(cell::SimulationCell)
+    return map(Base.Fix1(list_neighbors, cell), eachindex(cell.particles))
 end
 
 function init_positions!(cell::SimulationCell)

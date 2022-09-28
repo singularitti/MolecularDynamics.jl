@@ -28,7 +28,7 @@ function acceleration(particle::Particle)
 end
 
 function accelerationof(cell::SimulationCell, i)
-    particles = list_interacting_particles(cell, i)
+    particles = list_neighbors(cell, i)
     return sum(acceleration(cell.particles[i]), particles)
 end
 accelerationof(particles) = map(Base.Fix1(accelerationof, particles), eachindex(particles))
