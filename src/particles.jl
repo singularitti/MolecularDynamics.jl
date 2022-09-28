@@ -70,10 +70,10 @@ function init!(cell)
     return cell
 end
 
-function damp!(particles, n, Δt)
-    take_n_steps!(particles, n, Δt, VelocityVerlet())
-    init_velocities!(particles)
-    return particles
+function damp!(cell, n, Δt)
+    take_n_steps!(cell, n, Δt, VelocityVerlet())
+    init_velocities!(cell)
+    return cell
 end
 
 boxsize(cell::SimulationCell) = particlenumber(cell) / cell.density
