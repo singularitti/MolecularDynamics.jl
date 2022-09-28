@@ -24,3 +24,9 @@ function acceleration(particle::Particle)
         return (particle.position - particle′.position) * (η^14 - η^8)
     end
 end
+
+function accelerationof(cell::SimulationCell, i)
+    particles = list_interacting_particles(cell, i)
+    return sum(acceleration(cell.particles[i]), particles)
+end
+accelerationof(particles) = map(Base.Fix1(accelerationof, particles), eachindex(particles))
