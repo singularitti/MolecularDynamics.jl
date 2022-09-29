@@ -45,24 +45,32 @@ end
 distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))
 distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
-function list_neighbors(cell::Cell, i)
-    return map(filter(!=(i), eachindex(cell.particles))) do j
-        particleᵢ, particleⱼ = cell.particles[[i, j]]
-        𝐫ᵢⱼ, L = particleⱼ.position - particleᵢ.position, boxlength(cell)
-        position = map(𝐫ᵢⱼ) do xᵢⱼ  # Finid the nearest image of particle `j`
-            if xᵢⱼ > L / 2
-                xᵢⱼ - L
-            elseif xᵢⱼ < -L / 2
-                xᵢⱼ + L
-            else  # abs(x) < L / 2
-                xᵢⱼ
-            end
-        end
-        Particle(position, particleⱼ.velocity)
+function list_images(particle::Particle, L)
+    return map(Iterators.product(Iterators.repeated((-L, 0, L), 3)...)) do shift
+        Particle(particle.position .+ shift)
     end
 end
+
+function find_nearest(a::Particle, L)
+    function (b::Particle)
+        images = list_images(b, L)
+        distances = map(images) do b′
+            distance(a, b′)
+        end
+        index = argmin(distances)
+        return images[index]
+    end
+end
+
+function list_neighbors(cell::Cell, a::Particle)
+    L = boxlength(cell)
+    f = find_nearest(a, L)
+    return map(f, filter(!=(a), cell.particles))
+end
 function list_neighbors(cell::Cell)
-    return map(Base.Fix1(list_neighbors, cell), eachindex(cell.particles))
+    return map(cell.particles) do particle
+        list_neighbors(cell, particle)
+    end
 end
 
 function init_positions!(cell::Cell)
