@@ -1,9 +1,9 @@
 export potential_energy, kinetic_energy, total_energy, accelerationof, accelerations
 
-function potential_energy(particle::Particle, particle′::Particle)
-    r = distance(particle, particle′)
-    η = 1 / r^6
-    return 4η * (η - 1)
+function potential_energy(a::Particle, b::Particle)
+    r = distance(a, b)
+    r⁻⁶ = inv(r^6)
+    return 4 * (r⁻⁶^2 - r⁻⁶)
 end
 function potential_energy(particles)
     total = 0
