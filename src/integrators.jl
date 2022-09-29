@@ -8,18 +8,14 @@ struct StepTracker
     data::Matrix{Particle}
 end
 
-function take_one_step!(cell::Cell, i, Δt, ::VelocityVerlet)
-    particle = cell.particles[i]
-    particle.velocity += accelerationof(cell, i) * Δt / 2  # 𝐯(t + Δt / 2)
-    particle.position += particle.velocity * Δt  # 𝐫(t + Δt)
-    map!(Base.Fix2(mod, boxlength(cell)), particle.position, particle.position)
-    𝐚 = accelerationof(cell, i)  # 𝐚(t + Δt)
-    particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
-    return cell
-end
 function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
     for i in eachindex(cell.particles)
-        take_one_step!(cell, i, Δt, VelocityVerlet())
+        particle = cell.particles[i]
+        particle.velocity += accelerations(cell)[i] * Δt / 2  # 𝐯(t + Δt / 2)
+        particle.position += particle.velocity * Δt  # 𝐫(t + Δt)
+        map!(Base.Fix2(mod, boxlength(cell)), particle.position, particle.position)
+        𝐚 = accelerations(cell)[i]  # 𝐚(t + Δt)
+        particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
     end
     return cell
 end
