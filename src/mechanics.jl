@@ -28,9 +28,12 @@ function Acceleration(a::Particle)
     end
 end
 
+function accelerations(cell::Cell, particle::Particle)
+    neighbors = list_neighbors(cell, particle)
+    return sum(Acceleration(particle), neighbors)
+end
 function accelerations(cell::Cell)
     return map(cell.particles) do particle
-        neighbors = list_neighbors(cell, particle)
-        sum(Acceleration(particle), neighbors)
+        accelerations(cell, particle)
     end
 end
