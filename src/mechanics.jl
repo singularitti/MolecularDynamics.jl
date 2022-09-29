@@ -27,8 +27,9 @@ function acceleration(particle::Particle)
     end
 end
 
-function accelerationof(cell::Cell, i)
-    particles = list_neighbors(cell, i)
-    return sum(acceleration(cell.particles[i]), particles)
+function accelerations(cell::Cell)
+    return map(eachindex(cell.particles)) do i
+        neighborsᵢ = list_neighbors(cell, i)
+        sum(accelerationof(cell.particles[i]), neighborsᵢ)
+    end
 end
-accelerationof(particles) = map(Base.Fix1(accelerationof, particles), eachindex(particles))
