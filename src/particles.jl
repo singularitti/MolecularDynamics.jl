@@ -1,4 +1,4 @@
-using StaticArrays: MVector
+using StaticArrays: MVector, FieldVector
 
 export Particle, Cell
 export distance,
@@ -11,9 +11,27 @@ export distance,
     init!,
     damp!
 
+mutable struct Position <: FieldVector{3,Float64}
+    x::Float64
+    y::Float64
+    z::Float64
+end
+
+mutable struct Velocity <: FieldVector{3,Float64}
+    x::Float64
+    y::Float64
+    z::Float64
+end
+
+mutable struct Acceleration <: FieldVector{3,Float64}
+    x::Float64
+    y::Float64
+    z::Float64
+end
+
 mutable struct Particle
-    position::MVector{3,Float64}
-    velocity::MVector{3,Float64}
+    position::Position
+    velocity::Velocity
     Particle(position, velocity) = new(position, velocity)
     Particle(position) = new(position)
     Particle() = new()  # Incomplete initialization
