@@ -1,4 +1,4 @@
-export potential_energy, kinetic_energy, total_energy, acceleration, accelerationof
+export potential_energy, kinetic_energy, total_energy, accelerationof, accelerations
 
 function potential_energy(particle::Particle, particle′::Particle)
     r = distance(particle, particle′)
@@ -20,7 +20,7 @@ kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
 
-function acceleration(particle::Particle)
+function accelerationof(particle::Particle)
     return function (particle′::Particle)
         η = 1 / distance(particle, particle′)
         return (particle.position - particle′.position) * (η^14 - η^8)
