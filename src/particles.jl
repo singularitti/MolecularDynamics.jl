@@ -49,7 +49,7 @@ function list_neighbors(cell::Cell, a::Particle)
     L = boxlength(cell)
     return map(filter(!=(a), cell.particles)) do b
         Δ𝐫 = b.position - a.position
-        b.position = map(b.position, Δ𝐫) do rᵢ, Δrᵢ
+        position = map(b.position, Δ𝐫) do rᵢ, Δrᵢ
             if Δrᵢ > L / 2
                 rᵢ - L
             elseif Δrᵢ < -L / 2
@@ -58,7 +58,7 @@ function list_neighbors(cell::Cell, a::Particle)
                 rᵢ  # Do not shift
             end
         end
-        b
+        Particle(position, b.velocity)
     end
 end
 function list_neighbors(cell::Cell)
