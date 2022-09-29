@@ -1,4 +1,4 @@
-export potential_energy, kinetic_energy, total_energy, accelerationof, accelerations
+export potential_energy, kinetic_energy, total_energy, accelerations
 
 function potential_energy(a::Particle, b::Particle)
     r = distance(a, b)
@@ -20,16 +20,17 @@ kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
 
-function accelerationof(particle::Particle)
-    return function (particle′::Particle)
-        η = 1 / distance(particle, particle′)
-        return (particle.position - particle′.position) * (η^14 - η^8)
+function Acceleration(a::Particle)
+    function by(b::Particle)
+        r = distance(a, b)
+        𝐚 = (a.position .- b.position) * (inv(r^14) - inv(r^8) / 2)
+        return Acceleration(𝐚...)
     end
 end
 
 function accelerations(cell::Cell)
     return map(eachindex(cell.particles)) do i
         neighborsᵢ = list_neighbors(cell, i)
-        sum(accelerationof(cell.particles[i]), neighborsᵢ)
+        sum(Acceleration(cell.particles[i]), neighborsᵢ)
     end
 end
