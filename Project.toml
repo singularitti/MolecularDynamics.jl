@@ -8,6 +8,8 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+JSON = "0.21"
+StaticArrays = "1"
 julia = "1"
 
 [extras]
