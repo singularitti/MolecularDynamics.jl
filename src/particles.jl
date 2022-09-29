@@ -42,8 +42,9 @@ struct Cell
     density::Float64
 end
 
+distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))
 function distance(particle::Particle, particle′::Particle)
-    return sqrt(sum(abs2, particle.position - particle′.position))
+    return distance(particle.position, particle′.position)
 end
 
 function list_neighbors(cell::Cell, i)
