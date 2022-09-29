@@ -19,9 +19,9 @@ function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
     for (particle, 𝐚) in zip(eachparticle(cell), accelerations(cell))
         take_half_step!(particle, 𝐚, Δt, boxlength(cell))
     end
-    for i in eachindex(cell.particles)
-        𝐚 = accelerations(cell)[i]  # 𝐚(t + Δt)
-        cell.particles[i].velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
+    for particle in eachparticle(cell)
+        𝐚 = accelerations(cell, particle)  # 𝐚(t + Δt)
+        particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
     end
     return cell
 end
