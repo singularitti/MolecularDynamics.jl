@@ -45,27 +45,21 @@ end
 distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))
 distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
-function list_images(particle::Particle, L)
-    return map(Iterators.product(Iterators.repeated((-L, 0, L), 3)...)) do shift
-        Particle(particle.position .+ shift)
-    end
-end
-
-function find_nearest(a::Particle, L)
-    function (b::Particle)
-        images = list_images(b, L)
-        distances = map(images) do b′
-            distance(a, b′)
-        end
-        index = argmin(distances)
-        return images[index]
-    end
-end
-
 function list_neighbors(cell::Cell, a::Particle)
     L = boxlength(cell)
-    f = find_nearest(a, L)
-    return map(f, filter(!=(a), cell.particles))
+    return map(filter(!=(a), cell.particles)) do b
+        Δ𝐫 = b.position - a.position
+        b.position = map(b.position, Δ𝐫) do rᵢ, Δrᵢ
+            if Δrᵢ > L / 2
+                rᵢ - L
+            elseif Δrᵢ < -L / 2
+                rᵢ + L
+            else  # abs(Δrᵢ) < L / 2
+                rᵢ  # Do not shift
+            end
+        end
+        b
+    end
 end
 function list_neighbors(cell::Cell)
     return map(cell.particles) do particle
