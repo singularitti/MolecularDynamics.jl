@@ -1,6 +1,6 @@
 using StaticArrays: MVector, FieldVector
 
-export Particle, Cell
+export Position, Velocity, Acceleration, Particle, Cell
 export distance,
     list_neighbors,
     eachparticle,
@@ -43,9 +43,7 @@ struct Cell
 end
 
 distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))
-function distance(particle::Particle, particle′::Particle)
-    return distance(particle.position, particle′.position)
-end
+distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
 function list_neighbors(cell::Cell, i)
     return map(filter(!=(i), eachindex(cell.particles))) do j
