@@ -78,7 +78,7 @@ end
 
 function init_velocities!(cell::Cell)
     for particle in eachparticle(cell)
-        particle.velocity = zeros(MVector{3,Float64})
+        particle.velocity = zeros(Velocity)
     end
     return cell
 end
