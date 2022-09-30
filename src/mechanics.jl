@@ -1,4 +1,11 @@
-export potential_energy, kinetic_energy, total_energy, accelerations, potential_gradient
+using LinearAlgebra: dot
+
+export potential_energy,
+    kinetic_energy,
+    total_energy,
+    accelerations,
+    potential_directional_derivative,
+    potential_gradient
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
@@ -18,21 +25,35 @@ function potential_energy(particles::AbstractVector{Particle})
     end
 end
 
+function potential_gradient(𝐫)
+    r = norm(𝐫)
+    return (inv(r^8) / 2 - inv(r^14)) * 𝐫
+end
+
 kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
 kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
 
-function potential_gradient(a::Particle, b::Particle)
-    𝐫 = a.position - b.position
-    u₀ = potential_energy(𝐫)
-    return function (Δ𝐫)
-        u₁ = potential_energy(𝐫 .+ Δ𝐫)
-        Δu = u₁ - u₀
-        return Δu ./ Δ𝐫
-    end
+# function potential_directional_derivative(a::Particle, b::Particle)
+#     𝐫 = a.position - b.position
+#     u₀ = potential_energy(𝐫)
+#     return function in_direction(Δ𝐫)
+#         u₁ = potential_energy(𝐫 .+ Δ𝐫)
+#         Δu = u₁ - u₀
+#         ∇u = Δu ./ Δ𝐫
+#         return dot(∇u, Δ𝐫) / norm(Δ𝐫)
+#     end
+# end
+function potential_directional_derivative(a::Particle, b::Particle, δ=0.01)
+    Δ𝐫 = (a.position - b.position) * δ
+    ∇uₐ = potential_gradient(a.position)
+    u₀ = potential_energy(a.position)
+    u₁ = potential_energy(a.position .+ Δ𝐫)
+    Δu = u₁ - u₀
+    return Δu ./ Δ𝐫, ∇uₐ
 end
-function potential_gradient(cell::Cell)
+function potential_directional_derivative(cell::Cell)
     U₀ = potential_energy(cell.particles)
     L = boxlength(cell)
     return function (particle::Particle, Δ𝐫)
