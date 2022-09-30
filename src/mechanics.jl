@@ -1,11 +1,6 @@
 using LinearAlgebra: dot
 
-export potential_energy,
-    kinetic_energy,
-    total_energy,
-    accelerations,
-    potential_directional_derivative,
-    potential_gradient
+export potential_energy, kinetic_energy, total_energy, accelerations, potential_gradient
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
@@ -32,17 +27,6 @@ kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
 kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
-
-function potential_directional_derivative(𝐫, δ=0.01)
-    u₀ = potential_energy(𝐫 * (1 - δ))
-    u₁ = potential_energy(𝐫 * (1 + δ))
-    Δu = u₁ - u₀
-    return Δu ./ 𝐫 / 2δ
-end
-function potential_directional_derivative(a::Particle, b::Particle, δ=0.01)
-    𝐫 = a.position - b.position
-    return potential_directional_derivative(𝐫, δ)
-end
 
 """
     Acceleration(a::Particle)(b::Particle)
