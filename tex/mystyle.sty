@@ -1,0 +1,63 @@
+\ProvidesPackage{mystyle}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{datetime}
+\usepackage{fontspec}
+\usepackage{mathpazo}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{mathtools} % For `bsmallmatrix`
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{minted}
+\usepackage{xpatch} % See https://tex.stackexchange.com/a/657596/61591
+\usepackage{bm}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[urlcolor=CUBlueDarkest]{hyperref}
+\usepackage[english]{babel}
+% \addbibresource{ref.bib}
+
+% See https://tex.stackexchange.com/a/657596/61591
+\makeatletter
+\xpatchcmd{\fs@ruled}{\kern2pt\hrule\relax}{\kern-0.8\baselineskip\hrule\relax}{}{}
+\makeatother
+\newminted{python}{
+  autogobble,
+  escapeinside=||,
+  fontsize=\footnotesize,
+  mathescape,
+}
+\makeatletter
+\renewcommand*{\ALG@name}{Snippet} % See https://tex.stackexchange.com/a/169119
+\makeatother
+\newcommand{\code}[1]{\mintinline{python}{#1}}
+
+\definecolor{CUBlueDarkest}{RGB}{3,33,105}
+
+\pagestyle{fancy}
+\setlength\headheight{24pt}
+\fancyhf{}
+\fancyhead[LE,RO]{\textsc{\thetitle}}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,RE]{\footnotesize\textit{Last modified: \thedate}}
+
+% See https://tex.stackexchange.com/a/128349/61591
+\newcounter{question}
+\newcommand\Question{
+  \medskip
+  \stepcounter{question}
+  \noindent\textbf{Question \thequestion:}
+}
+\newcommand\Answer{
+  \medskip
+  \noindent\textbf{Answer:}\\
+}
+\newcommand{\irow}[1]{% Inline row vector, See https://tex.stackexchange.com/a/200511/61591
+  \begin{bsmallmatrix}#1\end{bsmallmatrix}
+}
