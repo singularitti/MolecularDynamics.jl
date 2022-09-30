@@ -9,12 +9,10 @@ export potential_energy,
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
-    return 4 * (r⁻⁶^2 - r⁻⁶)
+    r⁻¹² = r⁻⁶^2
+    return 4 * (r⁻¹² - r⁻⁶)
 end
-function potential_energy(𝐫ᵢⱼ)
-    r = norm(𝐫ᵢⱼ)
-    return potential_energy(r)
-end
+potential_energy(𝐫ᵢⱼ) = potential_energy(norm(𝐫ᵢⱼ))
 potential_energy(𝐫::Position, 𝐫′::Position) = potential_energy(𝐫 .- 𝐫′)
 potential_energy(a::Particle, b::Particle) = potential_energy(a.position, b.position)
 function potential_energy(particles::AbstractVector{Particle})
