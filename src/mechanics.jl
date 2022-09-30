@@ -33,36 +33,15 @@ kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
 
-# function potential_directional_derivative(a::Particle, b::Particle)
-#     𝐫 = a.position - b.position
-#     u₀ = potential_energy(𝐫)
-#     return function in_direction(Δ𝐫)
-#         u₁ = potential_energy(𝐫 .+ Δ𝐫)
-#         Δu = u₁ - u₀
-#         ∇u = Δu ./ Δ𝐫
-#         return dot(∇u, Δ𝐫) / norm(Δ𝐫)
-#     end
-# end
-function potential_directional_derivative(a::Particle, b::Particle, δ=0.01)
-    Δ𝐫 = (a.position - b.position) * δ
-    ∇uₐ = potential_gradient(a.position)
-    u₀ = potential_energy(a.position)
-    u₁ = potential_energy(a.position .+ Δ𝐫)
+function potential_directional_derivative(𝐫, δ=0.01)
+    u₀ = potential_energy(𝐫 * (1 - δ))
+    u₁ = potential_energy(𝐫 * (1 + δ))
     Δu = u₁ - u₀
-    return Δu ./ Δ𝐫, ∇uₐ
+    return Δu ./ 𝐫 / 2δ
 end
-function potential_directional_derivative(cell::Cell)
-    U₀ = potential_energy(cell.particles)
-    L = boxlength(cell)
-    return function (particle::Particle, Δ𝐫)
-        new_position = particle.position + Δ𝐫
-        map!(Base.Fix2(mod, L), new_position, new_position)
-        new_particle = Particle(new_position)
-        particles = push!(list_neighbors(cell, particle), new_particle)
-        U₁ = potential_energy(particles)
-        Δu = U₁ - U₀
-        return Δu ./ Δ𝐫
-    end
+function potential_directional_derivative(a::Particle, b::Particle, δ=0.01)
+    𝐫 = a.position - b.position
+    return potential_directional_derivative(𝐫, δ)
 end
 
 """
