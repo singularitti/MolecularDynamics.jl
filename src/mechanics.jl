@@ -1,18 +1,21 @@
 export potential_energy, kinetic_energy, total_energy, accelerations
 
-function potential_energy(a::Particle, b::Particle)
-    r = distance(a, b)
+function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
     return 4 * (r⁻⁶^2 - r⁻⁶)
 end
-function potential_energy(particles)
-    total = 0
-    for (i, particleᵢ) in enumerate(particles[begin:(end - 1)])
-        for particleⱼ in particles[(i + 1):end]
-            total += potential_energy(particleᵢ, particleⱼ)
+function potential_energy(𝐫ᵢⱼ)
+    r = norm(𝐫ᵢⱼ)
+    return potential_energy(r)
+end
+potential_energy(𝐫::Position, 𝐫′::Position) = potential_energy(𝐫 .- 𝐫′)
+potential_energy(a::Particle, b::Particle) = potential_energy(a.position, b.position)
+function potential_energy(particles::AbstractVector{Particle})
+    return sum(enumerate(particles[begin:(end - 1)])) do (i, particleᵢ)
+        sum(particles[(i + 1):end]) do particleⱼ
+            potential_energy(particleᵢ, particleⱼ)
         end
     end
-    return total
 end
 
 kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
