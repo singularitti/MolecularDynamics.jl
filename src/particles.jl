@@ -65,11 +65,6 @@ function list_neighbors(cell::Cell, a::Particle)
         Particle(position, b.velocity)
     end
 end
-function list_neighbors(cell::Cell)
-    return map(cell.particles) do particle
-        list_neighbors(cell, particle)
-    end
-end
 
 function init_positions!(cell::Cell)
     L = boxlength(cell)
