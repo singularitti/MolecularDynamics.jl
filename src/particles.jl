@@ -50,6 +50,7 @@ function list_neighbors(cell::Cell, a::Particle)
     L = boxlength(cell)
     @assert a in cell
     return map(filter(!=(a), cell.particles)) do b
+        b.position = map(Base.Fix2(mod, L), b.position)
         @assert b in cell
         Δ𝐫 = b.position - a.position
         position = map(b.position, Δ𝐫) do rᵢ, Δrᵢ
