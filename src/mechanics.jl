@@ -65,8 +65,15 @@ function potential_directional_derivative(cell::Cell)
     end
 end
 
+"""
+    Acceleration(a::Particle)(b::Particle)
+
+Calculate the acceleration particle `b` induces on particle `a` (direction: from `b` to `a`).
+"""
 function Acceleration(a::Particle)
-    return b::Particle -> Acceleration(potential_gradient(b.position .- a.position))
+    return function (b::Particle)
+        return Acceleration(potential_gradient(b.position .- a.position))
+    end
 end
 
 function accelerations(cell::Cell, particle::Particle, position)
