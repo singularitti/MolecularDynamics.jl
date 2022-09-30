@@ -21,7 +21,7 @@ kinetic_energy(particles) = sum(kinetic_energy, particles)
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
 
 function Acceleration(a::Particle)
-    function by(b::Particle)
+    return function by(b::Particle)
         r = distance(a, b)
         𝐚 = (a.position .- b.position) * (inv(r^14) - inv(r^8) / 2)
         return Acceleration(𝐚...)
