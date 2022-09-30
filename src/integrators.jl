@@ -16,12 +16,18 @@ function take_half_step!(particle::Particle, 𝐚, Δt, L)
 end
 
 function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
-    for (particle, 𝐚) in zip(eachparticle(cell), accelerations(cell))
-        take_half_step!(particle, 𝐚, Δt, boxlength(cell))
+    L = boxlength(cell)
+    positions = map(eachparticle(cell), accelerations(cell)) do particle, 𝐚
+        particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt / 2)
+        position = particle.position + particle.velocity * Δt  # 𝐫(t + Δt)
+        position = map(Base.Fix2(mod, L), position)  # Move `𝐫` back to `0 - L` range
     end
-    for particle in eachparticle(cell)
-        𝐚 = accelerations(cell, particle)  # 𝐚(t + Δt)
+    for (particle, position) in zip(eachparticle(cell), positions)
+        𝐚 = accelerations(cell, particle, position)  # 𝐚(t + Δt)
         particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
+    end
+    for (particle, position) in zip(eachparticle(cell), positions)
+        particle.position = position
     end
     return cell
 end
