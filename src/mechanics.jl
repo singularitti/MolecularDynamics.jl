@@ -1,4 +1,4 @@
-export potential_energy, kinetic_energy, total_energy, accelerations
+export potential_energy, kinetic_energy, total_energy, accelerations, potential_gradient
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
@@ -22,6 +22,29 @@ kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
 kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
+
+function potential_gradient(a::Particle, b::Particle)
+    𝐫 = a.position - b.position
+    u₀ = potential_energy(𝐫)
+    return function (Δ𝐫)
+        u₁ = potential_energy(𝐫 .+ Δ𝐫)
+        Δu = u₁ - u₀
+        return Δu ./ Δ𝐫
+    end
+end
+function potential_gradient(cell::Cell)
+    U₀ = potential_energy(cell.particles)
+    L = boxlength(cell)
+    return function (particle::Particle, Δ𝐫)
+        new_position = particle.position + Δ𝐫
+        map!(Base.Fix2(mod, L), new_position, new_position)
+        new_particle = Particle(new_position)
+        particles = push!(list_neighbors(cell, particle), new_particle)
+        U₁ = potential_energy(particles)
+        Δu = U₁ - U₀
+        return Δu ./ Δ𝐫
+    end
+end
 
 function Acceleration(a::Particle)
     return function by(b::Particle)
