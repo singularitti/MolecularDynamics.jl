@@ -68,11 +68,7 @@ function potential_directional_derivative(cell::Cell)
 end
 
 function Acceleration(a::Particle)
-    return function by(b::Particle)
-        r = distance(a, b)
-        𝐚 = (a.position .- b.position) * (inv(r^14) - inv(r^8) / 2)
-        return Acceleration(𝐚...)
-    end
+    return b::Particle -> Acceleration(potential_gradient(b.position .- a.position))
 end
 
 function accelerations(cell::Cell, particle::Particle, position)
