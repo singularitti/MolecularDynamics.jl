@@ -3,6 +3,8 @@ import json
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
+plt.rcParams['image.cmap'] = 'gist_ncar'
+
 
 def readpositions(filename, axes):
     with open(filename, 'r') as f:
@@ -20,21 +22,31 @@ def readpositions(filename, axes):
         pass
 
 
-def plot(files):
+def plot(files, ax=plt.axes(projection="3d")):
     fig = plt.figure(figsize=(16, 10))
-    ax = plt.axes(projection="3d")
     for file in files:
         x = readpositions(file, "x")
         y = readpositions(file, "y")
         z = readpositions(file, "z")
         ax.scatter3D(x, y, z, label=file)
+    # See https://stackoverflow.com/a/63625222/3260253
+    ax.set_box_aspect([1, 1, 1])
     ax.legend(loc="best")
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.set_zlabel("z")
-    # fig.savefig("images.pdf")
-    return ax
+    fig.savefig("images.pdf")
+    return fig, ax
 
 
 if __name__ == "__main__":
-    a = plot(["../x.json", "../y.json"])
+    data = readpositions("../p.json", "all")
+    arr = ["../p.json"]
+    # r = range(10, 21, 10)
+    r = (29, 49)
+    for i in r:
+        arr.append("../" + str(i+1) + ".json")
+    fig, ax = plot(arr)
+    for i in r:
+        ax.scatter(*data[i], label=str(i+1), s=40)
+    ax.legend(loc="best")
