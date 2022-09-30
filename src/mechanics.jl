@@ -28,6 +28,10 @@ function Acceleration(a::Particle)
     end
 end
 
+function accelerations(cell::Cell, particle::Particle, position)
+    neighbors = list_neighbors(cell, particle)
+    return sum(Acceleration(Particle(position)), neighbors)
+end
 function accelerations(cell::Cell, particle::Particle)
     neighbors = list_neighbors(cell, particle)
     return sum(Acceleration(particle), neighbors)
