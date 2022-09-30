@@ -1,3 +1,4 @@
+using LinearAlgebra: norm
 using StaticArrays: MVector, FieldVector
 
 export Position, Velocity, Acceleration, Particle, Cell
@@ -42,7 +43,7 @@ struct Cell
     density::Float64
 end
 
-distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))
+distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
 distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
 function list_neighbors(cell::Cell, a::Particle)
