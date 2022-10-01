@@ -57,7 +57,7 @@ function list_neighbors(cell::Cell, a::Particle)
                 rᵢ - L
             elseif Δrᵢ < -L / 2
                 rᵢ + L
-            else  # abs(Δrᵢ) < L / 2
+            else  # abs(Δrᵢ) <= L / 2
                 rᵢ  # Do not shift
             end
         end
