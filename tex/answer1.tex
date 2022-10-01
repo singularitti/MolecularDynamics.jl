@@ -197,19 +197,19 @@ And the numerical gradient of~\eqref{eq:ulj} is
 %
 However, in my case, I found that~\eqref{eq:dudr} is not equal to the opposite
 of~\eqref{eq:flj}: they are off by a factor of $48$.
-I suppose that this is due to we basically treat
+I suppose that this is because we basically treat
 $\varepsilon$, $\sigma$, and $m$ (the mass of each particle) as $1$ here (though they
 are not). So in Snippet~\ref{lst:gradient} I define the $\nabla u$ and the acceleration
-particle $a$ experiences (induced only by particle $b$) as:
-
+particle $a$ experiences (induced only by particle $b$) as below.
+%
 \begin{algorithm}
     \caption{The gradient of the Lennard--Jones potential and the acceleration
         $d^2 \bm{r}_a / d t^2$. Note the factor $48$ and the negative sign.}
     \label{lst:gradient}
     \begin{juliacode}
-        function potential_gradient(𝐫)
-            r = norm(𝐫)
-            return 48𝐫 * (inv(r^8) / 2 - inv(r^14))
+        function potential_gradient(𝐫ᵢⱼ)
+            rᵢⱼ = norm(𝐫ᵢⱼ)
+            return 48𝐫ᵢⱼ * (inv(rᵢⱼ^8) / 2 - inv(rᵢⱼ^14))
         end
 
         function Acceleration(a::Particle)
