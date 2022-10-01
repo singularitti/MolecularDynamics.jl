@@ -95,7 +95,7 @@ $a$ locates. That is,
 \end{equation}
 %
 where adding $2L$ is to catch any runaway particles with $r_{b, \alpha} < -L$.
-The code representing \eqref{eq:pbcs} is in Snippet \ref{lst:pbcs}.
+The code representing \eqref{eq:pbcs} is in Snippet~\ref{lst:pbcs}.
 %
 \begin{algorithm}
     \caption{Move particle $b$ back to the center cell.}
@@ -116,17 +116,75 @@ each component of the $b$'s position.
 
 The above syntax may confuse users as we have not mentioned how we represent particles in
 code. In our code, a \code{Particle} is simply a \code{mutable struct} wrapping two
-\code{MVector}s, each with three \code{Float64} values, as shown in Snippet
-\ref{lst:particle}. So \code{b.position} (\code{b.velocity}) is how we access the stored
-data of its position (velocity).
+\code{MVector}s (position and velocity), each with three \code{Float64} values, as shown in
+Snippet~\ref{lst:particle}. So \code{b.position} (\code{b.velocity}) is how we access the
+stored data of its position (velocity).
 
 \begin{algorithm}
     \caption{The definition of a particle in our code.}
     \label{lst:particle}
     \begin{juliacode}
+        using StaticArrays: MVector
+
         mutable struct Particle
             position::MVector{3,Float64}
             velocity::MVector{3,Float64}
         end
     \end{juliacode}
 \end{algorithm}
+
+Now let us talk about the Lennard--Jones potential. In the dimensionless form,
+the two-particle potential would look like~\eqref{eq:ulj} and the force would
+look like~\eqref{eq:flj}.
+%
+\begin{align}
+    u(r_{ij})                      & = 4 \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{12}
+    -\Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^6 \biggr), \label{eq:ulj}                        \\
+    \frac{ d^2 \bm{r}_i }{ d t^2 } & = \sum_{j \neq i} (\bm{r}_i - \bm{r}_j)
+    \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{14}
+    -\frac{ 1 }{ 2 } \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^8 \biggr). \label{eq:flj}
+\end{align}
+%
+And the numerical gradient of~\eqref{eq:ulj} is
+%
+\begin{equation}\label{eq:dudr}
+    \begin{bmatrix}
+        \frac{ \partial u }{ \partial x } \\
+        \frac{ \partial u }{ \partial y } \\
+        \frac{ \partial u }{ \partial z }
+    \end{bmatrix}
+    \Rightarrow
+    \begin{bmatrix}
+        \frac{ u(\bm{r} + dx \hat{\bm{x}}) - u(\bm{r}) }{ dx } \\
+        \frac{ u(\bm{r} + dy \hat{\bm{y}}) - u(\bm{r}) }{ dy } \\
+        \frac{ u(\bm{r} + dz \hat{\bm{z}}) - u(\bm{r}) }{ dz }
+    \end{bmatrix}.
+\end{equation}
+%
+However, in my case, I found that~\eqref{eq:dudr} is not equal to the opposite
+of~\eqref{eq:flj}: they are off by a factor of $48$.
+I suppose that this is due to we basically treat
+$\varepsilon$, $\sigma$, and $m$ (the mass of each particle) as $1$ here (though they
+are not). So in Snippet~\ref{lst:gradient} I define the $\nabla u$ and the acceleration
+particle $a$ experiences (induced only by particle $b$) as:
+
+\begin{algorithm}
+    \caption{The gradient of the Lennard--Jones potential and the acceleration
+        $d^2 \bm{r}_a / d t^2$. Note the factor $48$ and the negative sign.}
+    \label{lst:gradient}
+    \begin{juliacode}
+        function potential_gradient(𝐫)
+            r = norm(𝐫)
+            return 48𝐫 * (inv(r^8) / 2 - inv(r^14))
+        end
+
+        function Acceleration(a::Particle)
+            return function (b::Particle)
+                return Acceleration(-potential_gradient(a.position - b.position))
+            end
+        end
+    \end{juliacode}
+\end{algorithm}
+
+The negative sign indicates the force is the negative gradient of the potential.
+
