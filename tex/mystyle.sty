@@ -13,7 +13,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{algorithm}
-\usepackage{minted}
+\usepackage[cache=false]{minted}
 \usepackage{xpatch} % See https://tex.stackexchange.com/a/657596/61591
 \usepackage{bm}
 \usepackage{color}
@@ -27,7 +27,7 @@
 \makeatletter
 \xpatchcmd{\fs@ruled}{\kern2pt\hrule\relax}{\kern-0.8\baselineskip\hrule\relax}{}{}
 \makeatother
-\newminted{python}{
+\newminted{julia}{
   autogobble,
   escapeinside=||,
   fontsize=\footnotesize,
@@ -36,7 +36,8 @@
 \makeatletter
 \renewcommand*{\ALG@name}{Snippet} % See https://tex.stackexchange.com/a/169119
 \makeatother
-\newcommand{\code}[1]{\mintinline{python}{#1}}
+\newcommand{\code}[1]{\mintinline{julia}{#1}}
+\setmonofont{JuliaMono}
 
 \definecolor{CUBlueDarkest}{RGB}{3,33,105}
 
