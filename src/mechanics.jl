@@ -1,6 +1,6 @@
 using LinearAlgebra: dot
 
-export potential_energy, kinetic_energy, total_energy, accelerations, potential_gradient
+export potential_energy, kinetic_energy, total_energy, acceleration, potential_gradient
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
@@ -39,16 +39,16 @@ function Acceleration(a::Particle)
     end
 end
 
-function accelerations(cell::Cell, particle::Particle, position)
+function acceleration(cell::Cell, particle::Particle, position)
     neighbors = list_neighbors(cell, particle)
     return sum(Acceleration(Particle(position)), neighbors)
 end
-function accelerations(cell::Cell, particle::Particle)
+function acceleration(cell::Cell, particle::Particle)
     neighbors = list_neighbors(cell, particle)
     return sum(Acceleration(particle), neighbors)
 end
-function accelerations(cell::Cell)
+function acceleration(cell::Cell)
     return map(cell.particles) do particle
-        accelerations(cell, particle)
+        acceleration(cell, particle)
     end
 end
