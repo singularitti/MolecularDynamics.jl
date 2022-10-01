@@ -7,7 +7,7 @@ easier to use than the simple Verlet algorithm in Verlet's original paper.
 
 This is a study of a collection of classical particles interacting through a Lennard--Jones
 potential, a central force potential. The evolution of this system according to Newton's
-Laws represents a microcanonical ensemble, since the energy is fixed. The temperature of the
+Laws represent a microcanonical ensemble, since the energy is fixed. The temperature of the
 system can be found from the average kinetic energy.
 
 In writing your program, there are a number of issues to consider:
@@ -16,44 +16,44 @@ In writing your program, there are a number of issues to consider:
     \item The system should be put in a box of size $L$ on a side. The desired density and
           input number of particles will determine the box size. Periodic boundary
           conditions should be used.
+    \item The energy and force for particle $a$ due to particle $b$ should be calculated
+          using the ``nearest image'' of particle $b$.
+    \item While integrating the equations of motion, some particles will move out of the
+          box. By a shift of $L$ in the appropriate coordinate, the particle can be brought
+          back into the box.
     \item The initial state of the system must be chosen. You can easily choose the
           velocities $\vec{v}$ so that each component is uniformly distributed between
           $-v_\text{max}$ and $v_\text{max}$. After choosing the velocities for each
           particle, shift all velocities so that the velocity of the center of mass is zero.
-          Alternatively, you can place all the particles initially at rest and then they
-          will acquire velocities as the systems thermalizes.
+          Alternatively, you can place all the particles initially at rest, and then they
+          will acquire velocities as the system thermalizes.
 
           Putting the particles at random positions inside the box will generally result in
           very large potential energies. A few relaxation steps, moving each particle
           individually a small distance in the direction of the force acting on it, will
           dramatically decrease the potential energy. You can also arrange the particles in
-          a somewhat regular pattern, to avoid any two particles being too close together.
+          a somewhat regular pattern to avoid any two particles being too close together.
           The important point is that the initial configuration does not matter, provided
           there are no particles close enough to each other that the $\frac{ 1 }{ r^{12} }$
           term in the potential becomes large.
     \item Once chosen, the total energy will remain fixed, provided your algorithm is
           working correctly. The temperature will be set, after thermalization, by the
           resulting balance between kinetic and potential energy.
-    \item The energy and force for particle $a$ due to particle $b$ should be calculated
-          using the ``nearest image'' of particle $b$.
-    \item While integrating the equations of motion, some particles will move out of the
-          box. By a shift of $L$ in the appropriate coordinate, the particle can be brought
-          back into the box.
 \end{enumerate}
 
 You should check your program by studying whether it conserves energy and whether the
 particles motion is reversible, i.e., whether the system returns to an earlier state when
-the velocities are reversed and the molecular-dynamics restarted.
+the velocities are reversed, and the molecular dynamics restarted.
 
 Once you believe your program is working, you should reproduce the values for pressure and
 internal energy found by Verlet for $\rho = 0.75$ and $T = 1.069$. You can fine-tune the
 temperature by small rescaling of the velocities or by moving particles a small amount in
-the direction of the force they are experiencing, i.e., move them downhill. (Remember that
-you need to run the molecular dynamics for some time after such an adjustment, to let the
+the direction of the force they are experiencing, i.e., moving them downhill. (Remember that
+you need to run the molecular dynamics for some time after such an adjustment to let the
 system come back into thermal equilibrium.)
 
 To get reasonable accuracy for $T$ and $P$, runs of a few thousand molecular dynamics steps
-should be sufficient, after thermalization. You do not need to reproduce the temperature to
+should be sufficient after thermalization. You do not need to reproduce the temperature to
 precisely $1.069$.
 
 Some additional features you should have in your program and results you should produce are:
