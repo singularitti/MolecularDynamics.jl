@@ -24,10 +24,6 @@
 \usepackage[english]{babel}
 % \addbibresource{ref.bib}
 
-% See https://tex.stackexchange.com/a/657596/61591
-\makeatletter
-\xpatchcmd{\fs@ruled}{\kern2pt\hrule\relax}{\kern-0.8\baselineskip\hrule\relax}{}{}
-\makeatother
 \newminted{julia}{
   autogobble,
   escapeinside=||,
