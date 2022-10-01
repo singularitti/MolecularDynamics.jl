@@ -219,6 +219,46 @@ particle $a$ experiences (induced only by particle $b$) as below.
         end
     \end{juliacode}
 \end{algorithm}
-
+%
 The negative sign indicates the force is the negative gradient of the potential.
+To get the total potential energy of the swarm of particles, we sum up all the $i$'s
+and $j$'s (except for $j = i$) in~\eqref{eq:uij}:
+%
+\begin{equation}\label{eq:U}
+    U = \frac{ 1 }{ 2 }\sum_{\substack{i, j\\ j \neq i}} u(r_{ij}).
+\end{equation}
+%
+Note the $\frac{ 1 }{ 2 }$ factor in \eqref{eq:U} since we count $i$ and $j$ twice.
+Snippet \ref{lst:U} does the same thing:
+
+\begin{algorithm}
+    \caption{Calculate the total Lennard--Jones potential energy of a swarm of particles.}
+    \label{lst:U}
+    \begin{juliacode}
+        function potential_energy(particles::Vector{Particle})
+            return 1 / 2 * sum(eachindex(particles)) do i
+                sum(filter(!=(i), eachindex(particles))) do j
+                    potential_energy(particles[i], particles[j])
+                end
+            end
+        end
+    \end{juliacode}
+\end{algorithm}
+
+Similarly, we need to calculate the total force (acceleration) of all the other particles
+enforced on one particle, as shown in \eqref{eq:flj}. Now we need to employ the
+\code{list_neighbors} function we used to calculate one particle's neighbors and plotted
+Figure \ref{fig:neighbors}, as shown in \ref{lst:flj}.
+%
+\begin{algorithm}
+    \caption{Calculate the total Lennard--Jones force a particle experiences.}
+    \label{lst:flj}
+    \begin{juliacode}
+        function acceleration(cell::Cell, particle::Particle)
+            neighbors = list_neighbors(cell, particle)
+            return sum(Acceleration(particle), neighbors)
+        end
+    \end{juliacode}
+\end{algorithm}
+%
 
