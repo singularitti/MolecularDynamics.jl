@@ -167,14 +167,25 @@ stored data of its position (velocity).
     \end{juliacode}
 \end{algorithm}
 
-Now let us talk about the Lennard--Jones potential. In the dimensionless form,
-the two-particle potential would look like~\eqref{eq:ulj} and the force would
+Now let us talk about the Lennard--Jones potential.
+The original form of the two-particle potential would look like~\eqref{eq:uljunit}:
+%
+\begin{equation}\label{eq:uljunit}
+    u(r_{ij}) = 4 \varepsilon \biggl( \Bigl( \frac{ \sigma }{ r_{ij} } \Bigr)^{12}
+    -\Bigl( \frac{ \sigma }{ r_{ij} } \Bigr)^6 \biggr),
+\end{equation}
+%
+where the parameters for \ce{Ar} are $\varepsilon = \SI{0.0104}{\electronvolt}$,
+$\sigma = \SI{3.40}{\angstrom}$, and $m = \SI{39.948}{\atomicmassunit}$, where
+$\si{\atomicmassunit}$ is the atomic mass unit.
+In the dimensionless form,
+\eqref{eq:uljunit} would look like~\eqref{eq:ulj} and the force would
 look like~\eqref{eq:flj}.
 %
 \begin{align}
     u(r_{ij})                      & = 4 \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{12}
     -\Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^6 \biggr), \label{eq:ulj}                        \\
-    \frac{ d^2 \bm{r}_i }{ d t^2 } & = \sum_{j \neq i} (\bm{r}_i - \bm{r}_j)
+    \frac{ d^2 \bm{r}_i }{ d t^2 } & = 48\sum_{j \neq i} (\bm{r}_i - \bm{r}_j)
     \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{14}
     -\frac{ 1 }{ 2 } \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^8 \biggr). \label{eq:flj}
 \end{align}
@@ -195,8 +206,8 @@ And the numerical gradient of~\eqref{eq:ulj} is
     \end{bmatrix}.
 \end{equation}
 %
-However, in my case, I found that~\eqref{eq:dudr} is not equal to the opposite
-of~\eqref{eq:flj}: they are off by a factor of $48$.
+I found in the notes, equation \eqref{eq:flj} is off by a factor of $48$.
+Only after adding it could make \eqref{eq:dudr} and \eqref{eq:flj} match.
 I suppose that this is because we basically treat
 $\varepsilon$, $\sigma$, and $m$ (the mass of each particle) as $1$ here (though they
 are not). So in Snippet~\ref{lst:gradient} I define the $\nabla u$ and the acceleration
