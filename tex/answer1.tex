@@ -113,3 +113,20 @@ also have similar functions. And since $L$ is always positive, we do not need to
 about some nasty cases.
 In the snippet, we \code{map} function \code{f} over
 each component of the $b$'s position.
+
+The above syntax may confuse users as we have not mentioned how we represent particles in
+code. In our code, a \code{Particle} is simply a \code{mutable struct} wrapping two
+\code{MVector}s, each with three \code{Float64} values, as shown in Snippet
+\ref{lst:particle}. So \code{b.position} (\code{b.velocity}) is how we access the stored
+data of its position (velocity).
+
+\begin{algorithm}
+    \caption{The definition of a particle in our code.}
+    \label{lst:particle}
+    \begin{juliacode}
+        mutable struct Particle
+            position::MVector{3,Float64}
+            velocity::MVector{3,Float64}
+        end
+    \end{juliacode}
+\end{algorithm}
