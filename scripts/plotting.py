@@ -1,9 +1,15 @@
 import json
 
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 
-plt.rcParams['image.cmap'] = 'gist_ncar'
+params = {
+    "figure.figsize": (8, 5),
+    "figure.autolayout": True,
+    "figure.dpi": 200,
+    "legend.fontsize": "small",
+    "text.usetex": True,
+}
+plt.rcParams.update(params)
 
 
 def readpositions(filename, axes):
