@@ -114,7 +114,41 @@ about some nasty cases.
 In the snippet, we \code{map} function \code{f} over
 each component of the $b$'s position.
 
-The above syntax may confuse users as we have not mentioned how we represent particles in
+\begin{figure} % 2 subfigures
+    \centering
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{neighbors_profile}
+        \subcaption{Viewing from one angle of neighbors of the selected particles.}
+        \label{fig:neighbors:a}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{neighbors_front}
+        \subcaption{Viewing from another angle of neighbors of the selected particles.}
+        \label{fig:neighbors:b}
+    \end{minipage}
+    \caption{A system of $1000$ particles with $L \approx 11$. The blue points denote all
+        the points in the center (original) cell, and the red and purple spheres are the
+        $500$th and $1000$th particle among them. The orange and green points are the
+        neighbors of these points which have interactions with them.}
+    \label{fig:neighbors}
+\end{figure}
+
+To ensure that we have the correct neighbors, we need to plot the positions of these particles.
+As shown in Figure \ref{fig:neighbors}, we have a system of $1000$ particles with
+$\rho = 0.75$, so $L \approx 11$. The blue points denote all
+the points in the center (original) cell, and the red and purple spheres are the
+$500$th and $1000$th particles among them. The orange and green points are the
+neighbors of these points which have interactions with them. That is, they are bounded by a
+cubic whose centers are the $500$th and $1000$th particles,
+with size $L \approx 11$ in each dimension.
+There are $999$ points in both orange and green ``clouds'', and they do have overlaps
+with the blue ``cloud''. From this, we know there is no double counting in our algorithm.
+
+The syntax in Snippet \ref{lst:nic} and \ref{lst:pbcs} may confuse users as we
+have not mentioned how we represent particles in
 code. In our code, a \code{Particle} is simply a \code{mutable struct} wrapping two
 \code{MVector}s (position and velocity), each with three \code{Float64} values, as shown in
 Snippet~\ref{lst:particle}. So \code{b.position} (\code{b.velocity}) is how we access the
