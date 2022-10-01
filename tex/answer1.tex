@@ -44,7 +44,8 @@ treat it as an image particle from an adjacent cell enters the current cell.
 So the number of particles in a cell never increases or decreases in this case.
 
 So how do we express the PBCs in mathematical and programming languages?
-Suppose we have two particles, $a$ and $b$, and $a$ is the particle in which we
+Suppose we have two particles, $a$ and $b$, both in the center cell,
+and $a$ is the particle in which we
 are interested. The vector pointing from $a$ to $b$ is the difference between
 their positions:
 %
@@ -66,11 +67,12 @@ so we should shift $b$ closer to $a$ in the corresponding dimension:
 %
 where $r_{b, \alpha}$ is the component of the position of particle $b$ in the
 corresponding dimension.
-The Julia code for the above procedure looks like Snippet \ref{lst:pbcs}:
+The Julia code for the above procedure looks like Snippet~\ref{lst:nic}.
+The code will return a \code{Vector} representing the new position of particle $b$.
 
 \begin{algorithm}
     \caption{Find the nearest image of particle $b$ which can interact with particle $a$.}
-    \label{lst:pbcs}
+    \label{lst:nic}
     \begin{juliacode}
         Δ𝐫 = b.position - a.position
         position = map(b.position, Δ𝐫) do rᵢ, Δrᵢ
@@ -84,3 +86,30 @@ The Julia code for the above procedure looks like Snippet \ref{lst:pbcs}:
         end
     \end{juliacode}
 \end{algorithm}
+
+If $b$ is not in the same cell as $a$, we need first shift $b$ back to the cell where
+$a$ locates. That is,
+%
+\begin{equation}\label{eq:pbcs}
+    (r_{b, \alpha} + 2L) \mod L,
+\end{equation}
+%
+where adding $2L$ is to catch any runaway particles with $r_{b, \alpha} < -L$.
+The code representing \eqref{eq:pbcs} is in Snippet \ref{lst:pbcs}.
+%
+\begin{algorithm}
+    \caption{Find the nearest image of particle $b$ which can interact with particle $a$.}
+    \label{lst:pbcs}
+    \begin{juliacode}
+        const L = 11.2  # Any real number you want
+        f(rᵢ) = mod(rᵢ, L)
+        b.position = map(f, b.position)
+    \end{juliacode}
+\end{algorithm}
+%
+Here Julia already provides the modulo function (it works for floating point numbers)
+\href{https://docs.julialang.org/en/v1/base/math/#Base.mod}{\code{mod}}. Python and C++
+also have similar functions. And since $L$ is always positive, we do not need to worry
+about some nasty cases.
+In the snippet, we \code{map} function \code{f} over
+each component of the $b$'s position.
