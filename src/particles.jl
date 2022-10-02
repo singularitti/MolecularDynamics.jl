@@ -10,7 +10,9 @@ export distance,
     init_positions!,
     init_velocities!,
     init!,
-    damp!
+    damp!,
+    getcoordinates,
+    getvelocities
 
 mutable struct Position <: FieldVector{3,Float64}
     x::Float64
@@ -124,5 +126,47 @@ function Base.in(particle::Particle, cell::Cell)
     L = boxlength(cell)
     return all(particle.position) do x
         0 <= x <= L
+    end
+end
+
+function getcoordinates(particles)
+    positions = map(particles) do particle
+        particle.position
+    end
+    return function (; x=true, y=true, z=true)
+        results = ntuple(_ -> Float64[], 3)
+        map(positions) do position
+            if x
+                push!(results[1], position.x)
+            end
+            if y
+                push!(results[2], position.y)
+            end
+            if z
+                push!(results[3], position.z)
+            end
+        end
+        return results
+    end
+end
+
+function getvelocities(particles)
+    velocities = map(particles) do particle
+        particle.velocity
+    end
+    return function (; x=true, y=true, z=true)
+        results = ntuple(_ -> Float64[], 3)
+        map(velocities) do velocity
+            if x
+                push!(results[1], velocity.x)
+            end
+            if y
+                push!(results[2], velocity.y)
+            end
+            if z
+                push!(results[3], velocity.z)
+            end
+        end
+        return results
     end
 end
