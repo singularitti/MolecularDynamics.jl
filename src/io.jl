@@ -1,6 +1,6 @@
 using JSON: JSON
 
-export save
+export save, load
 
 function Base.Dict(particle::Particle)
     return Dict("position" => particle.position, "velocity" => particle.velocity)
@@ -20,4 +20,11 @@ function save(filename, data)
         print(io, data)
     end
     return nothing
+end
+
+function load(filename)
+    data = open(filename, "r") do io
+        JSON.parse(io)
+    end
+    return data
 end
