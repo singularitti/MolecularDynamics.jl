@@ -1,5 +1,6 @@
 using LinearAlgebra: norm
 using StaticArrays: MVector, FieldVector
+using StructEquality: @struct_hash_equal_isequal_isapprox
 
 export Position, Velocity, Acceleration, Particle, Cell
 export distance,
@@ -32,12 +33,9 @@ mutable struct Acceleration <: FieldVector{3,Float64}
     z::Float64
 end
 
-mutable struct Particle
+@struct_hash_equal_isequal_isapprox mutable struct Particle
     position::Position
     velocity::Velocity
-    Particle(position, velocity) = new(position, velocity)
-    Particle(position) = new(position)
-    Particle() = new()  # Incomplete initialization
 end
 
 struct Cell

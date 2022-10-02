@@ -2,5 +2,5 @@ using MolecularDynamics
 using Test
 
 @testset "MolecularDynamics.jl" begin
-    # Write your tests here.
+    include("particles.jl")
 end
