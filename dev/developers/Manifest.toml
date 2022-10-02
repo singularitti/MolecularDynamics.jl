@@ -118,8 +118,8 @@ version = "2.28.0+0"
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MolecularDynamics]]
-deps = ["JSON", "LinearAlgebra", "RecipesBase", "StaticArrays"]
-git-tree-sha1 = "31d9ca05583f8551edbc37b65d8ef6e16ba2c524"
+deps = ["JSON", "LinearAlgebra", "RecipesBase", "StaticArrays", "StructEquality"]
+git-tree-sha1 = "18698e54a717c56d5b6f79094e89900739e43f05"
 repo-rev = "main"
 repo-url = "https://github.com/singularitti/MolecularDynamics.jl"
 uuid = "085142b3-cc26-4e6c-8f6b-431a83ab87f1"
@@ -205,6 +205,12 @@ version = "1.4.0"
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[[deps.StructEquality]]
+deps = ["Compat"]
+git-tree-sha1 = "192a9f1de3cfef80ab1a4ba7b150bb0e11ceedcf"
+uuid = "6ec83bb0-ed9f-11e9-3b4c-2b04cb4e219c"
+version = "2.1.0"
 
 [[deps.TOML]]
 deps = ["Dates"]
