@@ -1,4 +1,4 @@
-using RecipesBase: @recipe
+using RecipesBase: RecipesBase, @recipe
 
 @recipe function plot(particles::AbstractVector{Particle})
     # Set a default value for an attribute with `-->`
