@@ -281,3 +281,21 @@ Figure \ref{fig:neighbors}, as shown in \ref{lst:flj}.
 \subsection{Thermodynamic properties calculation}
 
 Now let us calculate the \ce{Ar} system's thermodynamic properties.
+
+The pressure is calculated from the virial theorem, as shown in \eqref{eq:P}
+%
+\begin{equation}\label{eq:P}
+    P = \rho k_B T - \frac{ \rho }{ 3N } \sum_{i=1}^{N} \sum_{\alpha=1}^{3}
+    \biggl \langle r_i^\alpha \frac{ \partial u }{ \partial r_i^\alpha } \biggr \rangle,
+\end{equation}
+%
+where $i$ labels all the particles, and $\alpha$ labels the three spatial dimensions.
+Its dimensionless form is shown in \eqref{eq:Pdimensionless}:
+%
+\begin{equation}\label{eq:Pdimensionless}
+    P = 1 + \frac{ \rho }{ 3N } \sum_{i=1}^{N}
+    \langle \bm{r}_i \cdot \bm{F}_i \rangle,
+\end{equation}
+%
+where $\bm{F}_i$ is the total force on the $i$th particle, and $\bm{r}_i$ is the
+position of the particle.
