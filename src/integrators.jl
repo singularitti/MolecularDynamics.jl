@@ -46,6 +46,3 @@ function positions(tracker::StepTracker)
         particle.position
     end
 end
-
-# See https://discourse.julialang.org/t/why-there-is-no-in-place-map-on-arrays/87956
-mapinto!(f, arg) = map!(f, arg, arg)
