@@ -64,6 +64,24 @@ particle $a$ experiences (induced only by particle $b$) as below.
     \end{juliacode}
 \end{algorithm}
 %
+The corresponding unit test is shown in Snippet~\ref{lst:ut_gradient}.
+%
+\begin{algorithm}
+    \caption{The unit test of function \code{potential_gradient}.}
+    \label{lst:ut_gradient}
+    \begin{juliacode}
+        𝐫 = [4, 5, 6]  # Distance between two particles
+        δ = 0.00005
+        u₀ = potential_energy(𝐫)  # Potential energy between the two particles
+        for i in 1:3  # Loop over each component of vector `𝐫`
+            Δ𝐫 = zeros(3)
+            Δ𝐫[i] = δ  # Set the `i`th component of `Δ𝐫` to be `δ`
+            u₁ = potential_energy(𝐫 + Δ𝐫)  # New potential energy between the two particles
+            @test (u₁ - u₀) / δ - potential_gradient(𝐫)[i] < 1e-8
+        end
+    \end{juliacode}
+\end{algorithm}
+%
 The negative sign indicates the force is the negative gradient of the potential.
 To get the total potential energy of the swarm of particles, we sum up all the $i$'s
 and $j$'s (except for $j = i$) in~\eqref{eq:U}:
