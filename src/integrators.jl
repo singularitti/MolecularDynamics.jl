@@ -8,13 +8,6 @@ struct StepTracker
     data::Matrix{Particle}
 end
 
-function take_half_step!(particle::Particle, 𝐚, Δt, L)
-    particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt / 2)
-    particle.position += particle.velocity * Δt  # 𝐫(t + Δt)
-    mapinto!(Base.Fix2(mod, L), particle.position)  # Move `𝐫` back to `0 - L` range
-    return particle
-end
-
 function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
     L = boxlength(cell)
     positions = map(eachparticle(cell), accelerations(cell)) do particle, 𝐚
