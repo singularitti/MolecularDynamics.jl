@@ -39,9 +39,9 @@ function Acceleration(a::Particle)
     end
 end
 
-function acceleration(cell::Cell, particle::Particle, position)
-    neighbors = list_neighbors(cell, particle)
-    return sum(Acceleration(Particle(position)), neighbors)
+function acceleration(cell::Cell, particle::Particle, new_position)
+    neighbors = list_neighbors(cell, particle, new_position)
+    return sum(Acceleration(Particle(new_position, particle.velocity)), neighbors)
 end
 function acceleration(cell::Cell, particle::Particle)
     neighbors = list_neighbors(cell, particle)
