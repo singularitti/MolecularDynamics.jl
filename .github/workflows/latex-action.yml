@@ -1,0 +1,22 @@
+name: Build LaTeX document
+on: [push]
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: tex/main.tex
+          latexmk_shell_escape: true
+          extra_system_packages: "py-pygments"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: PDF
+          path: main.pdf
+      - uses: AButler/upload-release-assets@v2.0
+        with:
+          files: main.pdf
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
