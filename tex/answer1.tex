@@ -20,7 +20,8 @@ cell.
     \centering
     \includegraphics[width=0.5\textwidth]{nic}
     \caption{A center cell surrounded by $8$ more image cells with the same
-        particles' relative locations and movements.}\label{fig:nic}
+        particles' relative locations and movements. Figure is from \cite{matlab}.}
+    \label{fig:nic}
 \end{figure}
 
 When applying PBCs, particles near the edge of the cells often interact
@@ -94,7 +95,7 @@ $a$ locates. That is,
     (r_{b, \alpha} + 2L) \mod L,
 \end{equation}
 %
-where adding $2L$ is to catch any runaway particles with $r_{b, \alpha} < -L$.
+where adding $2L$ is to catch any runaway particles\cite{Adrian} with $r_{b, \alpha} < -L$.
 The code representing \eqref{eq:pbcs} is in Snippet~\ref{lst:pbcs}.
 %
 \begin{algorithm}
