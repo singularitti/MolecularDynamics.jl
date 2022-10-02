@@ -13,6 +13,7 @@ StructEquality = "6ec83bb0-ed9f-11e9-3b4c-2b04cb4e219c"
 [compat]
 JSON = "0.21"
 StaticArrays = "1"
+StructEquality = "2"
 julia = "1"
 
 [extras]
