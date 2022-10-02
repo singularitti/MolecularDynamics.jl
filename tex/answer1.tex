@@ -4,7 +4,7 @@ Suppose we have a system of $N$ particles with number density $\rho$, thus the
 box size will be
 
 \begin{equation}
-    L = \bigg( \frac{ N }{ \rho } \bigg)^{1 / 3}.
+    L = \biggl( \frac{ N }{ \rho } \biggr)^{1 / 3}.
 \end{equation}
 
 If we want to impose the periodic boundary conditions (PBCs) here, we should adopt the
@@ -204,9 +204,9 @@ And the numerical gradient of~\eqref{eq:ulj} is
     \end{bmatrix}
     \Rightarrow
     \begin{bmatrix}
-        \nicefrac{ \big( u(\bm{r} + dx \hat{\bm{x}}) - u(\bm{r}) \big) }{ dx } \\
-        \nicefrac{ \big( u(\bm{r} + dy \hat{\bm{y}}) - u(\bm{r}) \big) }{ dy } \\
-        \nicefrac{ \big( u(\bm{r} + dz \hat{\bm{z}}) - u(\bm{r}) \big) }{ dz }
+        \nicefrac{ \bigl( u(\bm{r} + dx \hat{\bm{x}}) - u(\bm{r}) \bigr) }{ dx } \\
+        \nicefrac{ \bigl( u(\bm{r} + dy \hat{\bm{y}}) - u(\bm{r}) \bigr) }{ dy } \\
+        \nicefrac{ \bigl( u(\bm{r} + dz \hat{\bm{z}}) - u(\bm{r}) \bigr) }{ dz }
     \end{bmatrix}.
 \end{equation}
 %
