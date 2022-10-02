@@ -70,6 +70,13 @@ function list_neighbors(cell::Cell, a::Particle)
         find_nearest_image(cell, b)(a)
     end
 end
+function list_neighbors(cell::Cell, a::Particle, new_position)
+    @assert a in cell
+    a′ = Particle(new_position, a.velocity)
+    return map(filter(!=(a), cell.particles)) do b
+        find_nearest_image(cell, b)(a′)
+    end
+end
 
 function init_positions!(cell::Cell)
     L = boxlength(cell)
