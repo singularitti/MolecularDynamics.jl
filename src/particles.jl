@@ -46,13 +46,12 @@ end
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
 distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
-function list_neighbors(cell::Cell, a::Particle)
+function find_nearest_image(cell::Cell, b::Particle)
     L = boxlength(cell)
-    @assert a in cell
-    return map(filter(!=(a), cell.particles)) do b
-        position = map(Base.Fix2(mod, L), b.position)
-        Δ𝐫 = position - a.position
-        position = map(position, Δ𝐫) do rᵢ, Δrᵢ
+    𝐫 = map(Base.Fix2(mod, L), b.position)
+    return function (a::Particle)
+        Δ𝐫 = 𝐫 - a.position
+        𝐫′ = map(𝐫, Δ𝐫) do rᵢ, Δrᵢ
             if Δrᵢ > L / 2
                 rᵢ - L
             elseif Δrᵢ < -L / 2
@@ -61,7 +60,21 @@ function list_neighbors(cell::Cell, a::Particle)
                 rᵢ  # Do not shift
             end
         end
-        Particle(position, b.velocity)
+        return Particle(𝐫′, b.velocity)
+    end
+end
+
+function list_neighbors(cell::Cell, a::Particle)
+    @assert a in cell
+    return map(filter(!=(a), cell.particles)) do b
+        find_nearest_image(cell, b)(a)
+    end
+end
+function list_neighbors(cell::Cell, a::Particle, new_position)
+    @assert a in cell
+    a′ = Particle(new_position, a.velocity)
+    return map(filter(!=(a), cell.particles)) do b
+        find_nearest_image(cell, b)(a′)
     end
 end
 
