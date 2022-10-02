@@ -1,5 +1,5 @@
 @testset "Test the potential gradient" begin
-    𝐫 = [1, 2, 3]
+    𝐫 = 4:6
     δ = 0.00005
     u₀ = potential_energy(𝐫)
     for i in 1:3
