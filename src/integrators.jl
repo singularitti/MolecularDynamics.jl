@@ -8,7 +8,7 @@ abstract type Integrator end
 struct VelocityVerlet <: Integrator end
 
 struct StepTracker
-    data::ElasticMatrix{Particle}
+    steps::ElasticMatrix{Particle}
 end
 
 function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
@@ -39,13 +39,13 @@ function take_n_steps!(cell::Cell, n, Δt, ::VelocityVerlet)
 end
 
 function velocities(tracker::StepTracker)
-    return map(tracker.data) do particle
+    return map(tracker.steps) do particle
         particle.velocity
     end
 end
 
 function positions(tracker::StepTracker)
-    return map(tracker.data) do particle
+    return map(tracker.steps) do particle
         particle.position
     end
 end
