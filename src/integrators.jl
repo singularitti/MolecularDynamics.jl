@@ -24,26 +24,12 @@ function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
     end
     return cell
 end
-function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
-    L = boxlength(cell)
-    positions = map(eachparticle(cell), acceleration(cell)) do particle, 𝐚
-        position = particle.position + particle.velocity * Δt + 𝐚 * Δt^2 / 2
-        position = map(Base.Fix2(mod, L), position)  # Move `𝐫` back to `0 - L` range
-    end
-    for (particle, position, 𝐚₀) in zip(eachparticle(cell), positions, acceleration(cell))
-        𝐚₁ = acceleration(cell, particle, position)  # 𝐚(t + Δt)
-        particle.velocity += (𝐚₀ + 𝐚₁) * Δt / 2  # 𝐯(t + Δt)
-    end
-    for (particle, position) in zip(eachparticle(cell), positions)
-        particle.position = position  # Move `𝐫` back to `0 - L` range
-    end
-    return cell
-end
 
 function take_n_steps!(cell::Cell, n, Δt, ::VelocityVerlet)
     data = Matrix{Particle}(undef, particlenumber(cell), n)
     for i in 1:n
         # Must use `deepcopy`!
+        println("running step ", i, '!')
         take_one_step!(cell, Δt, VelocityVerlet())
         data[:, i] = deepcopy(cell.particles)
     end
