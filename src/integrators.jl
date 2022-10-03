@@ -1,3 +1,5 @@
+using ProgressMeter: @showprogress
+
 export VelocityVerlet
 export take_one_step!, take_n_steps!, velocities, positions
 
@@ -27,9 +29,8 @@ end
 
 function take_n_steps!(cell::Cell, n, Δt, ::VelocityVerlet)
     data = Matrix{Particle}(undef, particlenumber(cell), n)
-    for i in 1:n
+    @showprogress for i in 1:n
         # Must use `deepcopy`!
-        println("running step ", i, '!')
         take_one_step!(cell, Δt, VelocityVerlet())
         data[:, i] = deepcopy(cell.particles)
     end
