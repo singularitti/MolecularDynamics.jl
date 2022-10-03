@@ -37,6 +37,13 @@ function take_n_steps!(cell::Cell, n, Δt, ::VelocityVerlet)
     end
     return StepTracker(data)
 end
+function take_n_steps!(tracker::StepTracker, cell::Cell, n, Δt, ::VelocityVerlet)
+    @showprogress for _ in 1:n
+        take_one_step!(cell, Δt, VelocityVerlet())
+        append!(tracker.steps, deepcopy(cell.particles))
+    end
+    return tracker
+end
 
 function velocities(tracker::StepTracker)
     return map(tracker.steps) do particle
