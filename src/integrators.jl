@@ -1,3 +1,4 @@
+using ElasticArrays: ElasticMatrix
 using ProgressMeter: @showprogress
 
 export VelocityVerlet
@@ -7,7 +8,7 @@ abstract type Integrator end
 struct VelocityVerlet <: Integrator end
 
 struct StepTracker
-    data::Matrix{Particle}
+    data::ElasticMatrix{Particle}
 end
 
 function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
@@ -28,7 +29,7 @@ function take_one_step!(cell::Cell, Δt, ::VelocityVerlet)
 end
 
 function take_n_steps!(cell::Cell, n, Δt, ::VelocityVerlet)
-    data = Matrix{Particle}(undef, particlenumber(cell), n)
+    data = ElasticMatrix{Particle}(undef, particlenumber(cell), n)
     @showprogress for i in 1:n
         # Must use `deepcopy`!
         take_one_step!(cell, Δt, VelocityVerlet())
