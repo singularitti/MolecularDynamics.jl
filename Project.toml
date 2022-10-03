@@ -4,6 +4,7 @@ authors = ["Qi Zhang <qz2280@columbia.edu>"]
 version = "0.1.0"
 
 [deps]
+ElasticArrays = "fdbdab4c-e67f-52f5-8c3f-e7b388dad3d4"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
