@@ -1,3 +1,6 @@
+export VelocityRescaling
+export apply_coupling!
+
 abstract type Thermostat end
 struct VelocityRescaling <: Thermostat
     desired_temperature::Float64
