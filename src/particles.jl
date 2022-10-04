@@ -36,6 +36,8 @@ end
     position::Position
     velocity::Velocity
 end
+Particle(particle::Particle, velocity::Velocity) = Particle(particle.position, velocity)
+Particle(position::Position, particle::Particle) = Particle(position, particle.velocity)
 
 abstract type Box end
 struct CubicBox <: Box
