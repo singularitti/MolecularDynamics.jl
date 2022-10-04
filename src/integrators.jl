@@ -2,7 +2,7 @@ using ElasticArrays: ElasticMatrix
 using ProgressMeter: @showprogress
 
 export VelocityVerlet, TimeStepTracker
-export take_one_step!, take_n_steps!, velocities, positions
+export take_one_step!, take_n_steps!, extract_velocities, extract_coordinates
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
@@ -45,15 +45,15 @@ function take_n_steps!(tracker::TimeStepTracker, particles, box::Box, n, ::Veloc
     return tracker
 end
 
-function velocities(tracker::TimeStepTracker)
+function extract_velocities(tracker::TimeStepTracker)
     return map(tracker.steps) do particle
         particle.velocity
     end
 end
 
-function positions(tracker::TimeStepTracker)
+function extract_coordinates(tracker::TimeStepTracker)
     return map(tracker.steps) do particle
-        particle.position
+        particle.coordinates
     end
 end
 
