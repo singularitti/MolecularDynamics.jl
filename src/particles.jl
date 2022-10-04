@@ -7,7 +7,6 @@ export distance,
     find_neighbors,
     eachparticle,
     boxsize,
-    boxlength,
     init_positions!,
     init_velocities!,
     init!,
@@ -120,11 +119,7 @@ function damp!(cell, n, Δt)
     return cell
 end
 
-boxsize(cell::Cell) = particlenumber(cell) / cell.density
-
-boxlength(cell::Cell) = cbrt(boxsize(cell))
-
-particlenumber(cell::Cell) = length(cell.particles)
+boxsize(box::CubicBox) = box.side_length^3
 
 struct EachParticle
     cell::Cell
