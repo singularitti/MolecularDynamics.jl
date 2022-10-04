@@ -1,7 +1,7 @@
 using ElasticArrays: ElasticMatrix
 
 export ObservableLogger
-export extract_history
+export extract_history, nsteps
 
 struct ObservableLogger{T}
     Δt::Float64
@@ -21,6 +21,8 @@ function extract_history(logger::CoordinatesLogger)
         particle.coordinates
     end
 end
+
+nsteps(logger::ObservableLogger) = size(logger.history, 2)
 
 function Base.show(io::IO, logger::ObservableLogger)
     if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(logger)
