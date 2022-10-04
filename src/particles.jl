@@ -37,14 +37,15 @@ end
     velocity::Velocity
 end
 
-struct CubicBox
+abstract type Box end
+struct CubicBox <: Box
     side_length::Float64
 end
 
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
 distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
-function find_nearest_image(b::Particle, box::CubicBox)
+function find_nearest_image(b::Particle, box::Box)
     L = box.side_length
     𝐫 = map(Base.Fix2(mod, L), b.position)
     return function (a::Particle)
@@ -62,23 +63,23 @@ function find_nearest_image(b::Particle, box::CubicBox)
     end
 end
 
-function find_neighbors(i::Integer, particles, box::CubicBox)
+function find_neighbors(i::Integer, particles, box::Box)
     return map(filter(!=(i), eachindex(particles))) do j
         find_nearest_image(particles[j], box)(particles[i])
     end
 end
-function find_neighbors(a::Particle, particles, box::CubicBox)
+function find_neighbors(a::Particle, particles, box::Box)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
         find_nearest_image(b, box)(a)
     end
 end
-function find_neighbors(i::Integer, new_position, particles, box::CubicBox)
+function find_neighbors(i::Integer, new_position, particles, box::Box)
     return map(filter(!=(i), eachindex(particles))) do j
         find_nearest_image(particles[j], box)(Particle(new_position, particles[i].velocity))
     end
 end
-function find_neighbors(a::Particle, new_position, particles, box::CubicBox)
+function find_neighbors(a::Particle, new_position, particles, box::Box)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
         find_nearest_image(b, box)(Particle(new_position, a.velocity))
