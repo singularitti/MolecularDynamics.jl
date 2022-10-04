@@ -1,20 +1,22 @@
 using ElasticArrays: ElasticMatrix
 
 export ObservableLogger
-export extract_velocities, extract_coordinates
+export extract_history
 
-struct ObservableLogger
+struct ObservableLogger{T}
     Δt::Float64
-    history::ElasticMatrix{Particle}
+    history::ElasticMatrix{T}
 end
 
-function extract_velocities(logger::ObservableLogger)
+const VelocityLogger = ObservableLogger{Velocity}
+const CoordinatesLogger = ObservableLogger{Coordinates}
+
+function extract_history(logger::VelocityLogger)
     return map(logger.history) do particle
         particle.velocity
     end
 end
-
-function extract_coordinates(logger::ObservableLogger)
+function extract_history(logger::CoordinatesLogger)
     return map(logger.history) do particle
         particle.coordinates
     end
