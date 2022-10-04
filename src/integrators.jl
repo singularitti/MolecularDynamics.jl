@@ -2,7 +2,7 @@ using ElasticArrays: ElasticMatrix
 using ProgressMeter: @showprogress
 
 export VelocityVerlet, TimeStepTracker
-export take_one_step!, take_n_steps!, velocities, positions
+export take_one_step!, take_n_steps!, extract_velocities, extract_coordinates
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
@@ -13,17 +13,17 @@ struct TimeStepTracker
 end
 
 function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
-    new_positions = map(particles, acceleration(particles, box)) do particle, 𝐚
+    new_coordinates = map(particles, acceleration(particles, box)) do particle, 𝐚
         particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt / 2)
-        new_position = particle.position + particle.velocity * Δt  # 𝐫(t + Δt)
-        new_position = map(Base.Fix2(mod, box.side_length), new_position)  # Move `𝐫` back to `0 - L` range
+        coordinates = particle.coordinates + particle.velocity * Δt  # 𝐫(t + Δt)
+        coordinates = map(Base.Fix2(mod, box.side_length), coordinates)  # Move `𝐫` back to `0 - L` range
     end
-    for (particle, new_position) in zip(particles, new_positions)
-        𝐚 = acceleration(particle, new_position, particles, box)  # 𝐚(t + Δt)
+    for (particle, coordinates) in zip(particles, new_coordinates)
+        𝐚 = acceleration(particle, coordinates, particles, box)  # 𝐚(t + Δt)
         particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt)
     end
-    for (particle, new_position) in zip(particles, new_positions)
-        particle.position = new_position
+    for (particle, coordinates) in zip(particles, new_coordinates)
+        particle.coordinates = coordinates
     end
     return particles
 end
@@ -45,15 +45,15 @@ function take_n_steps!(tracker::TimeStepTracker, particles, box::Box, n, ::Veloc
     return tracker
 end
 
-function velocities(tracker::TimeStepTracker)
+function extract_velocities(tracker::TimeStepTracker)
     return map(tracker.steps) do particle
         particle.velocity
     end
 end
 
-function positions(tracker::TimeStepTracker)
+function extract_coordinates(tracker::TimeStepTracker)
     return map(tracker.steps) do particle
-        particle.position
+        particle.coordinates
     end
 end
 

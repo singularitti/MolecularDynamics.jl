@@ -2,20 +2,20 @@ using LinearAlgebra: norm
 using StaticArrays: MVector, FieldVector
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
-export Position, Velocity, Acceleration, Particle, CubicBox
+export Coordinates, Velocity, Acceleration, Particle, CubicBox
 export distance,
     find_neighbors,
     boxsize,
     boxvolume,
     number_density,
-    init_positions!,
+    init_coordinates!,
     init_velocities!,
     init!,
     damp!,
     getcoordinates,
     getvelocities
 
-mutable struct Position <: FieldVector{3,Float64}
+mutable struct Coordinates <: FieldVector{3,Float64}
     x::Float64
     y::Float64
     z::Float64
@@ -34,11 +34,11 @@ mutable struct Acceleration <: FieldVector{3,Float64}
 end
 
 @struct_hash_equal_isequal_isapprox mutable struct Particle
-    position::Position
+    coordinates::Coordinates
     velocity::Velocity
 end
-Particle(particle::Particle, velocity) = Particle(particle.position, velocity)
-Particle(position, particle::Particle) = Particle(position, particle.velocity)
+Particle(particle::Particle, velocity) = Particle(particle.coordinates, velocity)
+Particle(coordinates, particle::Particle) = Particle(coordinates, particle.velocity)
 
 abstract type Box end
 struct CubicBox <: Box
@@ -53,13 +53,13 @@ struct CubicBox <: Box
 end
 
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
-distance(a::Particle, b::Particle) = distance(a.position, b.position)
+distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
 
 function find_nearest_image(b::Particle, box::Box)
     L = box.side_length
-    𝐫 = map(Base.Fix2(mod, L), b.position)
+    𝐫 = map(Base.Fix2(mod, L), b.coordinates)
     return function (a::Particle)
-        Δ𝐫 = 𝐫 - a.position
+        Δ𝐫 = 𝐫 - a.coordinates
         𝐫′ = map(𝐫, Δ𝐫) do rᵢ, Δrᵢ
             if Δrᵢ > L / 2
                 rᵢ - L
@@ -84,24 +84,26 @@ function find_neighbors(a::Particle, particles, box::Box)
         find_nearest_image(b, box)(a)
     end
 end
-function find_neighbors(i::Integer, new_position, particles, box::Box)
+function find_neighbors(i::Integer, new_coordinates, particles, box::Box)
     return map(filter(!=(i), eachindex(particles))) do j
-        find_nearest_image(particles[j], box)(Particle(new_position, particles[i].velocity))
+        find_nearest_image(particles[j], box)(
+            Particle(new_coordinates, particles[i].velocity)
+        )
     end
 end
-function find_neighbors(a::Particle, new_position, particles, box::Box)
+function find_neighbors(a::Particle, new_coordinates, particles, box::Box)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
-        find_nearest_image(b, box)(Particle(new_position, a.velocity))
+        find_nearest_image(b, box)(Particle(new_coordinates, a.velocity))
     end
 end
 
-function init_positions!(particles, box::Box)
+function init_coordinates!(particles, box::Box)
     # for particle in particles
-    #     particle.position = boxsize(box) .* rand(3)
+    #     particle.coordinates = boxsize(box) .* rand(3)
     # end
     for (particle, r) in zip(particles, vec(collect(Iterators.product(1:10, 1:10, 1:10))))
-        particle.position = collect(r) * 1.1
+        particle.coordinates = collect(r) * 1.1
     end
     @assert unique(particles) == particles
     return particles
@@ -115,7 +117,7 @@ function init_velocities!(particles)
 end
 
 function init!(particles, box::Box)
-    init_positions!(particles, box)
+    init_coordinates!(particles, box)
     init_velocities!(particles)
     return particles
 end
@@ -133,26 +135,26 @@ boxvolume(box::CubicBox) = reduce(*, boxsize(box))
 number_density(particles, box::CubicBox) = length(particles) / boxvolume(box)
 
 function Base.in(particle::Particle, box::CubicBox)
-    return all(particle.position) do x
+    return all(particle.coordinates) do x
         0 <= x <= box.side_length
     end
 end
 
 function getcoordinates(particles)
-    positions = map(particles) do particle
-        particle.position
+    allcoordinates = map(particles) do particle
+        particle.coordinates
     end
     return function (; x=true, y=true, z=true)
         results = ntuple(_ -> Float64[], 3)
-        map(positions) do position
+        map(allcoordinates) do coordinates
             if x
-                push!(results[1], position.x)
+                push!(results[1], coordinates.x)
             end
             if y
-                push!(results[2], position.y)
+                push!(results[2], coordinates.y)
             end
             if z
-                push!(results[3], position.z)
+                push!(results[3], coordinates.z)
             end
         end
         return results
