@@ -8,8 +8,8 @@ function potential_energy(r::Number)
     return 4 * (r⁻¹² - r⁻⁶)
 end
 potential_energy(𝐫ᵢⱼ) = potential_energy(norm(𝐫ᵢⱼ))
-potential_energy(𝐫::Position, 𝐫′::Position) = potential_energy(𝐫 .- 𝐫′)
-potential_energy(a::Particle, b::Particle) = potential_energy(a.position, b.position)
+potential_energy(𝐫::Coordinates, 𝐫′::Coordinates) = potential_energy(𝐫 .- 𝐫′)
+potential_energy(a::Particle, b::Particle) = potential_energy(a.coordinates, b.coordinates)
 function potential_energy(particles::AbstractVector{Particle})
     return sum(eachindex(particles)) do i
         sum(filter(!=(i), eachindex(particles))) do j
@@ -35,7 +35,7 @@ Calculate the acceleration particle `b` induces on particle `a` (direction: from
 """
 function Acceleration(a::Particle)
     return function (b::Particle)
-        return Acceleration(potential_gradient(b.position .- a.position))
+        return Acceleration(potential_gradient(b.coordinates .- a.coordinates))
     end
 end
 
