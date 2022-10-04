@@ -29,12 +29,12 @@ function take_n_steps!(particles, box::Box, n, Δt, ::VelocityVerlet)
         take_one_step!(particles, box, Δt, VelocityVerlet())
         data[:, i] = deepcopy(particles)
     end
-    return TimeStepTracker(Δt, data)
+    return ObservableLogger(Δt, data)
 end
-function take_n_steps!(tracker::TimeStepTracker, particles, box::Box, n, ::VelocityVerlet)
+function take_n_steps!(tracker::ObservableLogger, particles, box::Box, n, ::VelocityVerlet)
     @showprogress for _ in 1:n
         take_one_step!(particles, box, tracker.Δt, VelocityVerlet())
-        append!(tracker.steps, deepcopy(particles))
+        append!(tracker.history, deepcopy(particles))
     end
     return tracker
 end

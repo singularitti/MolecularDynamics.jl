@@ -1,37 +1,37 @@
 using ElasticArrays: ElasticMatrix
 
-export TimeStepTracker
+export ObservableLogger
 export extract_velocities, extract_coordinates
 
-struct TimeStepTracker
+struct ObservableLogger
     Δt::Float64
-    steps::ElasticMatrix{Particle}
+    history::ElasticMatrix{Particle}
 end
 
-function extract_velocities(tracker::TimeStepTracker)
-    return map(tracker.steps) do particle
+function extract_velocities(logger::ObservableLogger)
+    return map(logger.history) do particle
         particle.velocity
     end
 end
 
-function extract_coordinates(tracker::TimeStepTracker)
-    return map(tracker.steps) do particle
+function extract_coordinates(logger::ObservableLogger)
+    return map(logger.history) do particle
         particle.coordinates
     end
 end
 
-function Base.show(io::IO, tracker::TimeStepTracker)
-    if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(tracker)
-        Base.show_default(IOContext(io, :limit => true), tracker)  # From https://github.com/mauro3/Parameters.jl/blob/ecbf8df/src/Parameters.jl#L556
+function Base.show(io::IO, logger::ObservableLogger)
+    if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(logger)
+        Base.show_default(IOContext(io, :limit => true), logger)  # From https://github.com/mauro3/Parameters.jl/blob/ecbf8df/src/Parameters.jl#L556
     else
-        println(io, summary(tracker))
-        println(io, " time step: ", tracker.Δt)
+        println(io, summary(logger))
+        println(io, " time step: ", logger.Δt)
         print(
             io,
             " total ",
-            size(tracker.steps, 2),
+            size(logger.history, 2),
             " steps for ",
-            size(tracker.steps, 1),
+            size(logger.history, 1),
             " particles",
         )
     end
