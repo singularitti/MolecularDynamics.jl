@@ -14,27 +14,22 @@ struct Logger{N}
 end
 Logger(N::Integer) = Logger{N}(ElasticVector(Step{N}[]))
 
-function extract(::Type{Velocity}, logger::Logger)
+function extract(::Type{T}, logger::Logger) where {T}
     return map(logger.history) do step
         map(step.snapshot) do particle
-            extract(Velocity, particle)
+            extract(T, particle)
         end
     end
 end
-function extract(::Type{Velocity}, logger::Logger, m::Integer)
-    return map(filter(==(m), eachindex(logger.history))) do step
-        map(step.snapshot) do particle
-            extract(Velocity, particle)
-        end
+function extract(::Type{T}, logger::Logger, m::Integer) where {T}
+    particles = logger.history[m].snapshot
+    return map(particles) do particle
+        extract(T, particle)
     end
 end
-function extract(::Type{Velocity}, logger::Logger, m::Integer, n::Integer)
-    return map(filter(==(m), eachindex(logger.history))) do step
-        particles = step.snapshot
-        map(filter(==(n), eachindex(particles))) do i
-            extract(Velocity, particles[i])
-        end
-    end
+function extract(::Type{T}, logger::Logger, m::Integer, n::Integer) where {T}
+    particle = logger.history[m].snapshot[n]
+    return extract(T, particle)
 end
 extract(::Type{Velocity}, particle::Particle) = getfield(particle, :velocity)
 extract(::Type{Coordinates}, particle::Particle) = getfield(particle, :coordinates)
