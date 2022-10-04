@@ -51,6 +51,7 @@ struct CubicBox <: Box
         end
     end
 end
+CubicBox(number::Integer, density::Real) = CubicBox(cbrt(number / density))
 
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
