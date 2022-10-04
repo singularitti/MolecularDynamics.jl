@@ -145,10 +145,9 @@ Base.length(iter::EachParticle) = length(iter.cell.particles)
 
 Base.IteratorSize(::Type{<:EachParticle}) = Base.HasLength()
 
-function Base.in(particle::Particle, cell::Cell)
-    L = boxlength(cell)
+function Base.in(particle::Particle, box::CubicBox)
     return all(particle.position) do x
-        0 <= x <= L
+        0 <= x <= box.side_length
     end
 end
 
