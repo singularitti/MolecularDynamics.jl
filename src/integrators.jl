@@ -23,18 +23,17 @@ function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
 end
 
 function take_n_steps!(particles, box::Box, n, Δt, ::VelocityVerlet)
-    data = ElasticMatrix{Particle}(undef, length(particles), n)
-    @showprogress for i in 1:n
-        # Must use `deepcopy`!
-        take_one_step!(particles, box, Δt, VelocityVerlet())
-        data[:, i] = deepcopy(particles)
-    end
-    return ObservableLogger(Δt, data)
-end
-function take_n_steps!(tracker::ObservableLogger, particles, box::Box, n, ::VelocityVerlet)
     @showprogress for _ in 1:n
-        take_one_step!(particles, box, tracker.Δt, VelocityVerlet())
-        append!(tracker.history, deepcopy(particles))
+        take_one_step!(particles, box, Δt, VelocityVerlet())
     end
-    return tracker
+    return particles
+end
+function take_n_steps!(
+    logger::Logger{N}, particles, box::Box, n, Δt, ::VelocityVerlet
+) where {N}
+    @showprogress for _ in 1:n
+        take_one_step!(particles, box, Δt, VelocityVerlet())
+        push!(logger.history, Step(Δt, SVector{N}(deepcopy(particles))))
+    end
+    return particles
 end
