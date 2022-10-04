@@ -9,11 +9,11 @@ end
 
 ensemble_average(property::AbstractArray) = sum(property) / length(property)
 
-function pressure(cell::Cell, steps)
-    virial = map(steps) do step
-        𝐑 = getcoordinates(cell.particles)()
-        𝐀 = acceleration(cell)
+function pressure(particles, box, steps)
+    virial = map(steps) do
+        𝐑 = getcoordinates(particles)()
+        𝐀 = acceleration(particles, box)
         dot(𝐑, 𝐀)
     end
-    return 1 + ensemble_average(virial) / 3 / length(cell.particles)
+    return 1 + ensemble_average(virial) / 3 / length(particles)
 end
