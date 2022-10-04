@@ -2,7 +2,7 @@ using LinearAlgebra: norm
 using StaticArrays: MVector, FieldVector
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
-export Position, Velocity, Acceleration, Particle, Cell
+export Position, Velocity, Acceleration, Particle
 export distance,
     find_neighbors,
     eachparticle,
@@ -38,9 +38,8 @@ end
     velocity::Velocity
 end
 
-struct Cell
-    particles::Vector{Particle}
-    density::Float64
+struct CubicBox
+    side_length::Float64
 end
 
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
