@@ -13,16 +13,30 @@ struct Logger{N}
     history::ElasticVector{Step{N}}
 end
 
-function extract_history(logger::VelocityLogger)
-    return map(logger.history) do particle
-        particle.velocity
+function extract(::Type{Velocity}, logger::Logger)
+    return map(logger.history) do step
+        map(step.snapshot) do particle
+            extract(Velocity, particle)
+        end
     end
 end
-function extract_history(logger::CoordinatesLogger)
-    return map(logger.history) do particle
-        particle.coordinates
+function extract(::Type{Velocity}, logger::Logger, m::Integer)
+    return map(filter(==(m), eachindex(logger.history))) do step
+        map(step.snapshot) do particle
+            extract(Velocity, particle)
+        end
     end
 end
+function extract(::Type{Velocity}, logger::Logger, m::Integer, n::Integer)
+    return map(filter(==(m), eachindex(logger.history))) do step
+        particles = step.snapshot
+        map(filter(==(n), eachindex(particles))) do i
+            extract(Velocity, particles[i])
+        end
+    end
+end
+extract(::Type{Velocity}, particle::Particle) = getfield(particle, :velocity)
+extract(::Type{Coordinates}, particle::Particle) = getfield(particle, :coordinates)
 
 simulation_time(logger::Logger) = sum(step.Δt for step in logger.history; init=0)
 
