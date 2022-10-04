@@ -1,8 +1,8 @@
 using ElasticArrays: ElasticVector
 using StaticArrays: SVector
 
-export extract_history, nsteps
 export Step, Logger
+export extract, nsteps, simulation_time
 
 struct Step{N}
     Δt::Float64
@@ -23,6 +23,8 @@ function extract_history(logger::CoordinatesLogger)
         particle.coordinates
     end
 end
+
+simulation_time(logger::Logger) = sum(step.Δt for step in logger.history; init=0)
 
 nsteps(logger::Logger) = size(logger.history, 2)
 
