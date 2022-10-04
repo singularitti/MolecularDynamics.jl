@@ -8,7 +8,7 @@ export distance,
     boxsize,
     boxvolume,
     number_density,
-    init_positions!,
+    init_coordinates!,
     init_velocities!,
     init!,
     damp!,
@@ -96,7 +96,7 @@ function find_neighbors(a::Particle, new_position, particles, box::Box)
     end
 end
 
-function init_positions!(particles, box::Box)
+function init_coordinates!(particles, box::Box)
     # for particle in particles
     #     particle.coordinates = boxsize(box) .* rand(3)
     # end
@@ -115,7 +115,7 @@ function init_velocities!(particles)
 end
 
 function init!(particles, box::Box)
-    init_positions!(particles, box)
+    init_coordinates!(particles, box)
     init_velocities!(particles)
     return particles
 end
