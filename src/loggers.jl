@@ -12,6 +12,7 @@ end
 struct Logger{N}
     history::ElasticVector{Step{N}}
 end
+Logger(N::Integer) = Logger{N}(ElasticVector(Step{N}[]))
 
 function extract(::Type{Velocity}, logger::Logger)
     return map(logger.history) do step
