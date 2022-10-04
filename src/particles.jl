@@ -86,26 +86,28 @@ function find_neighbors(a::Particle, new_position, particles, box::Box)
     end
 end
 
-function init_positions!(cell::Cell)
-    L = boxlength(cell)
-    for particle in eachparticle(cell)
-        particle.position = L * rand(3)
+function init_positions!(particles, box::Box)
+    # for particle in particles
+    #     particle.position = boxsize(box) .* rand(3)
+    # end
+    for (particle, r) in zip(particles, vec(collect(Iterators.product(1:10, 1:10, 1:10))))
+        particle.position = collect(r) * 1.1
     end
-    @assert unique(cell.particles) == cell.particles
-    return cell
+    @assert unique(particles) == particles
+    return particles
 end
 
-function init_velocities!(cell::Cell)
-    for particle in eachparticle(cell)
+function init_velocities!(particles)
+    for particle in particles
         particle.velocity = zeros(Velocity)
     end
-    return cell
+    return particles
 end
 
-function init!(cell)
-    init_positions!(cell)
-    init_velocities!(cell)
-    return cell
+function init!(particles, box::Box)
+    init_positions!(particles, box)
+    init_velocities!(particles)
+    return particles
 end
 
 function damp!(cell, n, Δt)
