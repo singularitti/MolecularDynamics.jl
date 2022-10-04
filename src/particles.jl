@@ -84,15 +84,17 @@ function find_neighbors(a::Particle, particles, box::Box)
         find_nearest_image(b, box)(a)
     end
 end
-function find_neighbors(i::Integer, new_position, particles, box::Box)
+function find_neighbors(i::Integer, new_coordinates, particles, box::Box)
     return map(filter(!=(i), eachindex(particles))) do j
-        find_nearest_image(particles[j], box)(Particle(new_position, particles[i].velocity))
+        find_nearest_image(particles[j], box)(
+            Particle(new_coordinates, particles[i].velocity)
+        )
     end
 end
-function find_neighbors(a::Particle, new_position, particles, box::Box)
+function find_neighbors(a::Particle, new_coordinates, particles, box::Box)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
-        find_nearest_image(b, box)(Particle(new_position, a.velocity))
+        find_nearest_image(b, box)(Particle(new_coordinates, a.velocity))
     end
 end
 
@@ -139,20 +141,20 @@ function Base.in(particle::Particle, box::CubicBox)
 end
 
 function getcoordinates(particles)
-    positions = map(particles) do particle
-        particle.position
+    allcoordinates = map(particles) do particle
+        particle.coordinates
     end
     return function (; x=true, y=true, z=true)
         results = ntuple(_ -> Float64[], 3)
-        map(positions) do position
+        map(allcoordinates) do coordinates
             if x
-                push!(results[1], position.x)
+                push!(results[1], coordinates.x)
             end
             if y
-                push!(results[2], position.y)
+                push!(results[2], coordinates.y)
             end
             if z
-                push!(results[3], position.z)
+                push!(results[3], coordinates.z)
             end
         end
         return results

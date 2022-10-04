@@ -39,13 +39,13 @@ function Acceleration(a::Particle)
     end
 end
 
-function acceleration(i::Integer, new_position, particles, box::Box)
+function acceleration(i::Integer, new_coordinates, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
-    return sum(Acceleration(Particle(new_position, particles[i].velocity)), neighbors)
+    return sum(Acceleration(Particle(new_coordinates, particles[i].velocity)), neighbors)
 end
-function acceleration(particle::Particle, new_position, particles, box::Box)
+function acceleration(particle::Particle, new_coordinates, particles, box::Box)
     neighbors = find_neighbors(particle, particles, box)
-    return sum(Acceleration(Particle(new_position, particle.velocity)), neighbors)
+    return sum(Acceleration(Particle(new_coordinates, particle.velocity)), neighbors)
 end
 function acceleration(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
