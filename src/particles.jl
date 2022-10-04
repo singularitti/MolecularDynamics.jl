@@ -44,8 +44,8 @@ end
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
 distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
-function find_nearest_image(cell::Cell, b::Particle)
-    L = boxlength(cell)
+function find_nearest_image(b::Particle, box::CubicBox)
+    L = box.side_length
     𝐫 = map(Base.Fix2(mod, L), b.position)
     return function (a::Particle)
         Δ𝐫 = 𝐫 - a.position
@@ -62,32 +62,26 @@ function find_nearest_image(cell::Cell, b::Particle)
     end
 end
 
-function find_neighbors(cell::Cell, i::Integer)
-    a = cell.particles[i]
-    return map(filter(!=(i), eachindex(cell.particles))) do j
-        b = cell.particles[j]
-        find_nearest_image(cell, b)(a)
+function find_neighbors(i::Integer, particles, box::CubicBox)
+    return map(filter(!=(i), eachindex(particles))) do j
+        find_nearest_image(particles[j], box)(particles[i])
     end
 end
-function find_neighbors(cell::Cell, a::Particle)
-    @assert a in cell
-    return map(filter(!=(a), cell.particles)) do b
-        find_nearest_image(cell, b)(a)
+function find_neighbors(a::Particle, particles, box::CubicBox)
+    @assert a in particles
+    return map(filter(!=(a), particles)) do b
+        find_nearest_image(b, box)(a)
     end
 end
-function find_neighbors(cell::Cell, i::Integer, new_position)
-    a = cell.particles[i]
-    a′ = Particle(new_position, a.velocity)
-    return map(filter(!=(i), eachindex(cell.particles))) do j
-        b = cell.particles[j]
-        find_nearest_image(cell, b)(a′)
+function find_neighbors(i::Integer, new_position, particles, box::CubicBox)
+    return map(filter(!=(i), eachindex(particles))) do j
+        find_nearest_image(particles[j], box)(Particle(new_position, particles[i].velocity))
     end
 end
-function find_neighbors(cell::Cell, a::Particle, new_position)
-    @assert a in cell
-    a′ = Particle(new_position, a.velocity)
-    return map(filter(!=(a), cell.particles)) do b
-        find_nearest_image(cell, b)(a′)
+function find_neighbors(a::Particle, new_position, particles, box::CubicBox)
+    @assert a in particles
+    return map(filter(!=(a), particles)) do b
+        find_nearest_image(b, box)(Particle(new_position, a.velocity))
     end
 end
 
