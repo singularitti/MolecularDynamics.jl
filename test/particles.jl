@@ -12,20 +12,17 @@ end
     @test isapprox(a, b)
 end
 
-@testset "Test `find_nearest_image` and `list_neighbors`" begin
+@testset "Test `find_nearest_image` and `find_neighbors`" begin
     particles = [Particle(rand(3), rand(3)) for _ in 1:100]
-    cell = Cell(particles, 0.75)
-    init!(cell)
-    L = boxlength(cell)
+    box = CubicBox(11)
+    init!(particles, box)
     for particle in particles
-        neighbors = list_neighbors(cell, particle)
-        @assert particle ∉ neighbors
+        neighbors = find_neighbors(particle, particles, box)
+        @test particle ∉ neighbors
         @test length(neighbors) == length(particles) - 1
         @test all(neighbors) do neighbor
             𝐫 = neighbor.position .- particle.position
-            all(𝐫) do rᵢ
-                0 <= abs(rᵢ) <= L
-            end
+            all(0 <= abs(rᵢ) <= Lᵢ for (rᵢ, Lᵢ) in zip(𝐫, boxsize(box)))
         end
     end
 end

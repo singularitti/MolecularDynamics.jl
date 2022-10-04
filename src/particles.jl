@@ -2,12 +2,12 @@ using LinearAlgebra: norm
 using StaticArrays: MVector, FieldVector
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
-export Position, Velocity, Acceleration, Particle, Cell
+export Position, Velocity, Acceleration, Particle, CubicBox
 export distance,
     find_neighbors,
-    eachparticle,
     boxsize,
-    boxlength,
+    boxvolume,
+    number_density,
     init_positions!,
     init_velocities!,
     init!,
@@ -37,17 +37,26 @@ end
     position::Position
     velocity::Velocity
 end
+Particle(particle::Particle, velocity::Velocity) = Particle(particle.position, velocity)
+Particle(position::Position, particle::Particle) = Particle(position, particle.velocity)
 
-struct Cell
-    particles::Vector{Particle}
-    density::Float64
+abstract type Box end
+struct CubicBox <: Box
+    side_length::Float64
+    function CubicBox(side_length)
+        if side_length <= zero(side_length)
+            throw(ArgumentError("the box's side length must be larger than zero!"))
+        else
+            return new(side_length)
+        end
+    end
 end
 
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
 distance(a::Particle, b::Particle) = distance(a.position, b.position)
 
-function find_nearest_image(cell::Cell, b::Particle)
-    L = boxlength(cell)
+function find_nearest_image(b::Particle, box::Box)
+    L = box.side_length
     𝐫 = map(Base.Fix2(mod, L), b.position)
     return function (a::Particle)
         Δ𝐫 = 𝐫 - a.position
@@ -64,94 +73,68 @@ function find_nearest_image(cell::Cell, b::Particle)
     end
 end
 
-function find_neighbors(cell::Cell, i::Integer)
-    a = cell.particles[i]
-    return map(filter(!=(i), eachindex(cell.particles))) do j
-        b = cell.particles[j]
-        find_nearest_image(cell, b)(a)
+function find_neighbors(i::Integer, particles, box::Box)
+    return map(filter(!=(i), eachindex(particles))) do j
+        find_nearest_image(particles[j], box)(particles[i])
     end
 end
-function find_neighbors(cell::Cell, a::Particle)
-    @assert a in cell
-    return map(filter(!=(a), cell.particles)) do b
-        find_nearest_image(cell, b)(a)
+function find_neighbors(a::Particle, particles, box::Box)
+    @assert a in particles
+    return map(filter(!=(a), particles)) do b
+        find_nearest_image(b, box)(a)
     end
 end
-function find_neighbors(cell::Cell, i::Integer, new_position)
-    a = cell.particles[i]
-    a′ = Particle(new_position, a.velocity)
-    return map(filter(!=(i), eachindex(cell.particles))) do j
-        b = cell.particles[j]
-        find_nearest_image(cell, b)(a′)
+function find_neighbors(i::Integer, new_position, particles, box::Box)
+    return map(filter(!=(i), eachindex(particles))) do j
+        find_nearest_image(particles[j], box)(Particle(new_position, particles[i].velocity))
     end
 end
-function find_neighbors(cell::Cell, a::Particle, new_position)
-    @assert a in cell
-    a′ = Particle(new_position, a.velocity)
-    return map(filter(!=(a), cell.particles)) do b
-        find_nearest_image(cell, b)(a′)
+function find_neighbors(a::Particle, new_position, particles, box::Box)
+    @assert a in particles
+    return map(filter(!=(a), particles)) do b
+        find_nearest_image(b, box)(Particle(new_position, a.velocity))
     end
 end
 
-function init_positions!(cell::Cell)
-    L = boxlength(cell)
-    for particle in eachparticle(cell)
-        particle.position = L * rand(3)
+function init_positions!(particles, box::Box)
+    # for particle in particles
+    #     particle.position = boxsize(box) .* rand(3)
+    # end
+    for (particle, r) in zip(particles, vec(collect(Iterators.product(1:10, 1:10, 1:10))))
+        particle.position = collect(r) * 1.1
     end
-    @assert unique(cell.particles) == cell.particles
-    return cell
+    @assert unique(particles) == particles
+    return particles
 end
 
-function init_velocities!(cell::Cell)
-    for particle in eachparticle(cell)
+function init_velocities!(particles)
+    for particle in particles
         particle.velocity = zeros(Velocity)
     end
-    return cell
+    return particles
 end
 
-function init!(cell)
-    init_positions!(cell)
-    init_velocities!(cell)
-    return cell
+function init!(particles, box::Box)
+    init_positions!(particles, box)
+    init_velocities!(particles)
+    return particles
 end
 
-function damp!(cell, n, Δt)
-    take_n_steps!(cell, n, Δt, VelocityVerlet())
-    init_velocities!(cell)
-    return cell
+function damp!(particles, box, n, Δt)
+    take_n_steps!(particles, box, n, Δt, VelocityVerlet())
+    init_velocities!(particles)
+    return particles
 end
 
-boxsize(cell::Cell) = particlenumber(cell) / cell.density
+boxsize(box::CubicBox) = ntuple(_ -> box.side_length, 3)
 
-boxlength(cell::Cell) = cbrt(boxsize(cell))
+boxvolume(box::CubicBox) = reduce(*, boxsize(box))
 
-particlenumber(cell::Cell) = length(cell.particles)
+number_density(particles, box::CubicBox) = length(particles) / boxvolume(box)
 
-struct EachParticle
-    cell::Cell
-end
-
-eachparticle(cell::Cell) = EachParticle(cell)
-
-# Similar to https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1028-L1032
-function Base.iterate(iter::EachParticle, state=1)
-    if state > length(iter)
-        return nothing
-    else
-        return iter.cell.particles[state], state + 1
-    end
-end
-
-Base.eltype(::EachParticle) = Particle
-
-Base.length(iter::EachParticle) = length(iter.cell.particles)
-
-Base.IteratorSize(::Type{<:EachParticle}) = Base.HasLength()
-
-function Base.in(particle::Particle, cell::Cell)
-    L = boxlength(cell)
+function Base.in(particle::Particle, box::CubicBox)
     return all(particle.position) do x
-        0 <= x <= L
+        0 <= x <= box.side_length
     end
 end
 

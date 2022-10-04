@@ -39,25 +39,24 @@ function Acceleration(a::Particle)
     end
 end
 
-function acceleration(cell::Cell, i::Integer, new_position)
-    particle = cell.particles[i]
-    neighbors = find_neighbors(cell, particle, new_position)
+function acceleration(i::Integer, new_position, particles, box::Box)
+    neighbors = find_neighbors(i, particles, box)
+    return sum(Acceleration(Particle(new_position, particles[i].velocity)), neighbors)
+end
+function acceleration(particle::Particle, new_position, particles, box::Box)
+    neighbors = find_neighbors(particle, particles, box)
     return sum(Acceleration(Particle(new_position, particle.velocity)), neighbors)
 end
-function acceleration(cell::Cell, particle::Particle, new_position)
-    neighbors = find_neighbors(cell, particle, new_position)
-    return sum(Acceleration(Particle(new_position, particle.velocity)), neighbors)
+function acceleration(i::Integer, particles, box::Box)
+    neighbors = find_neighbors(i, particles, box)
+    return sum(Acceleration(particles[i]), neighbors)
 end
-function acceleration(cell::Cell, i::Integer)
-    neighbors = find_neighbors(cell, i)
-    return sum(Acceleration(cell.particles[i]), neighbors)
-end
-function acceleration(cell::Cell, particle::Particle)
-    neighbors = find_neighbors(cell, particle)
+function acceleration(particle::Particle, particles, box::Box)
+    neighbors = find_neighbors(particle, particles, box)
     return sum(Acceleration(particle), neighbors)
 end
-function acceleration(cell::Cell)
-    return map(cell.particles) do particle
-        acceleration(cell, particle)
+function acceleration(particles, box)
+    return map(particles) do particle
+        acceleration(particle, particles, box)
     end
 end
