@@ -5,7 +5,7 @@ using StructEquality: @struct_hash_equal_isequal_isapprox
 export Position, Velocity, Acceleration, Particle
 export distance,
     find_neighbors,
-    boxsize,
+    boxvolume,
     number_density,
     init_positions!,
     init_velocities!,
@@ -114,9 +114,11 @@ function damp!(cell, n, Δt)
     return cell
 end
 
-boxsize(box::CubicBox) = box.side_length^3
+boxsize(box::CubicBox) = ntuple(_ -> box.side_length, 3)
 
-number_density(particles, box::CubicBox) = length(particles) / boxsize(box)
+boxvolume(box::CubicBox) = reduce(*, boxsize(box))
+
+number_density(particles, box::CubicBox) = length(particles) / boxvolume(box)
 
 function Base.in(particle::Particle, box::CubicBox)
     return all(particle.position) do x
