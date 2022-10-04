@@ -1,6 +1,6 @@
 module MolecularDynamics
 
-include("particles.jl")
+include("system.jl")
 include("mechanics.jl")
 include("loggers.jl")
 include("integrators.jl")
