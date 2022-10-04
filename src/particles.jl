@@ -2,7 +2,7 @@ using LinearAlgebra: norm
 using StaticArrays: MVector, FieldVector
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
-export Position, Velocity, Acceleration, Particle
+export Position, Velocity, Acceleration, Particle, CubicBox
 export distance,
     find_neighbors,
     boxvolume,
