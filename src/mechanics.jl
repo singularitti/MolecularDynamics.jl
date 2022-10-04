@@ -41,19 +41,19 @@ end
 
 function acceleration(cell::Cell, i::Integer, new_position)
     particle = cell.particles[i]
-    neighbors = list_neighbors(cell, particle, new_position)
+    neighbors = find_neighbors(cell, particle, new_position)
     return sum(Acceleration(Particle(new_position, particle.velocity)), neighbors)
 end
 function acceleration(cell::Cell, particle::Particle, new_position)
-    neighbors = list_neighbors(cell, particle, new_position)
+    neighbors = find_neighbors(cell, particle, new_position)
     return sum(Acceleration(Particle(new_position, particle.velocity)), neighbors)
 end
 function acceleration(cell::Cell, i::Integer)
-    neighbors = list_neighbors(cell, i)
+    neighbors = find_neighbors(cell, i)
     return sum(Acceleration(cell.particles[i]), neighbors)
 end
 function acceleration(cell::Cell, particle::Particle)
-    neighbors = list_neighbors(cell, particle)
+    neighbors = find_neighbors(cell, particle)
     return sum(Acceleration(particle), neighbors)
 end
 function acceleration(cell::Cell)

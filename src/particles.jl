@@ -4,7 +4,7 @@ using StructEquality: @struct_hash_equal_isequal_isapprox
 
 export Position, Velocity, Acceleration, Particle, Cell
 export distance,
-    list_neighbors,
+    find_neighbors,
     eachparticle,
     boxsize,
     boxlength,
@@ -64,20 +64,20 @@ function find_nearest_image(cell::Cell, b::Particle)
     end
 end
 
-function list_neighbors(cell::Cell, i::Integer)
+function find_neighbors(cell::Cell, i::Integer)
     a = cell.particles[i]
     return map(filter(!=(i), eachindex(cell.particles))) do j
         b = cell.particles[j]
         find_nearest_image(cell, b)(a)
     end
 end
-function list_neighbors(cell::Cell, a::Particle)
+function find_neighbors(cell::Cell, a::Particle)
     @assert a in cell
     return map(filter(!=(a), cell.particles)) do b
         find_nearest_image(cell, b)(a)
     end
 end
-function list_neighbors(cell::Cell, i::Integer, new_position)
+function find_neighbors(cell::Cell, i::Integer, new_position)
     a = cell.particles[i]
     a′ = Particle(new_position, a.velocity)
     return map(filter(!=(i), eachindex(cell.particles))) do j
@@ -85,7 +85,7 @@ function list_neighbors(cell::Cell, i::Integer, new_position)
         find_nearest_image(cell, b)(a′)
     end
 end
-function list_neighbors(cell::Cell, a::Particle, new_position)
+function find_neighbors(cell::Cell, a::Particle, new_position)
     @assert a in cell
     a′ = Particle(new_position, a.velocity)
     return map(filter(!=(a), cell.particles)) do b
