@@ -1,3 +1,5 @@
+export Random, Even, Uniform
+
 abstract type CoordinatesDistribution end
 struct Random <: CoordinatesDistribution end
 struct Even <: CoordinatesDistribution end
