@@ -22,9 +22,7 @@ end
         @test length(neighbors) == length(particles) - 1
         @test all(neighbors) do neighbor
             𝐫 = neighbor.position .- particle.position
-            all(𝐫) do rᵢ
-                0 <= abs(rᵢ) <= L
-            end
+            all(0 <= abs(rᵢ) <= Lᵢ for (rᵢ, Lᵢ) in zip(𝐫, boxsize(box)))
         end
     end
 end
