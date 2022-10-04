@@ -1,16 +1,10 @@
-using ElasticArrays: ElasticMatrix
 using ProgressMeter: @showprogress
 
-export VelocityVerlet, TimeStepTracker
-export take_one_step!, take_n_steps!, extract_velocities, extract_coordinates
+export VelocityVerlet
+export take_one_step!, take_n_steps!
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
-
-struct TimeStepTracker
-    Δt::Float64
-    steps::ElasticMatrix{Particle}
-end
 
 function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
     new_coordinates = map(particles, acceleration(particles, box)) do particle, 𝐚
@@ -35,41 +29,12 @@ function take_n_steps!(particles, box::Box, n, Δt, ::VelocityVerlet)
         take_one_step!(particles, box, Δt, VelocityVerlet())
         data[:, i] = deepcopy(particles)
     end
-    return TimeStepTracker(Δt, data)
+    return ObservableLogger(Δt, data)
 end
-function take_n_steps!(tracker::TimeStepTracker, particles, box::Box, n, ::VelocityVerlet)
+function take_n_steps!(tracker::ObservableLogger, particles, box::Box, n, ::VelocityVerlet)
     @showprogress for _ in 1:n
         take_one_step!(particles, box, tracker.Δt, VelocityVerlet())
-        append!(tracker.steps, deepcopy(particles))
+        append!(tracker.history, deepcopy(particles))
     end
     return tracker
-end
-
-function extract_velocities(tracker::TimeStepTracker)
-    return map(tracker.steps) do particle
-        particle.velocity
-    end
-end
-
-function extract_coordinates(tracker::TimeStepTracker)
-    return map(tracker.steps) do particle
-        particle.coordinates
-    end
-end
-
-function Base.show(io::IO, tracker::TimeStepTracker)
-    if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(tracker)
-        Base.show_default(IOContext(io, :limit => true), tracker)  # From https://github.com/mauro3/Parameters.jl/blob/ecbf8df/src/Parameters.jl#L556
-    else
-        println(io, summary(tracker))
-        println(io, " time step: ", tracker.Δt)
-        print(
-            io,
-            " total ",
-            size(tracker.steps, 2),
-            " steps for ",
-            size(tracker.steps, 1),
-            " particles",
-        )
-    end
 end
