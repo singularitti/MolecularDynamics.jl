@@ -43,19 +43,11 @@ simulation_time(logger::Logger) = sum(step.Δt for step in logger.history; init=
 
 nsteps(logger::Logger) = size(logger.history, 2)
 
-function Base.show(io::IO, logger::Logger)
+function Base.show(io::IO, logger::Logger{N}) where {N}
     if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(logger)
         Base.show_default(IOContext(io, :limit => true), logger)  # From https://github.com/mauro3/Parameters.jl/blob/ecbf8df/src/Parameters.jl#L556
     else
         println(io, summary(logger))
-        println(io, " time step: ", logger.Δt)
-        print(
-            io,
-            " total ",
-            size(logger.history, 2),
-            " steps for ",
-            size(logger.history, 1),
-            " particles",
-        )
+        print(io, " total ", length(logger.history), " steps for ", N, " particles")
     end
 end
