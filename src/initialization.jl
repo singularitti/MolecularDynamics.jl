@@ -1,3 +1,13 @@
+abstract type CoordinatesDistribution end
+struct Random <: CoordinatesDistribution end
+struct Even <: CoordinatesDistribution end
+
+abstract type VelocityDistribution end
+struct Uniform <: VelocityDistribution
+    velocity::Velocity
+end
+struct MaxwellBoltzmann <: VelocityDistribution end
+
 function init_coordinates!(particles, box::Box)
     # for particle in particles
     #     particle.coordinates = boxsize(box) .* rand(3)
