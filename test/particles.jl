@@ -3,6 +3,9 @@
     @test Particle([1//1, 2, 9//3], [4, 10//2, 6]) == Particle([1, 2.0, 3], [4.0, 5, 6])
     @test Particle([1.1, 2.3, 3], [4 / 3, 5, 6]) ==
         Particle([1.1, 2.3, 3.0], [4//3, 5.0, 6.0])
+    x = Particle([1.1, 2.3, 3], [4, 5, 6])
+    @test Particle(x, [1//5, 2//3, 4]) == Particle([1.1, 2.3, 3], [0.2, 2 / 3, 4.0])
+    @test Particle([1//5, 2//3, 4], x) == Particle([0.2, 2 / 3, 4.0], [4, 5, 6])
     @test_throws MethodError Particle([1, 2, 3])
 end
 
