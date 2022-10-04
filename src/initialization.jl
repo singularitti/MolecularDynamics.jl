@@ -8,27 +8,33 @@ struct Uniform <: VelocityDistribution
 end
 struct MaxwellBoltzmann <: VelocityDistribution end
 
-function init_coordinates!(particles, box::Box)
-    # for particle in particles
-    #     particle.coordinates = boxsize(box) .* rand(3)
-    # end
+function init_coordinates!(particles, box::Box, ::Even)
     for (particle, r) in zip(particles, vec(collect(Iterators.product(1:10, 1:10, 1:10))))
         particle.coordinates = collect(r) * 1.1
     end
     @assert unique(particles) == particles
     return particles
 end
-
-function init_velocities!(particles)
+function init_coordinates!(particles, box::Box, ::Random)
     for particle in particles
-        particle.velocity = zeros(Velocity)
+        particle.coordinates = boxsize(box) .* rand(3)
+    end
+    @assert unique(particles) == particles
+    return particles
+end
+
+function init_velocities!(particles, dist::Uniform=Uniform(zeros(Velocity)))
+    for particle in particles
+        particle.velocity = dist.velocity
     end
     return particles
 end
 
-function init!(particles, box::Box)
-    init_coordinates!(particles, box)
-    init_velocities!(particles)
+function init!(
+    particles, box::Box, xdist::CoordinatesDistribution, vdist::VelocityDistribution
+)
+    init_coordinates!(particles, box, xdist)
+    init_velocities!(particles, vdist)
     return particles
 end
 
