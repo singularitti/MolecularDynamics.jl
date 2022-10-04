@@ -5,7 +5,6 @@ using StructEquality: @struct_hash_equal_isequal_isapprox
 export Position, Velocity, Acceleration, Particle
 export distance,
     find_neighbors,
-    eachparticle,
     boxsize,
     number_density,
     init_positions!,
@@ -123,27 +122,6 @@ end
 boxsize(box::CubicBox) = box.side_length^3
 
 number_density(particles, box::CubicBox) = length(particles) / boxsize(box)
-
-struct EachParticle
-    cell::Cell
-end
-
-eachparticle(cell::Cell) = EachParticle(cell)
-
-# Similar to https://github.com/JuliaCollections/IterTools.jl/blob/0ecaa88/src/IterTools.jl#L1028-L1032
-function Base.iterate(iter::EachParticle, state=1)
-    if state > length(iter)
-        return nothing
-    else
-        return iter.cell.particles[state], state + 1
-    end
-end
-
-Base.eltype(::EachParticle) = Particle
-
-Base.length(iter::EachParticle) = length(iter.cell.particles)
-
-Base.IteratorSize(::Type{<:EachParticle}) = Base.HasLength()
 
 function Base.in(particle::Particle, box::CubicBox)
     return all(particle.position) do x
