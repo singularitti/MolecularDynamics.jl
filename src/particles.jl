@@ -112,10 +112,10 @@ function init!(particles, box::Box)
     return particles
 end
 
-function damp!(cell, n, Δt)
-    take_n_steps!(cell, n, Δt, VelocityVerlet())
-    init_velocities!(cell)
-    return cell
+function damp!(particles, box, n, Δt)
+    take_n_steps!(particles, box, n, Δt, VelocityVerlet())
+    init_velocities!(particles)
+    return particles
 end
 
 boxsize(box::CubicBox) = ntuple(_ -> box.side_length, 3)
