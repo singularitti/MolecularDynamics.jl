@@ -1,12 +1,16 @@
 using ElasticArrays: ElasticVector
 using StaticArrays: SVector
 
-export Logger
 export extract_history, nsteps
+export Step, Logger
 
-mutable struct Logger
+struct Step{N}
     Δt::Float64
-    history::ElasticVector{SVector{3,Particle}}
+    snapshot::SVector{N,Particle}
+end
+
+struct Logger{N}
+    history::ElasticVector{Step{N}}
 end
 
 function extract_history(logger::VelocityLogger)
