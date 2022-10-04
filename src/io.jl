@@ -3,7 +3,7 @@ using JSON: JSON
 export save, load
 
 function Base.Dict(particle::Particle)
-    return Dict("position" => particle.position, "velocity" => particle.velocity)
+    return Dict("coordinates" => particle.coordinates, "velocity" => particle.velocity)
 end
 
 function Base.print(io::IO, particle::Particle)
