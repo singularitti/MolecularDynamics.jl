@@ -43,6 +43,13 @@ Particle(position::Position, particle::Particle) = Particle(position, particle.v
 abstract type Box end
 struct CubicBox <: Box
     side_length::Float64
+    function CubicBox(side_length)
+        if side_length <= zero(side_length)
+            throw(ArgumentError("the box's side length must be larger than zero!"))
+        else
+            return new(side_length)
+        end
+    end
 end
 
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
