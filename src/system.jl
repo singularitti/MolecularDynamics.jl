@@ -2,7 +2,7 @@ using LinearAlgebra: norm
 using StaticArrays: MVector, FieldVector
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
-export Coordinates, Velocity, Acceleration, Particle, CubicBox
+export Coordinates, Velocity, Force, Particle, CubicBox
 export distance,
     find_neighbors,
     boxsize,
@@ -27,7 +27,7 @@ mutable struct Velocity <: FieldVector{3,Float64}
     z::Float64
 end
 
-mutable struct Acceleration <: FieldVector{3,Float64}
+mutable struct Force <: FieldVector{3,Float64}
     x::Float64
     y::Float64
     z::Float64
