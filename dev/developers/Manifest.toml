@@ -135,7 +135,7 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MolecularDynamics]]
 deps = ["ElasticArrays", "JSON", "LinearAlgebra", "ProgressMeter", "RecipesBase", "StaticArrays", "StructEquality"]
-git-tree-sha1 = "339b104014719c77829ed1c590962306896e83ea"
+git-tree-sha1 = "08a7baab7cd6ac87321d6cc032024cba25ccd30d"
 repo-rev = "main"
 repo-url = "https://github.com/singularitti/MolecularDynamics.jl"
 uuid = "085142b3-cc26-4e6c-8f6b-431a83ab87f1"
