@@ -12,7 +12,7 @@ ensemble_average(property::AbstractArray) = sum(property) / length(property)
 function pressure(particles, box, steps)
     virial = map(steps) do
         𝐑 = getcoordinates(particles)()
-        𝐀 = acceleration(particles, box)
+        𝐀 = force(particles, box)
         dot(𝐑, 𝐀)
     end
     return 1 + ensemble_average(virial) / 3 / length(particles)

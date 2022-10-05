@@ -1,6 +1,6 @@
 using LinearAlgebra: dot
 
-export potential_energy, kinetic_energy, total_energy, acceleration, potential_gradient
+export potential_energy, kinetic_energy, total_energy, force, potential_gradient
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
@@ -39,24 +39,24 @@ function Force(a::Particle)
     end
 end
 
-function acceleration(i::Integer, new_coordinates, particles, box::Box)
+function force(i::Integer, new_coordinates, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Force(Particle(new_coordinates, particles[i].velocity)), neighbors)
 end
-function acceleration(particle::Particle, new_coordinates, particles, box::Box)
+function force(particle::Particle, new_coordinates, particles, box::Box)
     neighbors = find_neighbors(particle, particles, box)
     return sum(Force(Particle(new_coordinates, particle.velocity)), neighbors)
 end
-function acceleration(i::Integer, particles, box::Box)
+function force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Force(particles[i]), neighbors)
 end
-function acceleration(particle::Particle, particles, box::Box)
+function force(particle::Particle, particles, box::Box)
     neighbors = find_neighbors(particle, particles, box)
     return sum(Force(particle), neighbors)
 end
-function acceleration(particles, box)
+function force(particles, box)
     return map(particles) do particle
-        acceleration(particle, particles, box)
+        force(particle, particles, box)
     end
 end
