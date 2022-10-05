@@ -1,6 +1,6 @@
 using LinearAlgebra: dot
 
-export potential_energy, kinetic_energy, total_energy, acceleration, potential_gradient
+export potential_energy, kinetic_energy, total_energy, force, potential_gradient
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
@@ -29,34 +29,34 @@ kinetic_energy(particles) = sum(kinetic_energy, particles)
 total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
 
 """
-    Acceleration(a::Particle)(b::Particle)
+    Force(a::Particle)(b::Particle)
 
-Calculate the acceleration particle `b` induces on particle `a` (direction: from `b` to `a`).
+Calculate the force particle `b` exerts on particle `a` (direction: from `b` to `a`).
 """
-function Acceleration(a::Particle)
+function Force(a::Particle)
     return function (b::Particle)
-        return Acceleration(potential_gradient(b.coordinates .- a.coordinates))
+        return Force(potential_gradient(b.coordinates .- a.coordinates))
     end
 end
 
-function acceleration(i::Integer, new_coordinates, particles, box::Box)
+function force(i::Integer, new_coordinates, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
-    return sum(Acceleration(Particle(new_coordinates, particles[i].velocity)), neighbors)
+    return sum(Force(Particle(new_coordinates, particles[i].velocity)), neighbors)
 end
-function acceleration(particle::Particle, new_coordinates, particles, box::Box)
+function force(particle::Particle, new_coordinates, particles, box::Box)
     neighbors = find_neighbors(particle, particles, box)
-    return sum(Acceleration(Particle(new_coordinates, particle.velocity)), neighbors)
+    return sum(Force(Particle(new_coordinates, particle.velocity)), neighbors)
 end
-function acceleration(i::Integer, particles, box::Box)
+function force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
-    return sum(Acceleration(particles[i]), neighbors)
+    return sum(Force(particles[i]), neighbors)
 end
-function acceleration(particle::Particle, particles, box::Box)
+function force(particle::Particle, particles, box::Box)
     neighbors = find_neighbors(particle, particles, box)
-    return sum(Acceleration(particle), neighbors)
+    return sum(Force(particle), neighbors)
 end
-function acceleration(particles, box)
+function force(particles, box)
     return map(particles) do particle
-        acceleration(particle, particles, box)
+        force(particle, particles, box)
     end
 end
