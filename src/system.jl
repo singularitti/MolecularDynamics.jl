@@ -85,19 +85,6 @@ function find_neighbors(a::Particle, particles, box::Box)
         find_nearest_image(b, box)(a)
     end
 end
-function find_neighbors(i::Integer, new_coordinates, particles, box::Box)
-    return map(filter(!=(i), eachindex(particles))) do j
-        find_nearest_image(particles[j], box)(
-            Particle(new_coordinates, particles[i].velocity)
-        )
-    end
-end
-function find_neighbors(a::Particle, new_coordinates, particles, box::Box)
-    @assert a in particles
-    return map(filter(!=(a), particles)) do b
-        find_nearest_image(b, box)(Particle(new_coordinates, a.velocity))
-    end
-end
 
 boxsize(box::CubicBox) = ntuple(_ -> box.side_length, 3)
 

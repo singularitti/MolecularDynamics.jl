@@ -39,14 +39,6 @@ function Force(a::Particle)
     end
 end
 
-function force(i::Integer, new_coordinates, particles, box::Box)
-    neighbors = find_neighbors(i, particles, box)
-    return sum(Force(Particle(new_coordinates, particles[i].velocity)), neighbors)
-end
-function force(particle::Particle, new_coordinates, particles, box::Box)
-    neighbors = find_neighbors(particle, particles, box)
-    return sum(Force(Particle(new_coordinates, particle.velocity)), neighbors)
-end
 function force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Force(particles[i]), neighbors)
