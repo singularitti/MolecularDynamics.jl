@@ -76,8 +76,8 @@ The code will return a \code{Vector} representing the new position of particle $
     \caption{Find the nearest image of particle $b$ which can interact with particle $a$.}
     \label{lst:nic}
     \begin{juliacode}
-        Δ𝐫 = b.position - a.position
-        position = map(b.position, Δ𝐫) do rᵢ, Δrᵢ
+        Δ𝐫 = b.coordinates - a.coordinates
+        coordinates = map(b.coordinates, Δ𝐫) do rᵢ, Δrᵢ
             if Δrᵢ > L / 2
                 rᵢ - L
             elseif Δrᵢ < -L / 2
@@ -103,9 +103,8 @@ The code representing \eqref{eq:pbcs} is in Snippet~\ref{lst:pbcs}.
     \caption{Move particle $b$ back to the center cell.}
     \label{lst:pbcs}
     \begin{juliacode}
-        const L = 11.2  # Any real number you want
         f(rᵢ) = mod(rᵢ, L)
-        b.position = map(f, b.position)
+        b.coordinates = map(f, b.coordinates)
     \end{juliacode}
 \end{algorithm}
 %
@@ -163,7 +162,7 @@ stored data of its position (velocity).
         using StaticArrays: MVector
 
         mutable struct Particle
-            position::MVector{3,Float64}
+            coordinates::MVector{3,Float64}
             velocity::MVector{3,Float64}
         end
     \end{juliacode}
