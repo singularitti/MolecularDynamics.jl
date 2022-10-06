@@ -1,0 +1,68 @@
+\subsection{Integrators}
+
+There exist many algorithms for integrating ordinary differential equations.
+In this section, we consider the particular case of numerically integrating the equations of
+motion for a dynamical system described by a time-independent Hamiltonian, i.e., the
+classical many-particle system as a microcanonical ensemble.
+Here, we use the velocity Verlet algorithm as our integrator.
+The mathematical expression of the algorithm is shown in \eqref{eq:vvr} and \eqref{eq:vvv}.
+%
+\begin{align}
+    \bm{r}(t + \Delta t) & = \bm{r}(t) + \bm{v}(t) \Delta t + \frac{ \bm{a}(t) }{ 2 } \Delta t^2,\label{eq:vvr} \\
+    \bm{v}(t + \Delta t) & = \bm{v}(t) + \frac{ \bm{a}(t) + \bm{a}(t + \Delta t) }{ 2 } \Delta t,\label{eq:vvv}
+\end{align}
+%
+where $\Delta t$ is the length of each time step, $\bm{r}(t + \Delta t)$,
+$\bm{v}(t + \Delta t)$, and $\bm{a}(t + \Delta t)$
+are the coordinates, velocity, and acceleration of the particle at time $t + \Delta t$.
+In our dimensionless system, the acceleration and the force have the same value,
+where the method of calculating forces is described in section \ref{ssec:force}.
+The force at time $t$ is calculated by all the positions of the particles at time $t$.
+
+The standard implementation scheme of the velocity Verlet algorithm is:
+%
+\begin{enumerate}
+    \item Calculate $\bm{v}(t + \nicefrac{\Delta t}{2}) = \bm{v}(t) + \frac{1}{2} \bm{a}(t) \Delta t$;
+    \item Calculate $\bm{r}(t + \Delta t) = \bm{r}(t) + \bm{v}(t + \nicefrac{\Delta t}{2}) \Delta t$;
+    \item Derive $\bm{a}(t + \Delta t)$ from the Lennard--Jones potential using $\bm{r}(t + \Delta t)$;
+    \item Calculate $\bm{v}(t + \Delta t) = \bm{v}(t + \nicefrac{\Delta t}{2}) + \frac{1}{2} \bm{a}(t + \Delta t) \Delta t$.
+\end{enumerate}
+%
+The corresponding code for the above algorithm is shown in Snippet~\ref{lst:take_one_step},
+defined by function \code{take_one_step!}.
+%
+\begin{algorithm}
+    \caption{Move all particles one step forward in the simulation cell with time step
+        $\Delta t$, using the velocity Verlet integrator.}
+    \label{lst:take_one_step}
+    \begin{juliacode}
+        function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
+            for (particle, 𝐟) in zip(particles, force(particles, box))
+                particle.velocity += 𝐟 * Δt / 2  # 𝐯(t + Δt / 2)
+                particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt)
+                map!(Base.Fix2(mod, box.side_length), particle.coordinates, particle.coordinates)  # Move `𝐫` back to `0 - L` range
+            end
+            for particle in particles
+                𝐟 = force(particle, particles, box)  # 𝐚(t + Δt)
+                particle.velocity += 𝐟 * Δt / 2  # 𝐯(t + Δt)
+            end
+            return particles
+        end
+    \end{juliacode}
+\end{algorithm}
+%
+The input \code{particles} and \code{box} are the simulation particles and the cell we
+are interested in, with its number density to be $0.75$ here. And each time step
+$\Delta t$ is $0.032$ (which Verlet used in his simulation). For \ce{Ar}, it corresponds
+to the real world time of
+%
+\begin{equation}
+    t_\textnormal{real} = t \sqrt{\frac{ m \sigma^2 }{ 48 \varepsilon }}
+    \approx 0.032 \times \num{3.112e-13}
+    \approx \qty{9.96e-15}{\second},
+\end{equation}
+%
+which is roughly \qty{1e-14}{\second}, as claimed by Verlet\cite{Verlet}.
+We should notice that the time step cannot be too large, which will result in force
+increasing rapidly, and within each time step, the particles can come too close,
+causing our simulation hard to converge.
