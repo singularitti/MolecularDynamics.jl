@@ -34,3 +34,7 @@ function take_n_steps!(
     end
     return particles
 end
+function take_n_steps!(logger::Logger, box::Box, n, Δt, ::VelocityVerlet)
+    particles = logger.history[end].snapshot
+    return take_n_steps!(logger, particles, box, n, Δt, VelocityVerlet())
+end
