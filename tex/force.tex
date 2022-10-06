@@ -16,9 +16,10 @@ In the dimensionless form,
 look like~\eqref{eq:flj}.
 %
 \begin{align}
-    u(r_{ij})                      & = 4 \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{12}
-    -\Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^6 \biggr), \label{eq:ulj}                        \\
-    \bm{F}_i = \frac{ d^2 \bm{r}_i }{ d t^2 } & = 48\sum_{j \neq i} (\bm{r}_i - \bm{r}_j)
+    u_{ij} = u(r_{ij}) & = 4 \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{12}
+    -\Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^6 \biggr), \label{eq:ulj}            \\
+    \bm{F}_i = m\frac{ d^2 \bm{r}_i }{ d t^2 } = -\sum_{j \neq i}\frac{ \partial u_{ij} }{ \partial \bm{r}_i }
+                       & = 48\sum_{j \neq i} (\bm{r}_i - \bm{r}_j)
     \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{14}
     -\frac{ 1 }{ 2 } \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^8 \biggr). \label{eq:flj}
 \end{align}
@@ -56,9 +57,9 @@ particle $a$ experiences (induced only by particle $b$) as below.
             return 48𝐫ᵢⱼ * (inv(rᵢⱼ^8) / 2 - inv(rᵢⱼ^14))
         end
 
-        function Acceleration(a::Particle)
+        function Force(a::Particle)
             return function (b::Particle)
-                return Acceleration(-potential_gradient(a.position - b.position))
+                return Force(-potential_gradient(a.coordinates - b.coordinates))
             end
         end
     \end{juliacode}
@@ -107,19 +108,19 @@ Snippet \ref{lst:U} does the same thing:
     \end{juliacode}
 \end{algorithm}
 
-Similarly, we need to calculate the total force (acceleration) of all the other particles
-enforced on one particle, as shown in \eqref{eq:flj}. Now we need to employ the
-\code{list_neighbors} function we used to calculate one particle's neighbors and plotted
+Similarly, we need to calculate the total force of all the other particles
+exert on one particle, as shown in \eqref{eq:flj}. Now we need to employ the
+\code{find_neighbors} function we used to calculate one particle's neighbors and plotted
 Figure \ref{fig:neighbors}, as shown in \ref{lst:flj}.
 %
 \begin{algorithm}
-    \caption{Calculate the total Lennard--Jones force a particle experiences.}
+    \caption{Calculate the Lennard--Jones force a the particle feels that are exerted by
+        the rest of the particles.}
     \label{lst:flj}
     \begin{juliacode}
-        function acceleration(cell::Cell, particle::Particle)
-            neighbors = list_neighbors(cell, particle)
-            return sum(Acceleration(particle), neighbors)
+        function force(particle::Particle, particles, box::Box)
+            neighbors = find_neighbors(particle, particles, box)
+            return sum(Force(particle), neighbors)
         end
     \end{juliacode}
 \end{algorithm}
-%
