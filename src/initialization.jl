@@ -10,7 +10,7 @@ struct Uniform <: VelocityDistribution
 end
 struct MaxwellBoltzmann <: VelocityDistribution end
 
-function init_coordinates!(particles, box::Box, ::Even)
+function init_coordinates!(particles, ::Box, ::Even)
     for (particle, r) in zip(particles, vec(collect(Iterators.product(1:10, 1:10, 1:10))))
         particle.coordinates = collect(r) * 1.1
     end
