@@ -35,7 +35,7 @@ extract(::Type{Velocity}, particle::Particle) = getfield(particle, :velocity)
 extract(::Type{Coordinates}, particle::Particle) = getfield(particle, :coordinates)
 extract(::Type{Particle}, particle::Particle) = particle
 
-simulation_time(logger::Logger) = sum(step.Δt for step in logger.history; init=0)
+simulation_time(logger::Logger) = cumsum(step.Δt for step in logger.history)
 
 nsteps(logger::Logger) = size(logger.history, 2)
 
