@@ -33,6 +33,7 @@ function extract(::Type{T}, logger::Logger, m::Integer, n::Integer) where {T}
 end
 extract(::Type{Velocity}, particle::Particle) = getfield(particle, :velocity)
 extract(::Type{Coordinates}, particle::Particle) = getfield(particle, :coordinates)
+extract(::Type{Particle}, particle::Particle) = particle
 
 simulation_time(logger::Logger) = sum(step.Δt for step in logger.history; init=0)
 
