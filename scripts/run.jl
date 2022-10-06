@@ -1,5 +1,6 @@
 using LinearAlgebra
 using MolecularDynamics
+using ProgressMeter
 using Plots
 
 particles = [Particle(rand(3), rand(3)) for _ in 1:1000];
@@ -8,10 +9,9 @@ init!(particles, box, Even(), Uniform(zeros(Velocity)));
 logger = Logger(length(particles))
 Δt = 0.032
 
-take_n_steps!(logger, particles, box, 5000, Δt, VelocityVerlet())
-# sort(norm.(extract(Velocity, lg, length(p))))
+take_n_steps!(logger, particles, box, 3500, Δt, VelocityVerlet())
 
-U = map(logger.history) do step
+U = progress_map(logger.history) do step
     potential_energy(step.snapshot)
 end
 T = map(logger.history) do step
@@ -32,3 +32,5 @@ plot!(; legend=:left)
 xlabel!("time")
 ylabel!("energy")
 savefig("e-t.pdf")
+
+histogram(norm.(extract(Velocity, logger, length(particles))))
