@@ -2,6 +2,7 @@ using LaTeXStrings
 using LinearAlgebra
 using MolecularDynamics
 using Plots
+using Plots.Measures
 using ProgressMeter
 
 particles = [Particle(rand(3), rand(3)) for _ in 1:1000];
@@ -54,7 +55,34 @@ let indices = 100:100:1000
     zlabel!(L"z ($\sigma$)")
 end
 
-histogram(norm.(extract(Velocity, logger, length(particles))))
+let steps = (500, 1000, 2000, 3000, 5000, 8000, 10000, 12000, 16000)
+    plot_array = []
+    for step in steps
+        velocities = norm.(extract(Velocity, logger, step))
+        push!(
+            plot_array,
+            histogram(
+                velocities;
+                title=string(step) * "th step",
+                legend=:none,
+                framestyle=:box,
+                xlims=extrema(velocities),
+                ylims=(0, Inf),
+                xlabel=L"velocity ($v$)",
+                ylabel="frequency",
+                titlefontsize=5,
+                labelfontsize=5,
+                tickfontsize=4,
+                bottom_margin=-1mm,
+                top_margin=-1mm,
+                right_margin=0mm,
+                right_margin=-1mm,
+            ),
+        )
+    end
+    plot(plot_array...)
+    savefig("maxwell.pdf")
+end
 
 plot(
     simulation_time(logger),
