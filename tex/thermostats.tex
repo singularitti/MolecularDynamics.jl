@@ -109,6 +109,10 @@ After total $16046$ steps, i.e., around \qty{1.60e-10}{\second}, the final tempe
 about $1.073$.
 We can see the final total energy is around $-2575.04$, so starting from
 $E = U \approx -4610.29$ is a bit too low, that is why we are scaling up the velocities.
+The reason of such low starting energy is that we used evenly distributed particles
+with their shortest distance still larger than $1$. If we use a random distribution
+as our starting point, the starting potential energy will become very large and
+may cause the MD simulation slower to converge.
 We can see from the figure that after the first two rescaling attempts, the potential
 energy also increases a little, causing our scaled kinetic energy drops by about the
 same amount. That is when these particles are rearranging their positions and
