@@ -34,3 +34,31 @@ Its dimensionless form is shown in \eqref{eq:Pdimensionless}\cite{thijssen_2007}
 %
 where $\bm{F}_i$ is the total force on the $i$th particle, and $\bm{r}_i$ is the
 position of the particle.
+
+
+The Maxwell velocity distribution is
+%
+\begin{equation}
+    f(v) = \biggl( \frac{m}{2\pi k_B T} \biggr)^{3/2}
+    4\pi v^2 \exp{\biggl( -\frac{m v^2}{2 k_B T} \biggr)},
+\end{equation}
+%
+where $f(v)$ is a probability distribution function, and $v$ is the magnitude of the
+velocity vector.
+We plot histograms of velocity distribution of the particles after
+$500$, $1000$, $2000$, $3000$, $5000$, $8000$, $10000$, $12000$, $16000$ steps,
+respectively, in Figure~\ref{fig:maxwell}.
+%
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{maxwell}
+    \caption{Histograms of velocity distribution of the particles after
+        $500$, $1000$, $2000$, $3000$, $5000$, $8000$, $10000$, $12000$, $16000$ steps.}
+    \label{fig:maxwell}
+\end{figure}
+%
+We can see that at the beginning of the computation, the velocities of the particles
+seem to be random, but as the number of time steps increases, a pattern starts to
+emerge. After the $5000$th step ($t = 160$), we can almost see a Maxwell distribution.
+From the $10000$th ($t = 320$) to the $16000$th ($t = 512$) steps, the pattern is
+already Maxwellian and does not change so much.
