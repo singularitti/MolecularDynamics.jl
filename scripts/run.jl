@@ -36,6 +36,24 @@ xlabel!(L"simulation time ($t$)")
 ylabel!(L"energy ($\varepsilon$)")
 savefig("e-t.pdf")
 
+let indices = 100:100:1000
+    L = box.side_length
+    for index in indices
+        particle = map(12200:50:length(logger.history)) do step
+            extract(Particle, logger, step, index)
+        end
+        plot!(getcoordinates(particle)(); label="particle $index", palette=:tab20)
+        scatter3d!(getcoordinates(particle)(); markersizes=1, markerstrokewidth=0, label="")
+    end
+    plot!(; legend=:none, framestyle=:box)
+    xlims!(0, box.side_length)
+    ylims!(0, box.side_length)
+    zlims!(0, box.side_length)
+    xlabel!(L"x ($\sigma$)")
+    ylabel!(L"y ($\sigma$)")
+    zlabel!(L"z ($\sigma$)")
+end
+
 histogram(norm.(extract(Velocity, logger, length(particles))))
 
 plot(
