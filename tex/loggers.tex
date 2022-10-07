@@ -1,0 +1,97 @@
+\subsection{Loggers}
+
+To track the positions and velocities of all the particles, we need some loggers.
+Here we define two types, a \code{Step} type which represents each step of the molecular
+dynamics, and a \code{Logger} type which stores all the \code{Step}s we have run,
+as shown in Snippet~\ref{lst:logger}.
+%
+\begin{algorithm}
+    \caption{The \code{Step} and \code{Logger} types which tracks each step of the
+        molecular dynamics.}
+    \label{lst:logger}
+    \begin{juliacode}
+        struct Step{N}
+            Δt::Float64
+            snapshot::SVector{N,Particle}
+        end
+
+        struct Logger{N}
+            history::ElasticVector{Step{N}}
+        end
+    \end{juliacode}
+\end{algorithm}
+%
+To track and continue our simulation, we also need to add two new methods to function
+\code{take_n_steps!}, as shown in Snippet~\ref{lst:trackncontinue}.
+%
+\begin{algorithm}
+    \caption{The \code{Step} and \code{Logger} types which tracks each step of the
+        molecular dynamics.}
+    \label{lst:trackncontinue}
+    \begin{juliacode}
+        function take_n_steps!(
+            logger::Logger{N}, particles, box::Box, n, Δt, ::VelocityVerlet
+        ) where {N}
+            @showprogress for _ in 1:n
+                take_one_step!(particles, box, Δt, VelocityVerlet())
+                push!(logger.history, Step(Δt, SVector{N}(deepcopy(particles))))
+            end
+            return particles
+        end
+        function take_n_steps!(logger::Logger, box::Box, n, Δt, ::VelocityVerlet)
+            particles = logger.history[end].snapshot
+            return take_n_steps!(logger, particles, box, n, Δt, VelocityVerlet())
+        end
+    \end{juliacode}
+\end{algorithm}
+%
+In the first method, all steps are saved in variable \code{logger} if we start a new
+molecular dynamics simulation, and the second method indicates we are restarting an
+existing simulation with all previous steps from the variable \code{logger}.
+
+We may use Julia's serialization library \code{Serialization} to
+serialize (save) and deserialize (load) the logger. Or, we can use third-party packages
+such as \href{https://github.com/JuliaIO/JLD.jl}{\code{JLD.jl}} and
+\href{https://github.com/JuliaIO/JLD2.jl}{\code{JLD2.jl}}.
+But these file formats are binary, so they are not human readable.
+If we want to read these files by ourselves, serializing them into readable formats
+is also necessary. Here, we adopt the JSON format, which
+is an open standard and data interchange format that uses human-readable text to
+store and transmit data objects. With the help of it, we can store the locations
+and velocities of the particles into a JSON file. The corresponding code is shown in
+Snippet~\ref{lst:json}.
+%
+\begin{algorithm}
+    \caption{Code to save (load) the information to (from) a JSON file.}
+    \label{lst:json}
+    \begin{juliacode}
+        using JSON: JSON
+
+        function Base.Dict(particle::Particle)
+            return Dict("coordinates" => particle.coordinates, "velocity" => particle.velocity)
+        end
+
+        function Base.print(io::IO, particle::Particle)
+            JSON.print(io, Dict(particle))
+            return nothing
+        end
+        function Base.print(io::IO, particles::AbstractVector{Particle})
+            JSON.print(io, map(Dict, particles))
+            return nothing
+        end
+
+        function save(filename, data)
+            open(filename, "w") do io
+                print(io, data)
+            end
+            return nothing
+        end
+
+        function load(filename)
+            data = open(filename, "r") do io
+                JSON.parse(io)
+            end
+            return data
+        end
+    \end{juliacode}
+\end{algorithm}
