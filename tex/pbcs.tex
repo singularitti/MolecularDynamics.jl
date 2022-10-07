@@ -3,13 +3,14 @@
 Suppose we have a system of $N$ particles with number density $\rho$, thus the
 box size will be
 
-\begin{equation}
+\begin{equation}\label{eq:L}
     L = \biggl( \frac{ N }{ \rho } \biggr)^{1 / 3}.
 \end{equation}
 
 If we want to impose the periodic boundary conditions (PBCs) here, we should adopt the
 nearest image convention (NIC) or minimum image convention (MIC). What is an image? First,
-we should emphasize that we could not do simulations in an infinitely large box (cell) in MD
+we should emphasize that we could not do simulations in an infinitely large box (cell) in
+molecular dynamics (MD)
 simulations. The most common solution is to take one cell (we will call it ``center cell''
 in the following text) to simulate and imagine an infinitive number of image cells
 surrounding it, where each image cell is a replica of the center cell. The image cells can
