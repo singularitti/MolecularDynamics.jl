@@ -4,7 +4,7 @@ To track the positions and velocities of all the particles, we need some loggers
 Here we define two types, a \code{Step} type which represents each step of the molecular
 dynamics, and a \code{Logger} type which stores all the \code{Step}s we have run,
 as shown in Snippet~\ref{lst:logger}.
-%
+
 \begin{algorithm}
     \caption{The \code{Step} and \code{Logger} types which tracks each step of the
         molecular dynamics.}
@@ -20,13 +20,16 @@ as shown in Snippet~\ref{lst:logger}.
         end
     \end{juliacode}
 \end{algorithm}
-%
+
 To track and continue our simulation, we also need to add two new methods to function
 \code{take_n_steps!}, as shown in Snippet~\ref{lst:trackncontinue}.
-%
+In the first method, all steps are saved in variable \code{logger} if we start a new
+molecular dynamics simulation, and the second method indicates we are restarting an
+existing simulation with all previous steps from the variable \code{logger}.
+
 \begin{algorithm}
-    \caption{The \code{Step} and \code{Logger} types which tracks each step of the
-        molecular dynamics.}
+    \caption{To save and restart MD simulations we need to track these steps
+        in the \code{logger} type.}
     \label{lst:trackncontinue}
     \begin{juliacode}
         function take_n_steps!(
@@ -44,10 +47,6 @@ To track and continue our simulation, we also need to add two new methods to fun
         end
     \end{juliacode}
 \end{algorithm}
-%
-In the first method, all steps are saved in variable \code{logger} if we start a new
-molecular dynamics simulation, and the second method indicates we are restarting an
-existing simulation with all previous steps from the variable \code{logger}.
 
 We may use Julia's serialization library \code{Serialization} to
 serialize (save) and deserialize (load) the logger. Or, we can use third-party packages
