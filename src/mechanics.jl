@@ -1,5 +1,3 @@
-using LinearAlgebra: dot
-
 export potential_energy, kinetic_energy, total_energy, force, potential_gradient
 
 function potential_energy(r::Number)

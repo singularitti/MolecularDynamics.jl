@@ -1,3 +1,5 @@
+using LinearAlgebra: dot
+
 export temperature, pressure
 
 function temperature(particles)
@@ -9,11 +11,15 @@ end
 
 ensemble_average(property::AbstractArray) = sum(property) / length(property)
 
-function pressure(particles, box, steps)
-    virial = map(steps) do
-        𝐑 = getcoordinates(particles)()
-        𝐀 = force(particles, box)
-        dot(𝐑, 𝐀)
+function pressure(box, logger, start, stop, step=10)
+    virial = @showprogress map(enumerate(logger.history[start:step:stop])) do (i, step)
+        particles = step.snapshot
+        map(eachindex(particles)) do j
+            𝐫 = extract(Coordinates, logger, i + start - 1, j)
+            𝐟 = force(i, particles, box)
+            dot(𝐫, 𝐟)
+        end
     end
-    return 1 + ensemble_average(virial) / 3 / length(particles)
+    N = length(logger.history[1].snapshot)
+    return 1 + sum(ensemble_average(virial)) / 3N
 end
