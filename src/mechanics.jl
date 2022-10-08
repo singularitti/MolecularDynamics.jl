@@ -18,7 +18,7 @@ end
 
 function potential_gradient(𝐫)
     r = norm(𝐫)
-    return 48𝐫 * (inv(r^8) / 2 - inv(r^14))
+    return 𝐫 * (inv(r^8) / 2 - inv(r^14))
 end
 
 kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
