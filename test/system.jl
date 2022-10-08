@@ -18,7 +18,7 @@ end
 @testset "Test `find_nearest_image` and `find_neighbors`" begin
     particles = [Particle(rand(3), rand(3)) for _ in 1:100]
     box = CubicBox(11)
-    init!(particles, box)
+    init!(particles, box, Even(), Uniform(zeros(Velocity)))
     for particle in particles
         neighbors = find_neighbors(particle, particles, box)
         @test particle ∉ neighbors
