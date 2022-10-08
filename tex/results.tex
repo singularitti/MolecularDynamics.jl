@@ -34,6 +34,15 @@ Its dimensionless form is shown in \eqref{eq:Pdimensionless}\cite{thijssen_2007}
 %
 where $\bm{F}_i$ is the total force on the $i$th particle, and $\bm{r}_i$ is the
 position of the particle.
+From Fig. 1 in the Verlet's paper\cite{Verlet}, we know that when $T = 1.069$,
+$\rho = 0.75$, $\beta P / \rho = 0.9$, and $\beta \approx 0.9415094$, so
+
+\begin{equation}
+    P = \frac{ 0.9 \rho }{ \beta } \approx 0.721666.
+\end{equation}
+
+We pick steps from $15000$ to the last step (total $1046$ steps) and do the time average,
+what we get is $P \approx 0.9933$, which is quite different from Verlet's result.
 
 
 The Maxwell velocity distribution is
