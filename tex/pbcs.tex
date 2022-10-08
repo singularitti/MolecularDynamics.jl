@@ -46,6 +46,23 @@ back, it reappears on the other side of the cell (the topology of a torus), or w
 treat it as an image particle from an adjacent cell enters the current cell.
 So the number of particles in a cell never increases or decreases in this case.
 
+\begin{algorithm}
+    \caption{Find the nearest image of particle $b$ which can interact with particle $a$.}
+    \label{lst:nic}
+    \begin{juliacode}
+        Δ𝐫 = b.coordinates - a.coordinates
+        coordinates = map(b.coordinates, Δ𝐫) do rᵢ, Δrᵢ
+            if Δrᵢ > L / 2
+                rᵢ - L
+            elseif Δrᵢ < -L / 2
+                rᵢ + L
+            else  # |Δrᵢ| <= L / 2
+                rᵢ  # Do not shift
+            end
+        end
+    \end{juliacode}
+\end{algorithm}
+
 So how do we express the PBCs in mathematical and programming languages?
 Suppose we have two particles, $a$ and $b$, both in the center cell,
 and $a$ is the particle in which we
@@ -72,23 +89,6 @@ where $r_{b, \alpha}$ is the component of the position of particle $b$ in the
 corresponding dimension.
 The Julia code for the above procedure looks like Snippet~\ref{lst:nic}.
 The code will return a \code{Vector} representing the new position of particle $b$.
-
-\begin{algorithm}
-    \caption{Find the nearest image of particle $b$ which can interact with particle $a$.}
-    \label{lst:nic}
-    \begin{juliacode}
-        Δ𝐫 = b.coordinates - a.coordinates
-        coordinates = map(b.coordinates, Δ𝐫) do rᵢ, Δrᵢ
-            if Δrᵢ > L / 2
-                rᵢ - L
-            elseif Δrᵢ < -L / 2
-                rᵢ + L
-            else  # |Δrᵢ| <= L / 2
-                rᵢ  # Do not shift
-            end
-        end
-    \end{juliacode}
-\end{algorithm}
 
 If $b$ is not in the same cell as $a$, we need first shift $b$ back to the cell where
 $a$ locates. That is,

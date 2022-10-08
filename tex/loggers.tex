@@ -6,7 +6,7 @@ dynamics, and a \code{Logger} type which stores all the \code{Step}s we have run
 as shown in Snippet~\ref{lst:logger}.
 
 \begin{algorithm}
-    \caption{The \code{Step} and \code{Logger} types which tracks each step of the
+    \caption{The \code{Step} and \code{Logger} types that track each step of the
         molecular dynamics.}
     \label{lst:logger}
     \begin{juliacode}
@@ -29,7 +29,7 @@ existing simulation with all previous steps from the variable \code{logger}.
 
 \begin{algorithm}
     \caption{To save and restart MD simulations we need to track these steps
-        in the \code{logger} type.}
+        in the variable \code{logger}.}
     \label{lst:trackncontinue}
     \begin{juliacode}
         function take_n_steps!(
@@ -59,38 +59,30 @@ is an open standard and data interchange format that uses human-readable text to
 store and transmit data objects. With the help of it, we can store the locations
 and velocities of the particles into a JSON file. The corresponding code is shown in
 Snippet~\ref{lst:json}.
-%
-\begin{algorithm}
+
+\begin{algorithm}[H]
     \caption{Code to save (load) the information to (from) a JSON file.}
     \label{lst:json}
     \begin{juliacode}
-        using JSON: JSON
-
         function Base.Dict(particle::Particle)
             return Dict("coordinates" => particle.coordinates, "velocity" => particle.velocity)
         end
 
-        function Base.print(io::IO, particle::Particle)
-            JSON.print(io, Dict(particle))
-            return nothing
-        end
+        Base.print(io::IO, particle::Particle) = JSON.print(io, Dict(particle))
         function Base.print(io::IO, particles::AbstractVector{Particle})
             JSON.print(io, map(Dict, particles))
-            return nothing
         end
 
         function save(filename, data)
             open(filename, "w") do io
                 print(io, data)
             end
-            return nothing
         end
 
         function load(filename)
-            data = open(filename, "r") do io
+            return open(filename, "r") do io
                 JSON.parse(io)
             end
-            return data
         end
     \end{juliacode}
 \end{algorithm}

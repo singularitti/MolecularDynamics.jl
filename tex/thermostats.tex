@@ -1,5 +1,13 @@
 \subsection{Velocity-rescaling thermostat}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{e-t-no-thermostat}
+    \caption{The dimensionless kinetic energy, potential energy, and total energy
+        as a function of simulation time $t$.}
+    \label{fig:md5000}
+\end{figure}
+
 Now let us perform the molecular dynamics simulation.
 First, we need to define our system. We select a system of $1000$ particles,
 with number density $\rho = 0.75$, as in Vertlet\cite{Verlet}'s paper.
@@ -11,8 +19,8 @@ in each direction, and all velocities to be zero.
 We will first run $5000$ MD steps to see the trend of the potential energy
 and kinetic energy.
 The corresponding code is in Snippet~\ref{lst:md5000}.
-%
-\begin{algorithm}
+
+\begin{algorithm}[H]
     \caption{Running $5000$ MD steps.}
     \label{lst:md5000}
     \begin{juliacode}
@@ -24,7 +32,7 @@ The corresponding code is in Snippet~\ref{lst:md5000}.
         take_n_steps!(logger, particles, box, 5000, Δt, VelocityVerlet())  # Run MD simulation
     \end{juliacode}
 \end{algorithm}
-%
+
 After the code finishes, we plot the dimensionless kinetic energy, potential energy,
 and total energy as a function of simulation time $t$ in Figure~\ref{fig:md5000}.
 After $5000$ steps, which is around $160$ units of dimensionless time and
@@ -32,15 +40,7 @@ After $5000$ steps, which is around $160$ units of dimensionless time and
 As the figure shows, after $t = 40$ we can see a substatial decrease in the potential energy
 and increase in the kinetic energy, while the total energy keeps almost the same for
 the whole time, as it should be.
-%
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{e-t-no-thermostat}
-    \caption{The dimensionless kinetic energy, potential energy, and total energy
-        as a function of simulation time $t$.}
-    \label{fig:md5000}
-\end{figure}
-%
+
 To make sure the kinetic energy calculated using~\eqref{eq:kinetic} is correct, we compare
 the difference between the last and the first steps of both the kinetic and potential
 energies, $T_\text{last} - T_\text{initial} \approx 707.97$ and
@@ -61,6 +61,25 @@ We should use what is called a \emph{thermostat}, which is
 a modiﬁcation of the basic molecular dynamics scheme with the purpose of maintaining the
 temperature constant (on average).
 
+\begin{algorithm}[H]
+    \caption{Definition of the velocity-rescaling thermostat and its application
+        on the velocities of the particles.}
+    \label{lst:thermostat}
+    \begin{juliacode}
+        struct VelocityRescaling
+            desired_temperature::Float64
+        end
+
+        function apply_coupling!(particles, thermostat::VelocityRescaling)
+            t = temperature(particles)
+            for particle in particles
+                particle.velocity *= sqrt(thermostat.desired_temperature / t)
+            end
+            return particles
+        end
+    \end{juliacode}
+\end{algorithm}
+
 The simplest thermostat is a velocity-rescaling thermostat, as we can see, the equilibrium
 temperature of our MD simulation after $5000$ steps are not equal to our desired value.
 So we can multiply the velocities of the particles by a factor $\lambda$ to match our
@@ -76,26 +95,15 @@ calculated from the kinetic energy.
 In this example, to match $T_0 = 1.069$, $\lambda = 1.505$.
 And in Snippet~\ref{lst:thermostat}, we show the definition of our thermostat type
 \code{VelocityRescaling} and rescaling function \code{apply_coupling!}.
-%
-\begin{algorithm}
-    \caption{Definition of the velocity-rescaling thermostat and its application
-        on the velocities of the particles.}
-    \label{lst:thermostat}
-    \begin{juliacode}
-        abstract type Thermostat end
-        struct VelocityRescaling <: Thermostat
-            desired_temperature::Float64
-        end
 
-        function apply_coupling!(particles, thermostat::VelocityRescaling)
-            t = temperature(particles)
-            for particle in particles
-                particle.velocity *= sqrt(thermostat.desired_temperature / t)
-            end
-            return particles
-        end
-    \end{juliacode}
-\end{algorithm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{e-t-thermostat}
+    \caption{The dimensionless kinetic energy, potential energy, and total energy
+        as a function of simulation time $t$ after applying the velocity-rescaling
+        thermostat for several times.}
+    \label{fig:md-thermostat}
+\end{figure}
 
 One problem with this approach is that it does not
 allow fluctuations in temperature which are present in the canonical ensemble.
@@ -117,15 +125,6 @@ We can see from the figure that after the first two rescaling attempts, the pote
 energy also increases a little, causing our scaled kinetic energy drops by about the
 same amount. That is when these particles are rearranging their positions and
 it is why we cannot achieve our final goal in one shot.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{e-t-thermostat}
-    \caption{The dimensionless kinetic energy, potential energy, and total energy
-        as a function of simulation time $t$ after applying the velocity-rescaling
-        thermostat for several times.}
-    \label{fig:md-thermostat}
-\end{figure}
 
 We also plot Figure~\ref{fig:T-t} to show the change of temperatures as a function
 of the simulation time.

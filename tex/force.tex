@@ -30,7 +30,7 @@ The transformation rules are shown as below:
     T(v') & = \frac{ 1 }{ 2 } m v^2 = 24 \varepsilon v'^2.\label{eq:kinetic}
 \end{align}
 %
-And the numerical gradient of~\eqref{eq:ulj} is
+And the numerical gradient of~\eqref{eq:uljunit} is
 %
 \begin{equation}\label{eq:dudr}
     \begin{bmatrix}
@@ -51,12 +51,12 @@ particle $a$ experiences (induced only by particle $b$) as below.
 %
 \begin{algorithm}
     \caption{The gradient of the Lennard--Jones potential and the acceleration
-        $d^2 \bm{r}_a / d t^2$. Note the factor $48$ and the negative sign.}
+        $d^2 \bm{r}_a / d t^2$. Note the the negative sign.}
     \label{lst:gradient}
     \begin{juliacode}
         function potential_gradient(𝐫ᵢⱼ)
             rᵢⱼ = norm(𝐫ᵢⱼ)
-            return 48𝐫ᵢⱼ * (inv(rᵢⱼ^8) / 2 - inv(rᵢⱼ^14))
+            return 𝐫ᵢⱼ * (inv(rᵢⱼ^8) / 2 - inv(rᵢⱼ^14))
         end
 
         function Force(a::Particle)
@@ -69,7 +69,7 @@ particle $a$ experiences (induced only by particle $b$) as below.
 %
 The corresponding unit test is shown in Snippet~\ref{lst:ut_gradient}.
 %
-\begin{algorithm}
+\begin{algorithm}[H]
     \caption{The unit test of function \code{potential_gradient}.}
     \label{lst:ut_gradient}
     \begin{juliacode}
@@ -93,10 +93,10 @@ and $j$'s (except for $j = i$) in~\eqref{eq:U}:
     U = \frac{ 1 }{ 2 }\sum_{\substack{i, j\\ j \neq i}} u(r_{ij}).
 \end{equation}
 %
-Note the $\frac{ 1 }{ 2 }$ factor in \eqref{eq:U} since we count $i$ and $j$ twice.
-Snippet \ref{lst:U} does the same thing:
+Note the $\frac{ 1 }{ 2 }$ factor in~\eqref{eq:U} since we count $i$ and $j$ twice.
+Snippet~\ref{lst:U} does the same thing:
 
-\begin{algorithm}
+\begin{algorithm}[H]
     \caption{Calculate the total Lennard--Jones potential energy of a swarm of particles.}
     \label{lst:U}
     \begin{juliacode}
@@ -111,9 +111,9 @@ Snippet \ref{lst:U} does the same thing:
 \end{algorithm}
 
 Similarly, we need to calculate the total force of all the other particles
-exert on one particle, as shown in \eqref{eq:flj}. Now we need to employ the
+exert on one particle, as shown in~\eqref{eq:flj}. Now we need to employ the
 \code{find_neighbors} function we used to calculate one particle's neighbors and plotted
-Figure \ref{fig:neighbors}, as shown in \ref{lst:flj}.
+Figure~\ref{fig:neighbors}, as shown in Snippet~\ref{lst:flj}.
 %
 \begin{algorithm}
     \caption{Calculate the Lennard--Jones force a the particle feels that are exerted by
