@@ -12,17 +12,14 @@ where the parameters for \ce{Ar} are $\varepsilon = 119.8 k_B \approx \SI{0.0103
 $\sigma = \SI{3.405}{\angstrom}$, and $m = \SI{39.948}{\atomicmassunit}$, where
 $\si{\atomicmassunit}$ is the atomic mass unit.
 In the dimensionless form,
-\eqref{eq:uljunit} would look like~\eqref{eq:ulj} and the force would
-look like~\eqref{eq:flj}.
+the force would look like~\eqref{eq:flj}:
 %
-\begin{align}
-    u_{ij} = u(r_{ij}) & = 4 \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{12}
-    -\Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^6 \biggr), \label{eq:ulj}            \\
+\begin{equation}\label{eq:flj}
     \bm{F}_i = m\frac{ d^2 \bm{r}_i }{ d t^2 } = -\sum_{j \neq i}\frac{ \partial u_{ij} }{ \partial \bm{r}_i }
-                       & = 48\sum_{j \neq i} (\bm{r}_i - \bm{r}_j)
+    = \sum_{j \neq i} (\bm{r}_i - \bm{r}_j)
     \biggl( \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^{14}
-    -\frac{ 1 }{ 2 } \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^8 \biggr). \label{eq:flj}
-\end{align}
+    -\frac{ 1 }{ 2 } \Bigl( \frac{ 1 }{ r_{ij} } \Bigr)^8 \biggr).
+\end{equation}
 %
 The transformation rules are shown as below:
 %
@@ -49,11 +46,7 @@ And the numerical gradient of~\eqref{eq:ulj} is
     \end{bmatrix}.
 \end{equation}
 %
-I found in the notes, equation \eqref{eq:flj} is off by a factor of $48$.
-Only after adding it could make \eqref{eq:dudr} and \eqref{eq:flj} match.
-I suppose that this is because we basically treat
-$\varepsilon$, $\sigma$, and $m$ (the mass of each particle) as $1$ here (though they
-are not). So in Snippet~\ref{lst:gradient} I define the $\nabla u$ and the acceleration
+So in Snippet~\ref{lst:gradient} I define the $\nabla u$ and the acceleration
 particle $a$ experiences (induced only by particle $b$) as below.
 %
 \begin{algorithm}
