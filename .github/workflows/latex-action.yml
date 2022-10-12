@@ -13,7 +13,9 @@ jobs:
           working_directory: tex
           latexmk_use_lualatex: true
           latexmk_shell_escape: true
+          extra_fonts: JuliaMono-ttf/*.ttf
           extra_system_packages: "py-pygments"
+          pre_compile: wget https://github.com/cormullion/juliamono/releases/download/v0.046/JuliaMono-ttf.tar.gz && tar xvf JuliaMono-ttf.tar.gz
       - uses: actions/upload-artifact@v3
         with:
           name: PDF
