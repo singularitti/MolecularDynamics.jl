@@ -135,7 +135,7 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MolecularDynamics]]
 deps = ["ElasticArrays", "JSON", "LinearAlgebra", "ProgressMeter", "RecipesBase", "StaticArrays", "StructEquality"]
-git-tree-sha1 = "c7ed4b238bd9b81ee7028f275991889074331716"
+git-tree-sha1 = "ce9e1f7ba9d9be7d37010e34a31d61e9551b8fa9"
 repo-rev = "main"
 repo-url = "https://github.com/singularitti/MolecularDynamics.jl"
 uuid = "085142b3-cc26-4e6c-8f6b-431a83ab87f1"
@@ -161,9 +161,9 @@ version = "1.4.1"
 
 [[deps.Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "595c0b811cf2bab8b0849a70d9bd6379cc1cfb52"
+git-tree-sha1 = "6c01a9b494f6d2a9fc180a08b182fcb06f0958a0"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.4.1"
+version = "2.4.2"
 
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
