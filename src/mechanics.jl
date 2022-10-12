@@ -24,7 +24,7 @@ end
 kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
 kinetic_energy(particles) = sum(kinetic_energy, particles)
 
-total_energy(particles) = kinetic_energy(particles) + potential_energy(particles)
+total_energy(particles) = kinetic_energy(particles) .+ potential_energy(particles)
 
 """
     Force(a::Particle)(b::Particle)
