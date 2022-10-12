@@ -9,7 +9,9 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: tex/main.tex
+          root_file: main.tex
+          working_directory: tex
+          latexmk_use_lualatex: true
           latexmk_shell_escape: true
           extra_system_packages: "py-pygments"
       - uses: actions/upload-artifact@v3
