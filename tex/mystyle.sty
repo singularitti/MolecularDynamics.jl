@@ -12,7 +12,6 @@
 \usepackage{graphicx}
 \usepackage{algorithm}
 \usepackage[cache=false]{minted}
-\usepackage{xpatch} % See https://tex.stackexchange.com/a/657596/61591
 \usepackage{bm}
 \usepackage{color}
 \usepackage{booktabs}
@@ -51,10 +50,11 @@
 \fancyfoot[LO,RE]{\footnotesize\textit{Last modified: \thedate}}
 
 % See https://tex.stackexchange.com/a/128349/61591
-\newcounter{question}
-\newcommand\Question{
+\newcounter{question}[section]
+\newcommand{\Question}[1]{
   \medskip
-  \stepcounter{question}
+  \refstepcounter{question} % See https://tex.stackexchange.com/a/388676/61591
+  \label{#1}
   \noindent\textbf{Question \thequestion:}
 }
 \newcommand\Answer{
