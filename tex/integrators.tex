@@ -12,20 +12,20 @@ The mathematical expression of the algorithm is shown in~\eqref{eq:vvr} and~\eqr
     \bm{v}(t + \Delta t) & = \bm{v}(t) + \frac{ \bm{a}(t) + \bm{a}(t + \Delta t) }{ 2 } \Delta t,\label{eq:vvv}
 \end{align}
 %
-where $\Delta t$ is the length of each time step, $\bm{r}(t + \Delta t)$,
-$\bm{v}(t + \Delta t)$, and $\bm{a}(t + \Delta t)$
-are the coordinates, velocity, and acceleration of the particle at time $t + \Delta t$.
+where \(\Delta t\) is the length of each time step, \(\bm{r}(t + \Delta t)\),
+\(\bm{v}(t + \Delta t)\), and \(\bm{a}(t + \Delta t)\)
+are the coordinates, velocity, and acceleration of the particle at time \(t + \Delta t\).
 In our dimensionless system, the acceleration and the force have the same value,
 where the method of calculating forces is described in section~\ref{ssec:force}.
-The force at time $t$ is calculated by all the positions of the particles at time $t$.
+The force at time \(t\) is calculated by all the positions of the particles at time \(t\).
 
 The standard implementation scheme of the velocity Verlet algorithm is:
 %
 \begin{enumerate}
-    \item Calculate $\bm{v}(t + \nicefrac{\Delta t}{2}) = \bm{v}(t) + \frac{1}{2} \bm{a}(t) \Delta t$;\label{it:vv1}
-    \item Calculate $\bm{r}(t + \Delta t) = \bm{r}(t) + \bm{v}(t + \nicefrac{\Delta t}{2}) \Delta t$;\label{it:vv2}
-    \item Derive $\bm{a}(t + \Delta t)$ from the Lennard--Jones potential using $\bm{r}(t + \Delta t)$;\label{it:vv3}
-    \item Calculate $\bm{v}(t + \Delta t) = \bm{v}(t + \nicefrac{\Delta t}{2}) + \frac{1}{2} \bm{a}(t + \Delta t) \Delta t$.\label{it:vv4}
+    \item Calculate \(\bm{v}(t + \nicefrac{\Delta t}{2}) = \bm{v}(t) + \frac{1}{2} \bm{a}(t) \Delta t\);\label{it:vv1}
+    \item Calculate \(\bm{r}(t + \Delta t) = \bm{r}(t) + \bm{v}(t + \nicefrac{\Delta t}{2}) \Delta t\);\label{it:vv2}
+    \item Derive \(\bm{a}(t + \Delta t)\) from the Lennard--Jones potential using \(\bm{r}(t + \Delta t)\);\label{it:vv3}
+    \item Calculate \(\bm{v}(t + \Delta t) = \bm{v}(t + \nicefrac{\Delta t}{2}) + \frac{1}{2} \bm{a}(t + \Delta t) \Delta t\).\label{it:vv4}
 \end{enumerate}
 %
 The corresponding code for the above algorithm is shown in Snippet~\ref{lst:take_one_step},
@@ -33,7 +33,7 @@ defined by function \code{take_one_step!}.
 %
 \begin{algorithm}
     \caption{Move all particles one step forward in the simulation cell with time step
-        $\Delta t$, using the velocity Verlet integrator.}
+        \(\Delta t\), using the velocity Verlet integrator.}
     \label{lst:take_one_step}
     \begin{juliacode}
         function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
@@ -52,8 +52,8 @@ defined by function \code{take_one_step!}.
 \end{algorithm}
 %
 The input \code{particles} and \code{box} are the simulation particles and the cell we
-are interested in, with its number density to be $0.75$ here. And each time step
-$\Delta t$ is $0.032$ (which Verlet used in his simulation). For \ce{Ar}, it corresponds
+are interested in, with its number density to be \(0.75\) here. And each time step
+\(\Delta t\) is \(0.032\) (which Verlet used in his simulation). For \ce{Ar}, it corresponds
 to the real world time of
 %
 \begin{equation}
@@ -72,17 +72,17 @@ the velocity and position of the particles iteratively, as explained in steps~\r
 and~\ref{it:vv2}.
 The last line in that loop is how we apply the PBCs on the position of each particle,
 as discussed in section~\ref{ssec:pbcs}.
-Here, since the cell has size $L \times L \times L$, where $L$ is a number larger than
-$0$, we need to do a modulo operation against $L$.
+Here, since the cell has size \(L \times L \times L\), where \(L\) is a number larger than
+\(0\), we need to do a modulo operation against \(L\).
 
 However, one thing to be very careful about is that since the \code{for}-loop updates
 the position of each particle one by one, we cannot do force calculations before
 step~\ref{it:vv1} in this loop,
-since when we compute the force on the second particle at time $t$, the first particle
-have already moved from its original position at time $t$, and we are computing the force
-using the position of the first particle at time $t + \Delta t$ since step~\ref{it:vv2}
+since when we compute the force on the second particle at time \(t\), the first particle
+have already moved from its original position at time \(t\), and we are computing the force
+using the position of the first particle at time \(t + \Delta t\) since step~\ref{it:vv2}
 has already been performed.
-That is why we have to calculate the forces at time $t$ before step~\ref{it:vv1} and
+That is why we have to calculate the forces at time \(t\) before step~\ref{it:vv1} and
 why we have to use two \code{for}-loops.
 In languages where loops are slow, like Python, people are more accustomed to use
 vectorized operations so all the postions of the particles are updated at the same time
@@ -91,7 +91,7 @@ But in Julia, loops are already fast, so using high-dimensional arrays are not n
 but we have to act with caution so that we do not introduce unexpected errors.
 
 \begin{algorithm}
-    \caption{Function \code{take_n_steps!} runs the simulation for $n$ consecutive steps.}
+    \caption{Function \code{take_n_steps!} runs the simulation for \(n\) consecutive steps.}
     \label{lst:take_n_steps}
     \begin{juliacode}
         function take_n_steps!(particles, box::Box, n, Δt, ::VelocityVerlet)
@@ -106,17 +106,17 @@ but we have to act with caution so that we do not introduce unexpected errors.
 In the second \code{for} loop, since we have already performed steps~\ref{it:vv1}
 and~\ref{it:vv2}, we can safely calculate the forces on each particle and hence update its
 coordinates, as explained in steps~\ref{it:vv3} and~\ref{it:vv4}.
-However, in the first implementation of my code, I made a mistake: for any particle, say $a$,
-when calculating the force exerted on it at time $t + \Delta t$, I used the coordinates of
-all other particles at time $t$ while using the coordinates of $a$ at time $t + \Delta t$.
-That is, when the force of other particles already sends $a$ to a new position after
+However, in the first implementation of my code, I made a mistake: for any particle, say \(a\),
+when calculating the force exerted on it at time \(t + \Delta t\), I used the coordinates of
+all other particles at time \(t\) while using the coordinates of \(a\) at time \(t + \Delta t\).
+That is, when the force of other particles already sends \(a\) to a new position after
 step~\ref{it:vv2}, in step~\ref{it:vv3} I applied a force that is going to drag it
 back to its original position. This mistake caused the energy blows up at a rapid
 speed as a function of time, and reaching thermal equilibrium requires tens of thousands
 steps since we somewhat cancel the force back and forth, and we had to take a very small
-time step (around $10^{-4}$) to make the simulation run. This took me a long time to debug.
+time step (around \(10^{-4}\)) to make the simulation run. This took me a long time to debug.
 
 In a simulation, we certainly need to run more than one step. The code is shown in
 Snippet~\ref{lst:take_n_steps}.
-Since it may take a long time to run $n$ steps, we add a progress bar showing the
+Since it may take a long time to run \(n\) steps, we add a progress bar showing the
 progress during the simulation, using the \code{@showprogress} macro.

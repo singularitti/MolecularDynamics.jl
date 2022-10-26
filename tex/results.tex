@@ -3,12 +3,12 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{traces}
-    \caption{The traces of the $100$th to $1000$th particles from $t = 390$ to $t = 500$.}
+    \caption{The traces of the \(100\)th to \(1000\)th particles from \(t = 390\) to \(t = 500\).}
     \label{fig:traces}
 \end{figure}
 
-We select several particles ($100$th, $200$th, $\ldots$, $1000$th) and plot their traces
-from $t = 390$ to $t = 500$ (i.e., at $T \approx 1.073$) in Figure~\ref{fig:traces}.
+We select several particles (\(100\)th, \(200\)th, \(\ldots\), \(1000\)th) and plot their traces
+from \(t = 390\) to \(t = 500\) (i.e., at \(T \approx 1.073\)) in Figure~\ref{fig:traces}.
 The figure shows that these particles are wandering around a certain
 range. The straight lines passing through the box does not mean they just at a very
 large speed, since after thermalization, the speed of particles would not change so
@@ -23,7 +23,7 @@ The pressure is calculated from the virial theorem, as shown in~\eqref{eq:P}
     \biggl \langle r_i^\alpha \frac{ \partial u }{ \partial r_i^\alpha } \biggr \rangle,
 \end{equation}
 %
-where $i$ labels all the particles, and $\alpha$ labels the three spatial dimensions.
+where \(i\) labels all the particles, and \(\alpha\) labels the three spatial dimensions.
 Its dimensionless form is shown in~\eqref{eq:Pdimensionless}\cite{thijssen_2007}:
 %
 \begin{equation}\label{eq:Pdimensionless}
@@ -31,17 +31,17 @@ Its dimensionless form is shown in~\eqref{eq:Pdimensionless}\cite{thijssen_2007}
     \langle \bm{r}_i \cdot \bm{F}_i \rangle,
 \end{equation}
 %
-where $\bm{F}_i$ is the total force on the $i$th particle, and $\bm{r}_i$ is the
+where \(\bm{F}_i\) is the total force on the \(i\)th particle, and \(\bm{r}_i\) is the
 position of the particle.
-From Fig. 1 in the Verlet's paper\cite{Verlet}, we know that when $T = 1.069$,
-$\rho = 0.75$, $\beta P / \rho = 0.9$, and $\beta \approx 0.9415094$, so
+From Fig. 1 in the Verlet's paper\cite{Verlet}, we know that when \(T = 1.069\),
+\(\rho = 0.75\), \(\beta P / \rho = 0.9\), and \(\beta \approx 0.9415094\), so
 
 \begin{equation}
     P = \frac{ 0.9 \rho }{ \beta } \approx 0.721666.
 \end{equation}
 
-We pick steps from $15000$ to the last step (total $1046$ steps) and do the time average,
-what we get is $P \approx 0.9933$, which is quite different from Verlet's result.
+We pick steps from \(15000\) to the last step (total \(1046\) steps) and do the time average,
+what we get is \(P \approx 0.9933\), which is quite different from Verlet's result.
 This could result from the unit I used was not that correct?
 
 The Maxwell velocity distribution is
@@ -51,22 +51,22 @@ The Maxwell velocity distribution is
     4\pi v^2 \exp{\biggl( -\frac{m v^2}{2 k_B T} \biggr)},
 \end{equation}
 %
-where $f(v)$ is a probability distribution function, and $v$ is the magnitude of the
+where \(f(v)\) is a probability distribution function, and \(v\) is the magnitude of the
 velocity vector.
 We plot histograms of velocity distribution of the particles after
-$500$, $1000$, $2000$, $3000$, $5000$, $8000$, $10000$, $12000$, $16000$ steps,
+\(500\), \(1000\), \(2000\), \(3000\), \(5000\), \(8000\), \(10000\), \(12000\), \(16000\) steps,
 respectively, in Figure~\ref{fig:maxwell}.
 %
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{maxwell}
     \caption{Histograms of velocity distribution of the particles after
-        $500$, $1000$, $2000$, $3000$, $5000$, $8000$, $10000$, $12000$, $16000$ steps.}
+        \(500\), \(1000\), \(2000\), \(3000\), \(5000\), \(8000\), \(10000\), \(12000\), \(16000\) steps.}
     \label{fig:maxwell}
 \end{figure}
 %
 We can see that at the beginning of the computation, the velocities of the particles
 seem to be random, but as the number of time steps increases, a pattern starts to
-emerge. After the $5000$th step ($t = 160$), we can almost see a Maxwell distribution.
-From the $10000$th ($t = 320$) to the $16000$th ($t = 512$) steps, the pattern is
+emerge. After the \(5000\)th step (\(t = 160\)), we can almost see a Maxwell distribution.
+From the \(10000\)th (\(t = 320\)) to the \(16000\)th (\(t = 512\)) steps, the pattern is
 already Maxwellian and does not change so much.

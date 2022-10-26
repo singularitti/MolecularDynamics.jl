@@ -1,6 +1,6 @@
 \subsection{Applying periodic boundary conditions}\label{ssec:pbcs}
 
-Suppose we have a system of $N$ particles with number density $\rho$, thus the
+Suppose we have a system of \(N\) particles with number density \(\rho\), thus the
 box size will be
 
 \begin{equation}\label{eq:L}
@@ -21,7 +21,7 @@ cell.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{nic}
-    \caption{A center cell surrounded by $8$ more image cells with the same
+    \caption{A center cell surrounded by \(8\) more image cells with the same
         particles' relative locations and movements. Figure is from \cite{matlab}.}
     \label{fig:nic}
 \end{figure}
@@ -29,16 +29,16 @@ cell.
 When applying PBCs, particles near the edge of the cells often interact
 with an image particle rather than a particle in the cell. For example, we can create the
 situation shown below.
-In Figure~\ref{fig:nic}, the black border box is our center cell, and the $8$ others are
+In Figure~\ref{fig:nic}, the black border box is our center cell, and the \(8\) others are
 its replica. The relative positions and velocities of the particles in these image cells
 are exactly the same as their originals in the center cell. The red particle in the
 upper left corner of the center cell only interacts with its neighbors: some of the
 particles in the center cell plus some of the image particles in the image cells.
 We call the box enclosing the red particle's neighbors a ``virtual image cell''.
-The size of the virtual image cell (cutoff radius) is usually chosen as $L / 2$
-of the center cell. That is, any particle which is more than $L / 2$ away from the
+The size of the virtual image cell (cutoff radius) is usually chosen as \(L / 2\)
+of the center cell. That is, any particle which is more than \(L / 2\) away from the
 red particle in any direction is not included in the virtual image cell.
-If the cutoff radius is larger than $L / 2$, it may lead to
+If the cutoff radius is larger than \(L / 2\), it may lead to
 unphysical self-interactions, sometimes called an artifact.
 
 Another aspect of the PBCs is that when a particle hits a cell wall, instead of bouncing
@@ -47,7 +47,7 @@ treat it as an image particle from an adjacent cell enters the current cell.
 So the number of particles in a cell never increases or decreases in this case.
 
 \begin{algorithm}
-    \caption{Find the nearest image of particle $b$ which can interact with particle $a$.}
+    \caption{Find the nearest image of particle \(b\) which can interact with particle \(a\).}
     \label{lst:nic}
     \begin{juliacode}
         Δ𝐫 = b.coordinates - a.coordinates
@@ -64,18 +64,18 @@ So the number of particles in a cell never increases or decreases in this case.
 \end{algorithm}
 
 So how do we express the PBCs in mathematical and programming languages?
-Suppose we have two particles, $a$ and $b$, both in the center cell,
-and $a$ is the particle in which we
-are interested. The vector pointing from $a$ to $b$ is the difference between
+Suppose we have two particles, \(a\) and \(b\), both in the center cell,
+and \(a\) is the particle in which we
+are interested. The vector pointing from \(a\) to \(b\) is the difference between
 their positions:
 %
 \begin{equation}
     \bm{r} = \bm{r}_b - \bm{r}_a.
 \end{equation}
 %
-For any component $r_\alpha$ of $\bm{r}$, where $\alpha = 1, 2, 3$, if its absolute value
-is larger than $L / 2$, then we know $b$ is too far from $a$ to have effects on it,
-so we should shift $b$ closer to $a$ in the corresponding dimension:
+For any component \(r_\alpha\) of \(\bm{r}\), where \(\alpha = 1, 2, 3\), if its absolute value
+is larger than \(L / 2\), then we know \(b\) is too far from \(a\) to have effects on it,
+so we should shift \(b\) closer to \(a\) in the corresponding dimension:
 %
 \begin{equation}
     \begin{cases}
@@ -85,23 +85,23 @@ so we should shift $b$ closer to $a$ in the corresponding dimension:
     \end{cases}
 \end{equation}
 %
-where $r_{b, \alpha}$ is the component of the position of particle $b$ in the
+where \(r_{b, \alpha}\) is the component of the position of particle \(b\) in the
 corresponding dimension.
 The Julia code for the above procedure looks like Snippet~\ref{lst:nic}.
-The code will return a \code{Vector} representing the new position of particle $b$.
+The code will return a \code{Vector} representing the new position of particle \(b\).
 
-If $b$ is not in the same cell as $a$, we need first shift $b$ back to the cell where
-$a$ locates. That is,
+If \(b\) is not in the same cell as \(a\), we need first shift \(b\) back to the cell where
+\(a\) locates. That is,
 %
 \begin{equation}\label{eq:pbcs}
     (r_{b, \alpha} + 2L) \mod L,
 \end{equation}
 %
-where adding $2L$ is to catch any runaway particles\cite{Adrian} with $r_{b, \alpha} < -L$.
+where adding \(2L\) is to catch any runaway particles\cite{Adrian} with \(r_{b, \alpha} < -L\).
 The code representing \eqref{eq:pbcs} is in Snippet~\ref{lst:pbcs}.
 %
 \begin{algorithm}
-    \caption{Move particle $b$ back to the center cell.}
+    \caption{Move particle \(b\) back to the center cell.}
     \label{lst:pbcs}
     \begin{juliacode}
         f(rᵢ) = mod(rᵢ, L)
@@ -111,10 +111,10 @@ The code representing \eqref{eq:pbcs} is in Snippet~\ref{lst:pbcs}.
 %
 Here Julia already provides the modulo function (it works for floating point numbers)
 \href{https://docs.julialang.org/en/v1/base/math/#Base.mod}{\code{mod}}. Python and C++
-also have similar functions. And since $L$ is always positive, we do not need to worry
+also have similar functions. And since \(L\) is always positive, we do not need to worry
 about some nasty cases.
 In the snippet, we \code{map} function \code{f} over
-each component of the $b$'s position.
+each component of the \(b\)'s position.
 
 \begin{figure} % 2 subfigures
     \centering
@@ -131,22 +131,22 @@ each component of the $b$'s position.
         \subcaption{Viewing from another angle of neighbors of the selected particles.}
         \label{fig:neighbors:b}
     \end{minipage}
-    \caption{A system of $1000$ particles with $L \approx 11$. The blue points denote all
+    \caption{A system of \(1000\) particles with \(L \approx 11\). The blue points denote all
         the points in the center (original) cell, and the red and purple spheres are the
-        $500$th and $1000$th particle among them. The orange and green points are the
+        \(500\)th and \(1000\)th particle among them. The orange and green points are the
         neighbors of these points which have interactions with them.}
     \label{fig:neighbors}
 \end{figure}
 
 To ensure that we have the correct neighbors, we need to plot the positions of these particles.
-As shown in Figure \ref{fig:neighbors}, we have a system of $1000$ particles with
-$\rho = 0.75$, so $L \approx 11$. The blue points denote all
+As shown in Figure \ref{fig:neighbors}, we have a system of \(1000\) particles with
+\(\rho = 0.75\), so \(L \approx 11\). The blue points denote all
 the points in the center (original) cell, and the red and purple spheres are the
-$500$th and $1000$th particles among them. The orange and green points are the
+\(500\)th and \(1000\)th particles among them. The orange and green points are the
 neighbors of these points which have interactions with them. That is, they are bounded by a
-cubic whose centers are the $500$th and $1000$th particles,
-with size $L \approx 11$ in each dimension.
-There are $999$ points in both orange and green ``clouds'', and they do have overlaps
+cubic whose centers are the \(500\)th and \(1000\)th particles,
+with size \(L \approx 11\) in each dimension.
+There are \(999\) points in both orange and green ``clouds'', and they do have overlaps
 with the blue ``cloud''. From this, we know there is no double counting in our algorithm.
 
 The syntax in Snippet \ref{lst:nic} and \ref{lst:pbcs} may confuse users as we

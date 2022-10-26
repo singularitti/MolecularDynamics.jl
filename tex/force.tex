@@ -8,9 +8,9 @@ The original form of the two-particle potential would look like~\eqref{eq:uljuni
     -\Bigl( \frac{ \sigma }{ r_{ij} } \Bigr)^6 \biggr),
 \end{equation}
 %
-where the parameters for \ce{Ar} are $\varepsilon = 119.8 k_B \approx \SI{0.0103}{\electronvolt}$,
-$\sigma = \SI{3.405}{\angstrom}$, and $m = \SI{39.948}{\atomicmassunit}$, where
-$\si{\atomicmassunit}$ is the atomic mass unit.
+where the parameters for \ce{Ar} are \(\varepsilon = 119.8 k_B \approx \SI{0.0103}{\electronvolt}\),
+\(\sigma = \SI{3.405}{\angstrom}\), and \(m = \SI{39.948}{\atomicmassunit}\), where
+\(\si{\atomicmassunit}\) is the atomic mass unit.
 In the dimensionless form,
 the force would look like~\eqref{eq:flj}:
 %
@@ -46,12 +46,12 @@ And the numerical gradient of~\eqref{eq:uljunit} is
     \end{bmatrix}.
 \end{equation}
 %
-So in Snippet~\ref{lst:gradient} I define the $\nabla u$ and the acceleration
-particle $a$ experiences (induced only by particle $b$) as below.
+So in Snippet~\ref{lst:gradient} I define the \(\nabla u\) and the acceleration
+particle \(a\) experiences (induced only by particle \(b\)) as below.
 %
 \begin{algorithm}
     \caption{The gradient of the Lennard--Jones potential and the acceleration
-        $d^2 \bm{r}_a / d t^2$. Note the the negative sign.}
+        \(d^2 \bm{r}_a / d t^2\). Note the the negative sign.}
     \label{lst:gradient}
     \begin{juliacode}
         function potential_gradient(𝐫ᵢⱼ)
@@ -86,14 +86,14 @@ The corresponding unit test is shown in Snippet~\ref{lst:ut_gradient}.
 \end{algorithm}
 %
 The negative sign indicates the force is the negative gradient of the potential.
-To get the total potential energy of the swarm of particles, we sum up all the $i$'s
-and $j$'s (except for $j = i$) in~\eqref{eq:U}:
+To get the total potential energy of the swarm of particles, we sum up all the \(i\)'s
+and \(j\)'s (except for \(j = i\)) in~\eqref{eq:U}:
 %
 \begin{equation}\label{eq:U}
     U = \frac{ 1 }{ 2 }\sum_{\substack{i, j\\ j \neq i}} u(r_{ij}).
 \end{equation}
 %
-Note the $\frac{ 1 }{ 2 }$ factor in~\eqref{eq:U} since we count $i$ and $j$ twice.
+Note the \(\frac{ 1 }{ 2 }\) factor in~\eqref{eq:U} since we count \(i\) and \(j\) twice.
 Snippet~\ref{lst:U} does the same thing:
 
 \begin{algorithm}[H]
