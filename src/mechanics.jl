@@ -9,11 +9,11 @@ potential_energy(𝐫ᵢⱼ) = potential_energy(norm(𝐫ᵢⱼ))
 potential_energy(𝐫::Coordinates, 𝐫′::Coordinates) = potential_energy(𝐫 .- 𝐫′)
 potential_energy(a::Particle, b::Particle) = potential_energy(a.coordinates, b.coordinates)
 function potential_energy(particles::AbstractVector{Particle})
-    return sum(eachindex(particles)) do i
-        sum(filter(!=(i), eachindex(particles))) do j
-            potential_energy(particles[i], particles[j])
+    return sum(enumerate(particles[begin:(end - 1)])) do (i, particleᵢ)
+        sum(particles[(i + 1):end]) do particleⱼ
+            potential_energy(particleᵢ, particleⱼ)
         end
-    end / 2
+    end
 end
 
 function potential_gradient(𝐫)
