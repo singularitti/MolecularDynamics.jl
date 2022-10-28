@@ -19,30 +19,28 @@ Now let us calculate the \ce{Ar} system's thermodynamic properties.
 The pressure is calculated from the virial theorem, as shown in~\eqref{eq:P}
 %
 \begin{equation}\label{eq:P}
-    P = \rho k_B T - \frac{ \rho }{ 3N } \sum_{i=1}^{N} \sum_{\alpha=1}^{3}
+    \frac{ P }{ \rho k_B T } = 1 - \frac{ 1 }{ 3N k_B T } \sum_{i=1}^{N}
+    \sum_{\alpha=1}^{3}
     \biggl \langle r_i^\alpha \frac{ \partial u }{ \partial r_i^\alpha } \biggr \rangle,
 \end{equation}
 %
-where \(i\) labels all the particles, and \(\alpha\) labels the three spatial dimensions.
-Its dimensionless form is shown in~\eqref{eq:Pdimensionless}\cite{thijssen_2007}:
+where \(\langle \cdot \rangle\) denotes the time or ensemble average,
+and \(i\) labels all the particles, and \(\alpha\) labels the three spatial dimensions.
+Since the virial part is derived from \(u\), so the second term we get from our code
+is already in unit of \(k_B\). Theferfore, the actual code is
+equivalent to
 %
-\begin{equation}\label{eq:Pdimensionless}
-    P = 1 + \frac{ 1 }{ 3N } \sum_{i=1}^{N}
+\begin{equation}\label{eq:P}
+    \frac{ \beta P }{ \rho } = 1 + \frac{ 1 }{ 3N T } \sum_{i=1}^{N}
     \langle \bm{r}_i \cdot \bm{F}_i \rangle,
 \end{equation}
 %
-where \(\bm{F}_i\) is the total force on the \(i\)th particle, and \(\bm{r}_i\) is the
-position of the particle.
-From Fig. 1 in the Verlet's paper\cite{Verlet}, we know that when \(T = 1.069\),
-\(\rho = 0.75\), \(\beta P / \rho = 0.9\), and \(\beta \approx 0.9415094\), so
-
-\begin{equation}
-    P = \frac{ 0.9 \rho }{ \beta } \approx 0.721666.
-\end{equation}
+where \(\beta = \nicefrac{ 1 }{ k_B T }\) in Verlet's paper\cite{Verlet},
+which is \(0.90\) at \(\rho = 0.75\) and \(T = 1.069\).
 
 We pick steps from \(15000\) to the last step (total \(1046\) steps) and do the time average,
-what we get is \(P \approx 0.9933\), which is quite different from Verlet's result.
-This could result from the unit I used was not that correct?
+what we get is \(\nicefrac{ \beta P }{ \rho } \approx 0.80402\), which is quite
+different from \(0.90\).
 
 The Maxwell velocity distribution is
 %
