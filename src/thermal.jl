@@ -1,4 +1,5 @@
 using LinearAlgebra: dot
+using Statistics: mean
 
 export temperature, pressure
 
@@ -9,7 +10,7 @@ function temperature(particles)
     return 16 / length(particles) * sum(v²)
 end
 
-ensemble_average(property::AbstractArray) = sum(property) / length(property)
+ensemble_average(property::AbstractArray) = mean(property)
 
 function pressure(box, logger, start, stop, step=10)
     virial = @showprogress map(enumerate(logger.history[start:step:stop])) do (i, step)
