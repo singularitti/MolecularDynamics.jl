@@ -14,6 +14,9 @@ Plots.default(;
     grid=nothing,
     legend_foreground_color=nothing,
 )
+
+cummean(A) = cumsum(A) ./ (1:length(A))  # See https://discourse.julialang.org/t/cummean-cumall-and-cumany/46219/2
+
 particles = [Particle(rand(3), rand(3)) for _ in 1:1000];
 box = CubicBox(length(particles), 0.75)
 init!(particles, box, Even(), Uniform(zeros(Velocity)));
