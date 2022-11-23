@@ -1,4 +1,3 @@
-using LaTeXStrings
 using LinearAlgebra
 using MolecularDynamics
 using Plots
@@ -45,8 +44,8 @@ plot!(fig, simulation_time(logger), U; label="potential energy")
 plot!(fig, simulation_time(logger), E; label="total energy")
 xlims!(extrema(simulation_time(logger)))
 plot!(; legend=:left)
-xlabel!(L"simulation time ($t$)")
-ylabel!(L"energy ($\varepsilon$)")
+xlabel!(raw"simulation time ($t$)")
+ylabel!(raw"energy ($\varepsilon$)")
 savefig("e-t.pdf")
 
 let indices = 100:100:1000
@@ -62,9 +61,9 @@ let indices = 100:100:1000
     xlims!(0, box.side_length)
     ylims!(0, box.side_length)
     zlims!(0, box.side_length)
-    xlabel!(L"x ($\sigma$)")
-    ylabel!(L"y ($\sigma$)")
-    zlabel!(L"z ($\sigma$)")
+    xlabel!(raw"x ($\sigma$)")
+    ylabel!(raw"y ($\sigma$)")
+    zlabel!(raw"z ($\sigma$)")
 end
 
 let steps = (500, 1000, 2000, 3000, 5000, 8000, 10000, 12000, 16000)
@@ -80,7 +79,7 @@ let steps = (500, 1000, 2000, 3000, 5000, 8000, 10000, 12000, 16000)
                 framestyle=:box,
                 xlims=extrema(velocities),
                 ylims=(0, Inf),
-                xlabel=L"velocity ($v$)",
+                xlabel=raw"velocity ($v$)",
                 ylabel="frequency",
                 titlefontsize=5,
                 labelfontsize=5,
@@ -104,5 +103,5 @@ plot(
 )
 xlims!(extrema(simulation_time(logger)))
 plot!(; legend=:left)
-xlabel!(L"time ($t$)")
-ylabel!(L"temperature ($T$)")
+xlabel!(raw"time ($t$)")
+ylabel!(raw"temperature ($T$)")
