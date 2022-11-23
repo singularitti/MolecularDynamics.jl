@@ -1,5 +1,5 @@
 using LinearAlgebra: norm
-using StaticArrays: MVector, FieldVector
+using StaticArrays: FieldVector
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
 export Coordinates, Velocity, Force, Particle, CubicBox
