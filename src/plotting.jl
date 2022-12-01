@@ -1,11 +1,6 @@
-using RecipesBase: RecipesBase, @userplot, @recipe
+using RecipesBase: RecipesBase, @recipe
 
-export coordplot
-
-@userplot CoordPlot
-@recipe function f(plot::CoordPlot)
-    # See http://juliaplots.org/RecipesBase.jl/stable/types/#User-Recipes-2
-    particles = plot.args[end]  # Extract `magnetization` from the args
+@recipe function f(particles::AbstractArray{Particle})
     seriestype --> :scatter3d
     markersize --> 1
     markerstrokecolor --> :auto
