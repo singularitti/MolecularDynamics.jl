@@ -1,7 +1,7 @@
 using ProgressMeter: progress_map
 using RecipesBase: RecipesBase, @recipe, @userplot, @series
 
-export energyplot
+export energyplot, temperatureplot
 
 @recipe function f(particles::AbstractArray{Particle})
     seriestype --> :scatter3d
@@ -52,4 +52,24 @@ end
             time, energy
         end
     end
+end
+
+@userplot TemperaturePlot
+@recipe function f(plot::TemperaturePlot)
+    # See http://juliaplots.org/RecipesBase.jl/stable/types/#User-Recipes-2
+    logger = plot.args[end]  # Extract `trace` from the args
+    time = simulation_time(logger)
+    T = temperature.(step.snapshot for step in logger.history)
+    size --> (700, 400)
+    seriestype --> :path
+    xlims --> extrema(time)
+    xguide --> raw"simulation time ($t$)"
+    yguide --> raw"temperature ($T$)"
+    guidefontsize --> 10
+    tickfontsize --> 8
+    legend --> :none
+    frame --> :box
+    palette --> :tab10
+    grid --> nothing
+    return time, T
 end
