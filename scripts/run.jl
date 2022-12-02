@@ -4,16 +4,6 @@ using Plots
 using Plots.Measures
 using ProgressMeter
 
-Plots.default(;
-    framestyle=:box,
-    labelfontsize=12,
-    tickfontsize=10,
-    legendfontsize=12,
-    palette=:tab10,
-    grid=nothing,
-    legend_foreground_color=nothing,
-)
-
 cummean(A) = cumsum(A) ./ (1:length(A))  # See https://discourse.julialang.org/t/cummean-cumall-and-cumany/46219/2
 
 particles = [Particle(rand(3), rand(3)) for _ in 1:1000];
