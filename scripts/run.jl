@@ -79,13 +79,4 @@ let steps = (500, 1000, 2000, 3000, 5000, 8000, 10000, 12000, 16000)
     savefig("maxwell.pdf")
 end
 
-plot(
-    simulation_time(logger),
-    temperature.(step.snapshot for step in logger.history);
-    label="temperature",
-    framestyle=:box,
-)
-xlims!(extrema(simulation_time(logger)))
-plot!(; legend=:left)
-xlabel!(raw"time ($t$)")
-ylabel!(raw"temperature ($T$)")
+temperatureplot(logger)
