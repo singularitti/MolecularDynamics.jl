@@ -29,13 +29,7 @@ T = map(logger.history) do step
 end
 E = U .+ T
 
-fig = plot(simulation_time(logger), T; label="kinetic energy", framestyle=:box)
-plot!(fig, simulation_time(logger), U; label="potential energy")
-plot!(fig, simulation_time(logger), E; label="total energy")
-xlims!(extrema(simulation_time(logger)))
-plot!(; legend=:left)
-xlabel!(raw"simulation time ($t$)")
-ylabel!(raw"energy ($\varepsilon$)")
+energyplot(logger)
 savefig("e-t.pdf")
 
 let indices = 100:100:1000
