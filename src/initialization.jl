@@ -1,4 +1,4 @@
-export Random, Even, Uniform
+export Random, Even, Uniform, relax!
 
 abstract type CoordinatesDistribution end
 struct Random <: CoordinatesDistribution end
@@ -43,5 +43,13 @@ end
 function damp!(particles, box, n, Δt)
     take_n_steps!(particles, box, n, Δt, VelocityVerlet())
     init_velocities!(particles)
+    return particles
+end
+
+function relax!(particles, box, Δt)
+    for (particle, 𝐟) in zip(particles, force(particles, box))
+        particle.coordinates .+= 𝐟 .* Δt
+        map!(Base.Fix2(mod, box.side_length), particle.coordinates, particle.coordinates)  # Move `𝐫` back to `0 - L` range
+    end
     return particles
 end
