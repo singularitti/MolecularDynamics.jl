@@ -1,7 +1,7 @@
 using ProgressMeter: progress_map
 using RecipesBase: RecipesBase, @recipe, @userplot, @series
 
-export energyplot, temperatureplot
+export energyplot, temperatureplot, traceplot
 
 @recipe function f(particles::AbstractArray{Particle})
     seriestype --> :scatter3d
@@ -18,6 +18,23 @@ export energyplot, temperatureplot
     palette --> :tab10
     X, Y, Z = getcoordinates(particles)()
     return X, Y, Z
+end
+
+@userplot TracePlot
+@recipe function f(plot::TracePlot)
+    # See http://juliaplots.org/RecipesBase.jl/stable/types/#User-Recipes-2
+    trace, index = plot.args
+    particles = map(trace) do step
+        step.snapshot[index]
+    end
+    formatter --> :plain
+    palette --> :tab20
+    for type in (:scatter, :path)
+        @series begin
+            seriestype --> type
+            particles
+        end
+    end
 end
 
 @userplot EnergyPlot
