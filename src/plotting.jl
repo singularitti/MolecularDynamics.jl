@@ -13,9 +13,9 @@ export energyplot, temperatureplot
     zguide --> raw"$z / \sigma$"
     guidefontsize --> 10
     tickfontsize --> 8
-    legendfontsize --> 8
-    legend_foreground_color --> nothing
+    legend --> :none
     frame --> :box
+    palette --> :tab10
     X, Y, Z = getcoordinates(particles)()
     return X, Y, Z
 end
