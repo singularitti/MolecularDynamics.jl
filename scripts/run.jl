@@ -33,21 +33,9 @@ energyplot(logger)
 savefig("e-t.pdf")
 
 let indices = 100:100:1000
-    L = box.side_length
     for index in indices
-        particle = map(12200:50:length(logger.history)) do step
-            extract(Particle, logger, step, index)
-        end
-        plot!(getcoordinates(particle)(); label="particle $index", palette=:tab20)
-        scatter3d!(getcoordinates(particle)(); markersizes=1, markerstrokewidth=0, label="")
+        traceplot(logger.history[12200:50:end], index)
     end
-    plot!(; legend=:none, framestyle=:box)
-    xlims!(0, box.side_length)
-    ylims!(0, box.side_length)
-    zlims!(0, box.side_length)
-    xlabel!(raw"x ($\sigma$)")
-    ylabel!(raw"y ($\sigma$)")
-    zlabel!(raw"z ($\sigma$)")
 end
 
 let steps = (500, 1000, 2000, 3000, 5000, 8000, 10000, 12000, 16000)
