@@ -1,12 +1,11 @@
 using ElasticArrays: ElasticVector
-using StaticArrays: SVector
 
 export Step, Logger
 export extract, nsteps, simulation_time
 
 struct Step{N}
     Δt::Float64
-    snapshot::SVector{N,Particle}
+    snapshot::NTuple{N,Particle}
 end
 
 struct Logger{N}
