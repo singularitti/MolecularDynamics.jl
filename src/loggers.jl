@@ -37,7 +37,7 @@ extract(::Type{Particle}, particle::Particle) = particle
 
 simulation_time(logger::Logger) = cumsum(step.Δt for step in logger.history)
 
-nsteps(logger::Logger) = size(logger.history, 2)
+nsteps(logger::Logger) = length(logger.trajectory)
 
 function Base.show(io::IO, logger::Logger{N}) where {N}
     if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(logger)
