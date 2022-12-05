@@ -30,7 +30,7 @@ function take_n_steps!(
 ) where {N}
     @showprogress for _ in 1:n
         take_one_step!(particles, box, Δt, VelocityVerlet())
-        push!(logger.trajectory, Step(Δt, SVector{N}(deepcopy(particles))))
+        push!(logger.trajectory, Step(Δt, Tuple(deepcopy(particles))))
     end
     return particles
 end
