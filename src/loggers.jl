@@ -3,9 +3,9 @@ using ElasticArrays: ElasticVector
 export Step, Logger
 export extract, nsteps, simulation_time
 
-struct Step{N}
+struct Step
     Δt::Float64
-    snapshot::NTuple{N,Particle}
+    snapshot::Vector{Particle}
 end
 
 struct Logger{N}
