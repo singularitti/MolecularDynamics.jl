@@ -35,7 +35,7 @@ savefig("e-t.pdf")
 
 let indices = 100:100:1000
     for index in indices
-        traceplot(logger.history[12200:50:end], index)
+        traceplot(logger.trajectory[12200:50:end], index)
     end
 end
 
