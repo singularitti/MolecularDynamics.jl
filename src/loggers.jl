@@ -8,10 +8,10 @@ struct Step
     snapshot::Vector{Particle}
 end
 
-struct Logger{N}
-    trajectory::ElasticVector{Step{N}}
+struct Logger
+    trajectory::ElasticVector{Step}
 end
-Logger(N::Integer) = Logger{N}(ElasticVector(Step{N}[]))
+Logger() = Logger(ElasticVector(Step[]))
 
 function extract(::Type{T}, logger::Logger) where {T}
     return map(logger.trajectory) do step
