@@ -4,27 +4,28 @@ using Plots
 using Plots.Measures
 using ProgressMeter
 
-cummean(A) = cumsum(A) ./ (1:length(A))  # See https://discourse.julialang.org/t/cummean-cumall-and-cumany/46219/2
-
 particles = [Particle(rand(3), rand(3)) for _ in 1:1000];
 box = CubicBox(length(particles), 0.75)
-init!(particles, box, Even(), Uniform(zeros(Velocity)));
-logger = Logger(length(particles))
-Δt = 0.032
+init!(particles, box, Random(), Uniform(zeros(Velocity)));
+logger = Logger()
+Δt = 0.0001
 
-take_n_steps!(logger, particles, box, 4000, Δt, VelocityVerlet())
-apply_coupling!(particles, VelocityRescaling(1.069))
+for _ in 1:100
+    relax!(particles, box, Δt)
+    # damp!(particles, box, 1, Δt)
+    println(potential_energy(particles))
+end
 
-U = progress_map(logger.history) do step
+take_n_steps!(logger, particles, box, 10, Δt, VelocityVerlet())
+while abs(temperature(particles) - 1.069) >= 0.01
+    apply_coupling!(particles, VelocityRescaling(1.069))
+    take_n_steps!(logger, particles, box, 2, Δt, VelocityVerlet())
+end
+
+U = progress_map(logger.trajectory) do step
     potential_energy(step.snapshot)
 end
-# append!(
-#     U,
-#     progress_map((length(U) + 1):length(logger.history)) do i
-#         potential_energy(logger.history[i].snapshot)
-#     end,
-# )
-T = map(logger.history) do step
+T = map(logger.trajectory) do step
     kinetic_energy(step.snapshot)
 end
 E = U .+ T
