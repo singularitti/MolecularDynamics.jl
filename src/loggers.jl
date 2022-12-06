@@ -38,11 +38,11 @@ simulation_time(logger::Logger) = cumsum(step.Δt for step in logger.trajectory)
 
 nsteps(logger::Logger) = length(logger.trajectory)
 
-function Base.show(io::IO, logger::Logger{N}) where {N}
+function Base.show(io::IO, logger::Logger)
     if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(logger)
         Base.show_default(IOContext(io, :limit => true), logger)  # From https://github.com/mauro3/Parameters.jl/blob/ecbf8df/src/Parameters.jl#L556
     else
         println(io, summary(logger))
-        print(io, " total ", length(logger.trajectory), " steps for ", N, " particles")
+        print(io, length(logger.trajectory), " steps")
     end
 end
