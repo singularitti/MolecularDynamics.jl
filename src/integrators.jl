@@ -25,15 +25,13 @@ function take_n_steps!(particles, box::Box, n, Δt, ::VelocityVerlet)
     end
     return particles
 end
-function take_n_steps!(
-    logger::Logger{N}, particles, box::Box, n, Δt, ::VelocityVerlet
-) where {N}
+function take_n_steps!(logger::Logger, particles, box::Box, n, Δt, ::VelocityVerlet)
     if !isempty(logger.trajectory)
-        push!(logger.trajectory, Step(Δt, Tuple(deepcopy(particles))))
+        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
     end
     @showprogress for _ in 1:n
         take_one_step!(particles, box, Δt, VelocityVerlet())
-        push!(logger.trajectory, Step(Δt, Tuple(deepcopy(particles))))
+        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
     end
     return particles
 end
