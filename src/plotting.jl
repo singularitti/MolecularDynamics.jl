@@ -42,10 +42,10 @@ end
     # See http://juliaplots.org/RecipesBase.jl/stable/types/#User-Recipes-2
     logger = plot.args[end]  # Extract `trace` from the args
     time = simulation_time(logger)
-    U = progress_map(logger.history) do step
+    U = progress_map(logger.trajectory) do step
         potential_energy(step.snapshot)
     end
-    T = map(logger.history) do step
+    T = map(logger.trajectory) do step
         kinetic_energy(step.snapshot)
     end
     E = U .+ T
@@ -76,7 +76,7 @@ end
     # See http://juliaplots.org/RecipesBase.jl/stable/types/#User-Recipes-2
     logger = plot.args[end]  # Extract `trace` from the args
     time = simulation_time(logger)
-    T = temperature.(step.snapshot for step in logger.history)
+    T = temperature.(step.snapshot for step in logger.trajectory)
     size --> (700, 400)
     seriestype --> :path
     xlims --> extrema(time)
