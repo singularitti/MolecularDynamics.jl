@@ -58,7 +58,7 @@ end
     tickfontsize --> 8
     legendfontsize --> 8
     legend_foreground_color --> nothing
-    legend_position --> :right
+    legend_position --> :topright
     frame --> :box
     palette --> :tab10
     grid --> nothing
