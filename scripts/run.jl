@@ -4,9 +4,9 @@ using Plots
 using Plots.Measures
 using ProgressMeter
 
-particles = [Particle(rand(3), rand(3)) for _ in 1:1000];
+particles = [Particle(rand(3), rand(3)) for _ in 1:864];
 box = CubicBox(length(particles), 0.75)
-init!(particles, box, Random(), Uniform(zeros(Velocity)));
+init!(particles, box, Random(), UniformVelocity(zeros(Velocity)));
 logger = Logger()
 Δt = 0.0001
 
@@ -16,10 +16,13 @@ for _ in 1:100
     println(potential_energy(particles))
 end
 
-take_n_steps!(logger, particles, box, 10, Δt, VelocityVerlet())
+# integrator = VelocityVerlet()
+integrator = MetropolisHastings(1 / 1.069)
+
+take_n_steps!(logger, particles, box, 400, Δt, integrator)
 while abs(temperature(particles) - 1.069) >= 0.01
     apply_coupling!(particles, VelocityRescaling(1.069))
-    take_n_steps!(logger, particles, box, 2, Δt, VelocityVerlet())
+    take_n_steps!(logger, particles, box, 2, Δt, integrator)
 end
 
 U = progress_map(logger.trajectory) do step
