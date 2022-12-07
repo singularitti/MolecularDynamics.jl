@@ -1,11 +1,11 @@
-export Random, Even, Uniform, relax!
+export Random, Even, UniformVelocity, relax!
 
 abstract type CoordinatesDistribution end
 struct Random <: CoordinatesDistribution end
 struct Even <: CoordinatesDistribution end
 
 abstract type VelocityDistribution end
-struct Uniform <: VelocityDistribution
+struct UniformVelocity <: VelocityDistribution
     velocity::Velocity
 end
 struct MaxwellBoltzmann <: VelocityDistribution end
@@ -25,7 +25,7 @@ function init_coordinates!(particles, box::Box, ::Random)
     return particles
 end
 
-function init_velocities!(particles, dist::Uniform=Uniform(zeros(Velocity)))
+function init_velocities!(particles, dist::UniformVelocity=UniformVelocity(zeros(Velocity)))
     for particle in particles
         particle.velocity = dist.velocity
     end
