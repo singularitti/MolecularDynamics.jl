@@ -1,4 +1,3 @@
-using Distributions: Uniform
 using ProgressMeter: @showprogress
 
 export VelocityVerlet, MetropolisHastings
@@ -24,7 +23,7 @@ function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
 end
 function take_one_step!(particles, box::Box, Δt, integrator::MetropolisHastings)
     for (i, particle) in enumerate(particles)
-        velocity = particle.velocity + 2 * rand(Uniform(-0.5, 0.5), 3)
+        velocity = particle.velocity .+ 2 * (rand(3) .- 0.5)  # Random numbers from -0.5 to 0.5
         coordinates = particle.coordinates .+ velocity * Δt
         map!(Base.Fix2(mod, box.side_length), coordinates, coordinates)  # Move `𝐫` back to `0 - L` range
         new_particle = Particle(coordinates, velocity)

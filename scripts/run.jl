@@ -6,7 +6,7 @@ using ProgressMeter
 
 particles = [Particle(rand(3), rand(3)) for _ in 1:864];
 box = CubicBox(length(particles), 0.75)
-init!(particles, box, Random(), UniformVelocity(zeros(Velocity)));
+init!(particles, box, Random(), Uniform(zeros(Velocity)));
 logger = Logger()
 Δt = 0.0001
 
