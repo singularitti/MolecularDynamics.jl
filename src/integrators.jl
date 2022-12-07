@@ -40,18 +40,18 @@ function take_one_step!(particles, box::Box, Δt, integrator::MetropolisHastings
     return particles
 end
 
-function take_n_steps!(particles, box::Box, n, Δt, ::VelocityVerlet)
+function take_n_steps!(particles, box::Box, n, Δt, integrator::Integrator)
     @showprogress for _ in 1:n
-        take_one_step!(particles, box, Δt, VelocityVerlet())
+        take_one_step!(particles, box, Δt, integrator)
     end
     return particles
 end
-function take_n_steps!(logger::Logger, particles, box::Box, n, Δt, ::VelocityVerlet)
+function take_n_steps!(logger::Logger, particles, box::Box, n, Δt, integrator::Integrator)
     if !isempty(logger.trajectory)
         push!(logger.trajectory, Step(Δt, deepcopy(particles)))
     end
     @showprogress for _ in 1:n
-        take_one_step!(particles, box, Δt, VelocityVerlet())
+        take_one_step!(particles, box, Δt, integrator)
         push!(logger.trajectory, Step(Δt, deepcopy(particles)))
     end
     return particles
