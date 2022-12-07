@@ -1,10 +1,13 @@
 using ProgressMeter: @showprogress
 
-export VelocityVerlet
+export VelocityVerlet, MetropolisHastings
 export take_one_step!, take_n_steps!
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
+struct MetropolisHastings <: Integrator
+    β::Float64
+end
 
 function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
     for (particle, 𝐟) in zip(particles, force(particles, box))
