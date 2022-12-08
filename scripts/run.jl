@@ -36,9 +36,10 @@ E = U .+ T
 energyplot(logger)
 savefig("e-t.pdf")
 
+plot()
 let indices = 100:100:1000
     for index in indices
-        traceplot(logger.trajectory[12200:50:end], index)
+        traceplot!(logger.trajectory[12200:50:end], index)
     end
 end
 
