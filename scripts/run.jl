@@ -43,33 +43,12 @@ let indices = 100:100:1000
     end
 end
 
-let steps = (500, 1000, 2000, 3000, 5000, 8000, 10000, 12000, 16000)
-    plot_array = []
-    for step in steps
-        velocities = norm.(extract(Velocity, logger, step))
-        push!(
-            plot_array,
-            histogram(
-                velocities;
-                title=string(step) * "th step",
-                legend=:none,
-                framestyle=:box,
-                xlims=extrema(velocities),
-                ylims=(0, Inf),
-                xlabel=raw"velocity ($v$)",
-                ylabel="frequency",
-                titlefontsize=5,
-                labelfontsize=5,
-                tickfontsize=4,
-                bottom_margin=-1mm,
-                top_margin=-1mm,
-                right_margin=0mm,
-                right_margin=-1mm,
-            ),
-        )
-    end
-    plot(plot_array...)
-    savefig("maxwell.pdf")
+steps = (19000, 2000)
+function plothist(step)
+    velocities = norm.(extract(Velocity, logger, step))
+    velocityhist(velocities)
+    savefig("velocityhist_$step.pdf")
+    return current()
 end
 
 temperatureplot(logger)
