@@ -1,7 +1,7 @@
 using ProgressMeter: progress_map
 using RecipesBase: RecipesBase, @recipe, @userplot, @series
 
-export energyplot, temperatureplot, traceplot
+export energyplot, temperatureplot, traceplot, velocityhist
 
 @recipe function f(particles::AbstractArray{Particle})
     seriestype --> :scatter3d
@@ -89,4 +89,20 @@ end
     palette --> :tab10
     grid --> nothing
     return time, T
+end
+
+@userplot VelocityHist
+@recipe function f(plot::VelocityHist)
+    velocities = plot.args[end]  # Extract `velocities` from the args
+    seriestype --> :histogram
+    xlims --> extrema(velocities)
+    ylims --> (0, Inf)
+    xlabel --> raw"velocity ($v$)"
+    ylabel --> "frequency"
+    guidefontsize --> 10
+    tickfontsize --> 8
+    legend --> :none
+    framestyle --> :box
+    grid --> nothing
+    return velocities
 end
