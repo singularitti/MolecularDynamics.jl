@@ -22,20 +22,26 @@ function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
     return particles
 end
 function take_one_step!(particles, box::Box, Δt, integrator::MetropolisHastings)
+    # count = 0
     for (i, particle) in enumerate(particles)
-        velocity = particle.velocity .+ 2 * (rand(3) .- 0.5)  # Random numbers from -0.5 to 0.5
+        velocity = rand(3) .- 0.5
+        # velocity = particle.velocity .+ Δvelocity  # Random numbers from -0.5 to 0.5
         coordinates = particle.coordinates .+ velocity * Δt
         map!(Base.Fix2(mod, box.side_length), coordinates, coordinates)  # Move `𝐫` back to `0 - L` range
-        new_particle = Particle(coordinates, velocity)
+        new_particle = Particle(coordinates, particle)  # Only change coordinates
         new_particles = map(enumerate(particles)) do (j, old_particle)
             j == i ? new_particle : old_particle
         end
-        ΔE = potential_energy(new_particles) - potential_energy(particles)
+        ΔEₚ = potential_energy(new_particles) - potential_energy(particles)
+        # ΔEₖ = kinetic_energy(new_particle) - kinetic_energy(particle)
+        ΔE = ΔEₚ
         P = exp(-integrator.β * ΔE)
         if P > rand()
             particles[i] = new_particle
+            # count += 1
         end
     end
+    # @show rate = count / length(particles)
     return particles
 end
 
