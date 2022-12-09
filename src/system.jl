@@ -4,16 +4,7 @@ using StructEquality: @struct_hash_equal_isequal_isapprox
 
 export Coordinates, Velocity, Force, Particle, CubicBox
 export distance,
-    find_neighbors,
-    boxsize,
-    boxvolume,
-    number_density,
-    init_coordinates!,
-    init_velocities!,
-    init!,
-    damp!,
-    getcoordinates,
-    getvelocities
+    find_neighbors, boxsize, boxvolume, number_density, getcoordinates, getvelocities
 
 mutable struct Coordinates <: FieldVector{3,Float64}
     x::Float64
