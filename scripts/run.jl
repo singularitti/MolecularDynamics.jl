@@ -9,8 +9,7 @@ logger = Logger()
 Δt = 0.0001
 
 for _ in 1:100
-    relax!(particles, box, Δt)
-    # damp!(particles, box, 1, Δt)
+    relax!(particles, box, 1, Δt)
     println(potential_energy(particles))
 end
 
