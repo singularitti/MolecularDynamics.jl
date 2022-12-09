@@ -25,14 +25,6 @@ while abs(temperature(particles) - 1.069) >= 0.01
     thermostat!(particles, VelocityRescaling(1.069))
 end
 
-U = progress_map(logger.trajectory) do step
-    potential_energy(step.snapshot)
-end
-T = map(logger.trajectory) do step
-    kinetic_energy(step.snapshot)
-end
-E = U .+ T
-
 energyplot(logger)
 savefig("e-t.pdf")
 
