@@ -6,7 +6,7 @@ particles = [Particle(rand(3), rand(3)) for _ in 1:864];
 box = CubicBox(length(particles), 0.75)
 init!(particles, box, Random(), Uniform(zeros(Velocity)));
 logger = Logger()
-Δt = 0.0001
+Δt = 0.02
 
 for _ in 1:100
     relax!(particles, box, 1, Δt)
@@ -15,6 +15,7 @@ end
 
 # integrator = VelocityVerlet()
 integrator = MetropolisHastings(1 / 1.069)
+take_n_steps!(logger, particles, box, 500, Δt, 0.6, 0.05, integrator)
 
 take_n_steps!(logger, particles, box, 400, Δt, integrator)
 while abs(temperature(particles) - 1.069) >= 0.01
