@@ -32,9 +32,9 @@ function take_one_step!(particles, box::Box, Δt, integrator::MetropolisHastings
         new_particles = map(enumerate(particles)) do (j, old_particle)
             j == i ? new_particle : old_particle
         end
-        ΔEₚ = potential_energy(new_particles) - potential_energy(particles)
-        # ΔEₖ = kinetic_energy(new_particle) - kinetic_energy(particle)
-        ΔE = ΔEₚ
+        ΔU = potential_energy(new_particles) - potential_energy(particles)
+        # ΔK = kinetic_energy(new_particle) - kinetic_energy(particle)
+        ΔE = ΔU
         P = exp(-integrator.β * ΔE)
         if P > rand()
             particles[i] = new_particle
