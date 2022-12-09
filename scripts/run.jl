@@ -21,8 +21,8 @@ integrator = MetropolisHastings(1 / 1.069)
 
 take_n_steps!(logger, particles, box, 400, Δt, integrator)
 while abs(temperature(particles) - 1.069) >= 0.01
-    apply_coupling!(particles, VelocityRescaling(1.069))
     take_n_steps!(logger, particles, box, 2, Δt, integrator)
+    thermostat!(particles, VelocityRescaling(1.069))
 end
 
 U = progress_map(logger.trajectory) do step
