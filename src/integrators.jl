@@ -61,3 +61,15 @@ function take_n_steps!(logger::Logger, particles, box::Box, n, Δt, integrator::
     end
     return particles
 end
+function take_n_steps!(
+    logger::Logger, particles, box::Box, n, Δt, δv, δr, integrator::MetropolisHastings
+)
+    if !isempty(logger.trajectory)
+        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
+    end
+    @showprogress for _ in 1:n
+        take_one_step!(particles, box, δv, δr, integrator)
+        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
+    end
+    return particles
+end
