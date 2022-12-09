@@ -12,9 +12,8 @@ end
 
 ensemble_average(property::AbstractArray) = mean(property)
 
-function virial(box, logger, start, stop, step=10)
-    range = start:step:stop
-    return @showprogress map(range, logger.trajectory[range]) do i, step
+function virial(box, logger, indices)
+    return @showprogress map(indices, logger.trajectory[indices]) do i, step
         particles = step.snapshot
         sum(eachindex(particles)) do j
             𝐫 = extract(Coordinates, logger, i, j)
@@ -24,9 +23,9 @@ function virial(box, logger, start, stop, step=10)
     end
 end
 
-function pressure(box, logger, start, stop, step=10)
-    𝐫𝐅 = virial(box, logger, start, stop, step)
+function pressure(box, logger, indices)
+    𝐫𝐅 = virial(box, logger, indices)
     N = length(logger.trajectory[1].snapshot)
-    temp = mean([temperature(x.snapshot) for x in logger.trajectory[start:step:stop]])
+    temp = mean([temperature(x.snapshot) for x in logger.trajectory[indices]])
     return 1 + ensemble_average(𝐫𝐅) / 3N / temp
 end
