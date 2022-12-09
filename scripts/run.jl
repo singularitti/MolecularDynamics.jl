@@ -1,8 +1,6 @@
-using LinearAlgebra
+using LinearAlgebra: norm
 using MolecularDynamics
 using Plots
-using Plots.Measures
-using ProgressMeter
 
 particles = [Particle(rand(3), rand(3)) for _ in 1:864];
 box = CubicBox(length(particles), 0.75)
