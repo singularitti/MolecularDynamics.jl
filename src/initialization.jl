@@ -1,4 +1,5 @@
 export Random, Even, Uniform
+export init!, init_coordinates!, init_velocities!, relax!
 
 abstract type CoordinatesDistribution end
 struct Random <: CoordinatesDistribution end
@@ -40,7 +41,7 @@ function init!(
     return particles
 end
 
-function damp!(particles, box, n, Δt)
+function relax!(particles, box, n, Δt)
     take_n_steps!(particles, box, n, Δt, VelocityVerlet())
     init_velocities!(particles, Uniform(zeros(Velocity)))
     return particles
