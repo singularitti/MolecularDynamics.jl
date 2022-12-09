@@ -2,7 +2,7 @@ using LinearAlgebra: norm
 using StaticArrays: FieldVector
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
-export Coordinates, Velocity, Force, Particle, CubicBox, shift
+export Coordinates, Velocity, Force, Particle, CubicBox
 export distance,
     find_neighbors,
     boxsize,
@@ -55,19 +55,6 @@ CubicBox(number::Integer, density::Real) = CubicBox(cbrt(number / density))
 
 distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
-
-function shift(𝐫::Coordinates, box::Box)
-    L = box.side_length
-    return map(𝐫) do rᵢ
-        if rᵢ > L / 2
-            rᵢ - L
-        elseif rᵢ < -L / 2
-            rᵢ + L
-        else  # abs(rᵢ) <= L / 2
-            rᵢ  # Do not shift
-        end
-    end
-end
 
 function find_nearest_image(b::Particle, box::Box)
     L = box.side_length
