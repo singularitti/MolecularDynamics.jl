@@ -22,7 +22,6 @@ function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
     return particles
 end
 function take_one_step!(particles, box::Box, δv, δr, integrator::MetropolisHastings)
-    # count = 0
     for (i, particle) in enumerate(particles)
         r = rand(3) .- 0.5  # Random numbers from -0.5 to 0.5
         velocity = particle.velocity .+ δv .* r
@@ -38,10 +37,8 @@ function take_one_step!(particles, box::Box, δv, δr, integrator::MetropolisHas
         P = exp(-integrator.β * ΔE)
         if P > rand()
             particles[i] = new_particle
-            # count += 1
         end
     end
-    # @show rate = count / length(particles)
     return particles
 end
 
