@@ -9,18 +9,22 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: main.tex
+          pre_compile: |
+            wget -O JuliaMono-ttf.zip https://github.com/cormullion/juliamono/releases/latest/download/JuliaMono-ttf.zip
+            unzip -d JuliaMono-ttf/ JuliaMono-ttf.zip
+            mv JuliaMono-ttf /usr/share/fonts/
           working_directory: tex
-          latexmk_use_lualatex: true
+          root_file: main.tex
           latexmk_shell_escape: true
-          extra_fonts: JuliaMono-ttf/*.ttf
+          latexmk_use_xelatex: true
           extra_system_packages: "py-pygments"
-          pre_compile: wget https://github.com/cormullion/juliamono/releases/download/v0.046/JuliaMono-ttf.tar.gz && tar xvf JuliaMono-ttf.tar.gz
+          extra_fonts: /usr/share/fonts/JuliaMono-ttf/*.ttf
       - uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: main.pdf
+          path: tex/main.pdf
+          if-no-files-found: error
       - uses: AButler/upload-release-assets@v2.0
         with:
-          files: main.pdf
+          files: tex/main.pdf
           repo-token: ${{ secrets.GITHUB_TOKEN }}
