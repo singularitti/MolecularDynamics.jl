@@ -24,7 +24,7 @@ jobs:
           name: PDF
           path: tex/main.pdf
           if-no-files-found: error
-      - uses: AButler/upload-release-assets@v2.0
+      - uses: AButler/upload-release-assets@v3.0
         with:
           files: tex/main.pdf
           repo-token: ${{ secrets.GITHUB_TOKEN }}
