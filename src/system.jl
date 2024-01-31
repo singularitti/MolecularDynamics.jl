@@ -1,28 +1,34 @@
 using LinearAlgebra: norm
-using StaticArrays: FieldVector
+using StaticArrays: FieldVector, Size
 using StructEquality: @struct_hash_equal_isequal_isapprox
+
+import StaticArrays: similar_type
 
 export Coordinates, Velocity, Force, Particle, CubicBox
 export distance,
     find_neighbors, boxsize, boxvolume, number_density, getcoordinates, getvelocities
 
-mutable struct Coordinates <: FieldVector{3,Float64}
-    x::Float64
-    y::Float64
-    z::Float64
+struct Coordinates{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
 end
 
-mutable struct Velocity <: FieldVector{3,Float64}
-    x::Float64
-    y::Float64
-    z::Float64
+struct Velocity{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
 end
 
-mutable struct Force <: FieldVector{3,Float64}
-    x::Float64
-    y::Float64
-    z::Float64
+struct Force{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
 end
+
+similar_type(::Type{<:Coordinates}, ::Type{T}, s::Size{(3,)}) where {T} = Coordinates{T}
+similar_type(::Type{<:Velocity}, ::Type{T}, s::Size{(3,)}) where {T} = Velocity{T}
+similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
 
 @struct_hash_equal_isequal_isapprox mutable struct Particle
     coordinates::Coordinates
