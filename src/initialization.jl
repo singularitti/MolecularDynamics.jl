@@ -26,7 +26,7 @@ function init_coordinates!(particles, box::Box, ::Random)
     return particles
 end
 
-function init_velocities!(particles, dist::Uniform=Uniform(zeros(Velocity)))
+function init_velocities!(particles, dist::Uniform)
     for particle in particles
         particle.velocity = dist.velocity
     end
@@ -43,6 +43,6 @@ end
 
 function relax!(particles, box, n, Δt)
     take_n_steps!(particles, box, n, Δt, VelocityVerlet())
-    init_velocities!(particles, Uniform(zeros(Velocity)))
+    init_velocities!(particles, Uniform(zeros(typeof(first(particles).velocity))))
     return particles
 end
