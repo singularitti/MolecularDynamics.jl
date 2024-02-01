@@ -1,11 +1,12 @@
 using MolecularDynamics
+using Unitful: k, @u_str
 using Plots
 
 import MolecularDynamics: potential_energy, potential_gradient
 
-ε = 119.8 * 1.380649e-23  # 119.8 kB
-σ = 3.405  # angstrom
-mass = 39.948 * 1.6605390666e-27
+ε = 0.0103u"eV"  # 119.8 kB
+σ = 3.405u"angstrom"  # angstrom
+mass = 39.948u"u"  # atomic mass unit
 
 u = LennardJones(ε, σ)
 ∇u = LennardJonesGradient(ε, σ)
@@ -13,14 +14,19 @@ u = LennardJones(ε, σ)
 potential_energy(particleᵢ::Particle, particleⱼ::Particle) = u(particleᵢ, particleⱼ)
 potential_energy(particles) = u(particles)
 
-potential_gradient(particleᵢ::Particle, particleⱼ::Particle) =
-    ∇u(ε, σ)(particleᵢ, particleⱼ)
+potential_gradient(particleᵢ::Particle, particleⱼ::Particle) = ∇u(particleᵢ, particleⱼ)
 
-particles = [Particle(mass, rand(3), rand(3)) for _ in 1:864];
-box = CubicBox(length(particles), 0.75)
-init!(particles, box, Random(), Uniform(zeros(Velocity)));
+particles = [
+    Particle(
+        mass,
+        zeros(Coordinates{typeof(1.0u"angstrom")}),
+        zeros(Velocity{typeof(1.0u"angstrom/fs")}),
+    ) for _ in 1:864
+];
+box = CubicBox(length(particles), 0.75u"angstrom^-3")
+init!(particles, box, Random(), Uniform(zeros(Velocity{typeof(1.0u"angstrom/fs")})));
 logger = Logger()
-Δt = 0.02
+Δt = 1e-16u"fs"
 
 for _ in 1:100
     relax!(particles, box, 1, Δt)
