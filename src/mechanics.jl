@@ -26,7 +26,7 @@ end
 function potential_gradient end
 
 abstract type PairPotentialGradient end
-(∇u::PairPotentialGradient)(a::Particle, b::Particle) = ∇u(b.coordinates .- a.coordinates)
+(∇u::PairPotentialGradient)(a::Particle, b::Particle) = ∇u(a.coordinates .- b.coordinates)
 
 struct LennardJonesGradient{S,T} <: PairPotentialGradient
     epsilon::S
@@ -46,7 +46,7 @@ kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 Calculate the force particle `b` exerts on particle `a` (direction: from `b` to `a`).
 """
-Force(a::Particle) = (b::Particle) -> Force(potential_gradient(a, b))
+Force(a::Particle) = (b::Particle) -> Force(-potential_gradient(a, b))
 function Force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Force(particles[i]), neighbors)
