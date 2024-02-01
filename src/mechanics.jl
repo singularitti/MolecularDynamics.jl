@@ -1,4 +1,7 @@
-export LennardJones, kinetic_energy, potential_gradient
+export LennardJones,
+    LennardJonesGradient, potential_energy, kinetic_energy, potential_gradient
+
+function potential_energy end
 
 abstract type PairPotential end
 (u::PairPotential)(a::Particle, b::Particle) = u(distance(a, b))
@@ -19,6 +22,8 @@ function (uₗⱼ::LennardJones)(r::Number)
     σ¹²r⁻¹² = σ⁶r⁻⁶^2
     return 4uₗⱼ.ε * (σ¹²r⁻¹² - σ⁶r⁻⁶)
 end
+
+function potential_gradient end
 
 abstract type PairPotentialGradient end
 (∇u::PairPotentialGradient)(a::Particle, b::Particle) = ∇u(b.coordinates .- a.coordinates)
