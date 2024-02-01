@@ -10,6 +10,16 @@ function (u::PairPotential)(particles)
     end
 end
 
+struct LennardJones{S,T} <: PairPotential
+    ε::S
+    σ::T
+end
+function (uₗⱼ::LennardJones)(r::Number)
+    σ⁶r⁻⁶ = (uₗⱼ.σ / r)^6
+    σ¹²r⁻¹² = σ⁶r⁻⁶^2
+    return 4uₗⱼ.ε * (σ¹²r⁻¹² - σ⁶r⁻⁶)
+end
+
 function potential_gradient(𝐫)
     r = norm(𝐫)
     return 𝐫 * (inv(r)^8 / 2 - inv(r)^14)
