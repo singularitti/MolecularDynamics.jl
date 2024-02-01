@@ -26,7 +26,8 @@ end
 function potential_gradient end
 
 abstract type PairPotentialGradient end
-(∇u::PairPotentialGradient)(a::Particle, b::Particle) = ∇u(a.coordinates .- b.coordinates)
+(∇u::PairPotentialGradient)(particleᵢ::Particle, particleⱼ::Particle) =
+    ∇u(particleᵢ.coordinates .- particleⱼ.coordinates)
 
 struct LennardJonesGradient{S,T} <: PairPotentialGradient
     epsilon::S
@@ -42,11 +43,12 @@ kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mas
 kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 """
-    Force(a::Particle)(b::Particle)
+    Force(particleᵢ::Particle)(particleⱼ::Particle)
 
-Calculate the force particle `b` exerts on particle `a` (direction: from `b` to `a`).
+Calculate the force particle `j` exerts on particle `i` (direction: from `j` to `i`).
 """
-Force(a::Particle) = (b::Particle) -> Force(-potential_gradient(a, b))
+Force(particleᵢ::Particle) =
+    (particleⱼ::Particle) -> Force(-potential_gradient(particleᵢ, particleⱼ))
 function Force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Force(particles[i]), neighbors)
@@ -62,11 +64,12 @@ function Force(particles, box)
 end
 
 """
-    Acceleration(a::Particle)(b::Particle)
+    Acceleration(particleᵢ::Particle)(particleⱼ::Particle)
 
-Calculate the acceleration of particle `a` due to particle `b` (direction: from `b` to `a`).
+Calculate the acceleration of particle `i` due to particle `j` (direction: from `j` to `i`).
 """
-Acceleration(a::Particle) = (b::Particle) -> Force(a)(b) / a.mass
+Acceleration(particleᵢ::Particle) =
+    (particleⱼ::Particle) -> Force(particleᵢ)(particleⱼ) / particleᵢ.mass
 function Acceleration(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Acceleration(particles[i]), neighbors)
