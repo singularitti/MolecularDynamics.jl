@@ -37,15 +37,8 @@ similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
 end
 
 abstract type Box end
-struct CubicBox <: Box
-    side_length::Float64
-    function CubicBox(side_length)
-        if side_length <= zero(side_length)
-            throw(ArgumentError("the box's side length must be larger than zero!"))
-        else
-            return new(side_length)
-        end
-    end
+struct CubicBox{T} <: Box
+    side_length::T
 end
 CubicBox(number::Integer, density::Real) = CubicBox(cbrt(number / density))
 
