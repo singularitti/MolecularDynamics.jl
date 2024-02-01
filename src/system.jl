@@ -41,6 +41,8 @@ similar_type(::Type{<:Acceleration}, ::Type{T}, s::Size{(3,)}) where {T} = Accel
     coordinates::Coordinates{C}
     velocity::Velocity{V}
 end
+Particle(mass, coordinates::AbstractArray, velocity::AbstractArray) =
+    Particle(mass, Coordinates(coordinates), Velocity(velocity))
 
 abstract type Box end
 struct CubicBox{T} <: Box
