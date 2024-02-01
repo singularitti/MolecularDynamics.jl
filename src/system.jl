@@ -81,11 +81,10 @@ boxvolume(box::CubicBox) = reduce(*, boxsize(box))
 
 number_density(particles, box::CubicBox) = length(particles) / boxvolume(box)
 
-function Base.in(particle::Particle, box::CubicBox)
-    return all(particle.coordinates) do x
-        0 <= x <= box.side_length
-    end
-end
+Base.in(particle::Particle, box::CubicBox) = all(
+    zero(box.side_length) <= coordinate <= box.side_length for
+    coordinate in particle.coordinates
+)
 
 function getcoordinates(particles)
     allcoordinates = map(particles) do particle
