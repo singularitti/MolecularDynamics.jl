@@ -133,3 +133,12 @@ function getvelocities(particles)
         return results
     end
 end
+
+function Base.show(io::IO, ::MIME"text/plain", particle::Particle)
+    summary(io, particle)
+    println(io)
+    for name in propertynames(particle)
+        println(io, " ", name, ": ", getfield(particle, name))
+    end
+    return nothing
+end
