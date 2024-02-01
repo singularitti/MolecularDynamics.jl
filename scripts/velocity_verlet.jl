@@ -25,7 +25,6 @@ particles = [
 ];
 box = CubicBox(length(particles), 0.75u"angstrom^-3")
 init!(particles, box, Random(), Uniform(zeros(Velocity{typeof(1.0u"angstrom/fs")})));
-logger = Logger()
 Δt = 1e-16u"fs"
 
 for _ in 1:100
@@ -34,7 +33,8 @@ for _ in 1:100
 end
 
 integrator = VelocityVerlet()
-take_n_steps!(logger, particles, box, 500, Δt, 0.6, 0.05, integrator)
+logger = Logger{typeof(Δt),eltype(particles)}()
+take_n_steps!(logger, particles, box, 500, Δt, integrator)
 
 take_n_steps!(logger, particles, box, 400, Δt, integrator)
 while abs(temperature(particles) - 1.069) >= 0.01
