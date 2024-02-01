@@ -20,12 +20,17 @@ function (uₗⱼ::LennardJones)(r::Number)
     return 4uₗⱼ.ε * (σ¹²r⁻¹² - σ⁶r⁻⁶)
 end
 
-function potential_gradient(𝐫)
+abstract type PairPotentialGradient end
+(∇u::PairPotentialGradient)(a::Particle, b::Particle) = ∇u(b.coordinates .- a.coordinates)
+
+struct LennardJonesGradient{S,T} <: PairPotentialGradient
+    ε::S
+    σ::T
+end
+function (::LennardJonesGradient)(𝐫)
     r = norm(𝐫)
     return 𝐫 * (inv(r)^8 / 2 - inv(r)^14)
 end
-potential_gradient(a::Particle, b::Particle) =
-    potential_gradient(b.coordinates .- a.coordinates)
 
 kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mass / 2
 kinetic_energy(particles) = sum(kinetic_energy, particles)
