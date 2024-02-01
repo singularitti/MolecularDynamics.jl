@@ -14,13 +14,13 @@ function (u::PairPotential)(particles)
 end
 
 struct LennardJones{S,T} <: PairPotential
-    ε::S
-    σ::T
+    epsilon::S
+    sigma::T
 end
-function (uₗⱼ::LennardJones)(r::Number)
-    σ⁶r⁻⁶ = (uₗⱼ.σ / r)^6
+function (u::LennardJones)(r::Number)
+    σ⁶r⁻⁶ = (u.sigma / r)^6
     σ¹²r⁻¹² = σ⁶r⁻⁶^2
-    return 4uₗⱼ.ε * (σ¹²r⁻¹² - σ⁶r⁻⁶)
+    return 4u.epsilon * (σ¹²r⁻¹² - σ⁶r⁻⁶)
 end
 
 function potential_gradient end
@@ -29,13 +29,13 @@ abstract type PairPotentialGradient end
 (∇u::PairPotentialGradient)(a::Particle, b::Particle) = ∇u(b.coordinates .- a.coordinates)
 
 struct LennardJonesGradient{S,T} <: PairPotentialGradient
-    ε::S
-    σ::T
+    epsilon::S
+    sigma::T
 end
-function (∇uₗⱼ::LennardJonesGradient)(𝐫)
+function (∇u::LennardJonesGradient)(𝐫)  # 𝐫 = 𝐫ᵢ - 𝐫ⱼ
     r = norm(𝐫)
-    σr⁻¹ = ∇uₗⱼ.σ / r
-    return 48∇uₗⱼ.ε / ∇uₗⱼ.σ^2 * 𝐫 * (σr⁻¹^8 / 2 - σr⁻¹^14)
+    σr⁻¹ = ∇u.sigma / r
+    return 48∇u.epsilon / ∇u.sigma^2 * 𝐫 * (σr⁻¹^8 / 2 - σr⁻¹^14)
 end
 
 kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mass / 2
