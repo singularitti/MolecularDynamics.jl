@@ -1,4 +1,4 @@
-export potential_energy, kinetic_energy, total_energy, force, potential_gradient
+export potential_energy, kinetic_energy, total_energy, potential_gradient
 
 function potential_energy(r::Number)
     r⁻⁶ = inv(r^6)
@@ -32,17 +32,17 @@ total_energy(particles) = kinetic_energy(particles) .+ potential_energy(particle
 Calculate the force particle `b` exerts on particle `a` (direction: from `b` to `a`).
 """
 Force(a::Particle) = (b::Particle) -> Force(potential_gradient(a, b))
-function force(i::Integer, particles, box::Box)
+function Force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Force(particles[i]), neighbors)
 end
-function force(particle::Particle, particles, box::Box)
+function Force(particle::Particle, particles, box::Box)
     neighbors = find_neighbors(particle, particles, box)
     return sum(Force(particle), neighbors)
 end
-function force(particles, box)
+function Force(particles, box)
     return map(particles) do particle
-        force(particle, particles, box)
+        Force(particle, particles, box)
     end
 end
 

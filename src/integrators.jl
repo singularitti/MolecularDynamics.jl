@@ -10,13 +10,13 @@ struct MetropolisHastings <: Integrator
 end
 
 function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
-    for (particle, 𝐟) in zip(particles, force(particles, box))
+    for (particle, 𝐟) in zip(particles, Force(particles, box))
         particle.velocity += 𝐟 * Δt / 2  # 𝐯(t + Δt / 2)
         particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt)
         map!(Base.Fix2(mod, box.side_length), particle.coordinates, particle.coordinates)  # Move `𝐫` back to `0 - L` range
     end
     for particle in particles
-        𝐟 = force(particle, particles, box)  # 𝐚(t + Δt)
+        𝐟 = Force(particle, particles, box)  # 𝐚(t + Δt)
         particle.velocity += 𝐟 * Δt / 2  # 𝐯(t + Δt)
     end
     return particles

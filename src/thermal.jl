@@ -17,7 +17,7 @@ function virial(box, logger, indices)
         particles = step.snapshot
         sum(eachindex(particles)) do j
             𝐫 = extract(Coordinates, logger, i, j)
-            𝐟 = force(j, particles, box)
+            𝐟 = Force(j, particles, box)
             dot(𝐫, 𝐟)
         end
     end
