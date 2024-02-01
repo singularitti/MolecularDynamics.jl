@@ -34,7 +34,7 @@ struct LennardJonesGradient{S,T} <: PairPotentialGradient
     sigma::T
 end
 function (∇u::LennardJonesGradient)(𝐫)  # 𝐫 = 𝐫ᵢ - 𝐫ⱼ
-    r = norm(𝐫)
+    r = sqrt(sum(abs2, 𝐫))  # rᵢⱼ
     σr⁻¹ = ∇u.sigma / r
     return 48∇u.epsilon / ∇u.sigma^2 * 𝐫 * (σr⁻¹^8 / 2 - σr⁻¹^14)
 end

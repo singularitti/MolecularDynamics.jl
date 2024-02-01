@@ -1,4 +1,3 @@
-using LinearAlgebra: norm
 using StaticArrays: FieldVector, Size
 using StructEquality: @struct_hash_equal_isequal_isapprox
 
@@ -49,7 +48,7 @@ struct CubicBox{T} <: Box
 end
 CubicBox(number::Integer, density::Real) = CubicBox(cbrt(number / density))
 
-distance(𝐫, 𝐫′) = norm(𝐫 .- 𝐫′)
+distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))  # Much faster than `norm`
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
 
 function find_nearest_image(b::Particle, box::Box)
