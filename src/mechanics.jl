@@ -52,3 +52,16 @@ end
 Calculate the acceleration of particle `a` due to particle `b` (direction: from `b` to `a`).
 """
 Acceleration(a::Particle) = (b::Particle) -> Force(a)(b) / a.mass
+function Acceleration(i::Integer, particles, box::Box)
+    neighbors = find_neighbors(i, particles, box)
+    return sum(Acceleration(particles[i]), neighbors)
+end
+function Acceleration(particle::Particle, particles, box::Box)
+    neighbors = find_neighbors(particle, particles, box)
+    return sum(Acceleration(particle), neighbors)
+end
+function Acceleration(particles, box)
+    return map(particles) do particle
+        Acceleration(particle, particles, box)
+    end
+end
