@@ -32,9 +32,10 @@ struct LennardJonesGradient{S,T} <: PairPotentialGradient
     ε::S
     σ::T
 end
-function (::LennardJonesGradient)(𝐫)
+function (∇uₗⱼ::LennardJonesGradient)(𝐫)
     r = norm(𝐫)
-    return 𝐫 * (inv(r)^8 / 2 - inv(r)^14)
+    σr⁻¹ = ∇uₗⱼ.σ / r
+    return 48∇uₗⱼ.ε / ∇uₗⱼ.σ^2 * 𝐫 * (σr⁻¹^8 / 2 - σr⁻¹^14)
 end
 
 kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mass / 2
