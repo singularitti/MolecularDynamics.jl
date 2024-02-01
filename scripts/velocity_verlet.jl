@@ -4,7 +4,7 @@ using Plots
 
 import MolecularDynamics: potential_energy, potential_gradient
 
-ε = 0.0103u"eV"  # 119.8 kB
+ε = u"J"(0.0103u"eV")  # 119.8 kB
 σ = 3.405u"angstrom"  # angstrom
 mass = 39.948u"u"  # atomic mass unit
 
@@ -25,7 +25,7 @@ particles = [
 ];
 box = CubicBox(length(particles), 0.75u"angstrom^-3")
 init!(particles, box, Random(), Uniform(zeros(Velocity{typeof(1.0u"angstrom/fs")})));
-Δt = 1e-16u"fs"
+Δt = 0.05u"fs"
 
 for _ in 1:100
     relax!(particles, box, 1, Δt)
