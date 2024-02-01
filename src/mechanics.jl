@@ -27,7 +27,7 @@ end
 potential_gradient(a::Particle, b::Particle) =
     potential_gradient(b.coordinates .- a.coordinates)
 
-kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
+kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mass / 2
 kinetic_energy(particles) = sum(kinetic_energy, particles)
 
 """
