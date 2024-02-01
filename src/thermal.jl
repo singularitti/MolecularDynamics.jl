@@ -1,4 +1,3 @@
-using LinearAlgebra: dot
 using Statistics: mean
 
 export temperature, virial, pressure
@@ -18,7 +17,7 @@ function virial(box, logger, indices)
         sum(eachindex(particles)) do j
             𝐫 = extract(Coordinates, logger, i, j)
             𝐟 = Force(j, particles, box)
-            dot(𝐫, 𝐟)
+            muladd(𝐫.x, 𝐟.x, muladd(𝐫.y, 𝐟.y, 𝐫.z * 𝐟.z))  # 3 times faster than `dot`
         end
     end
 end
