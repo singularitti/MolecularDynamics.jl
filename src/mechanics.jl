@@ -1,4 +1,4 @@
-export potential_energy, kinetic_energy, total_energy, potential_gradient
+export LennardJones, kinetic_energy, potential_gradient
 
 abstract type PairPotential end
 (u::PairPotential)(a::Particle, b::Particle) = u(distance(a, b))
@@ -29,8 +29,6 @@ potential_gradient(a::Particle, b::Particle) =
 
 kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
 kinetic_energy(particles) = sum(kinetic_energy, particles)
-
-total_energy(particles) = kinetic_energy(particles) .+ potential_energy(particles)
 
 """
     Force(a::Particle)(b::Particle)
