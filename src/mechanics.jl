@@ -18,6 +18,8 @@ function potential_gradient(𝐫)
     r = norm(𝐫)
     return 𝐫 * (inv(r)^8 / 2 - inv(r)^14)
 end
+potential_gradient(a::Particle, b::Particle) =
+    potential_gradient(b.coordinates .- a.coordinates)
 
 kinetic_energy(particle::Particle) = 24 * sum(abs2, particle.velocity)
 kinetic_energy(particles) = sum(kinetic_energy, particles)
@@ -29,11 +31,7 @@ total_energy(particles) = kinetic_energy(particles) .+ potential_energy(particle
 
 Calculate the force particle `b` exerts on particle `a` (direction: from `b` to `a`).
 """
-function Force(a::Particle)
-    return function (b::Particle)
-        return Force(potential_gradient(b.coordinates .- a.coordinates))
-    end
-end
+Force(a::Particle) = (b::Particle) -> Force(potential_gradient(a, b))
 
 function force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
