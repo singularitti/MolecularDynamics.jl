@@ -30,12 +30,11 @@ similar_type(::Type{<:Coordinates}, ::Type{T}, s::Size{(3,)}) where {T} = Coordi
 similar_type(::Type{<:Velocity}, ::Type{T}, s::Size{(3,)}) where {T} = Velocity{T}
 similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
 
-@struct_hash_equal_isequal_isapprox mutable struct Particle
-    coordinates::Coordinates
-    velocity::Velocity
+@struct_hash_equal_isequal_isapprox mutable struct Particle{M,C,V}
+    mass::M
+    coordinates::Coordinates{C}
+    velocity::Velocity{V}
 end
-Particle(particle::Particle, velocity) = Particle(particle.coordinates, velocity)
-Particle(coordinates, particle::Particle) = Particle(coordinates, particle.velocity)
 
 abstract type Box end
 struct CubicBox <: Box
