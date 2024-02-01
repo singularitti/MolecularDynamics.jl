@@ -13,7 +13,7 @@ function take_one_step!(particles, box::Box, Δt, ::VelocityVerlet)
     for (particle, 𝐚) in zip(particles, Acceleration(particles, box))
         particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt / 2) = 𝐯(t) + 𝐚(t) Δt / 2
         particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt) = 𝐫(t) + 𝐯(t + Δt / 2) Δt
-        map!(Base.Fix2(mod, box.side_length), particle.coordinates, particle.coordinates)  # Move `𝐫` back to `0 - L` range
+        particle.coordinates = map(Base.Fix2(mod, box.side_length), particle.coordinates)  # Move `𝐫` back to `0 - L` range
     end
     for particle in particles
         𝐚 = Acceleration(particle, particles, box)  # 𝐚(t + Δt)
