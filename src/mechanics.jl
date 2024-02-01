@@ -6,7 +6,7 @@ function potential_energy(r::Number)
     return 4 * (r⁻¹² - r⁻⁶)
 end
 potential_energy(a::Particle, b::Particle) = potential_energy(distance(a, b))
-function potential_energy(particles::AbstractVector{Particle})
+function potential_energy(particles)
     return sum(enumerate(particles[begin:(end - 1)])) do (i, particleᵢ)
         sum(particles[(i + 1):end]) do particleⱼ
             potential_energy(particleᵢ, particleⱼ)
