@@ -32,7 +32,6 @@ total_energy(particles) = kinetic_energy(particles) .+ potential_energy(particle
 Calculate the force particle `b` exerts on particle `a` (direction: from `b` to `a`).
 """
 Force(a::Particle) = (b::Particle) -> Force(potential_gradient(a, b))
-
 function force(i::Integer, particles, box::Box)
     neighbors = find_neighbors(i, particles, box)
     return sum(Force(particles[i]), neighbors)
@@ -46,3 +45,10 @@ function force(particles, box)
         force(particle, particles, box)
     end
 end
+
+"""
+    Acceleration(a::Particle)(b::Particle)
+
+Calculate the acceleration of particle `a` due to particle `b` (direction: from `b` to `a`).
+"""
+Acceleration(a::Particle) = (b::Particle) -> Force(a)(b) / a.mass
