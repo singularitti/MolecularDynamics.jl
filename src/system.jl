@@ -59,7 +59,7 @@ function find_nearest_image(b::Particle, box::Box)
                 rᵢ  # Do not shift
             end
         end
-        return Particle(𝐫′, b.velocity)
+        return Particle(b.mass, 𝐫′, b.velocity)
     end
 end
 
