@@ -1,15 +1,11 @@
 export potential_energy, kinetic_energy, total_energy, potential_gradient
 
-function potential_energy(r::Number)
-    r⁻⁶ = inv(r^6)
-    r⁻¹² = r⁻⁶^2
-    return 4 * (r⁻¹² - r⁻⁶)
-end
-potential_energy(a::Particle, b::Particle) = potential_energy(distance(a, b))
-function potential_energy(particles)
+abstract type PairPotential end
+(u::PairPotential)(a::Particle, b::Particle) = u(distance(a, b))
+function (u::PairPotential)(particles)
     return sum(enumerate(particles[begin:(end - 1)])) do (i, particleᵢ)
         sum(particles[(i + 1):end]) do particleⱼ
-            potential_energy(particleᵢ, particleⱼ)
+            u(particleᵢ, particleⱼ)
         end
     end
 end
