@@ -53,18 +53,31 @@ CubicBox(number::Integer, density) = CubicBox(cbrt(number / density))
 distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))  # Much faster than `norm`
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
 
+"""
+    find_nearest_image(b::Particle, box::Box)
+
+Return a function that, when given a particle `a`, computes the position of `b` as if it
+were in the nearest image to `a` under periodic boundary conditions (PBCs).
+
+This implementation ensures that interactions between particles consider the minimum image
+convention (MIC), effectively simulating an infinite system using a finite cell.
+
+# Arguments
+- `b::Particle`: The particle for which we want to find the nearest image relative to another particle `a`.
+- `box::Box`: The simulation box which defines the boundaries for PBCs.
+"""
 function find_nearest_image(b::Particle, box::Box)
     L = box.side_length
-    𝐫 = map(Base.Fix2(mod, L), b.coordinates)
+    𝐫 = map(Base.Fix2(mod, L), b.coordinates)  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
     return function (a::Particle)
-        Δ𝐫 = 𝐫 - a.coordinates
-        𝐫′ = map(𝐫, Δ𝐫) do rᵢ, Δrᵢ
+        Δ𝐫 = 𝐫 - a.coordinates  # Compute displacement
+        𝐫′ = map(𝐫, Δ𝐫) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
             if Δrᵢ > L / 2
                 rᵢ - L
             elseif Δrᵢ < -L / 2
                 rᵢ + L
             else  # abs(Δrᵢ) <= L / 2
-                rᵢ  # Do not shift
+                rᵢ  # Do not shift, already nearest
             end
         end
         return Particle(b.mass, 𝐫′, b.velocity)
