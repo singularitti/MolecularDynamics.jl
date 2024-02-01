@@ -46,7 +46,7 @@ abstract type Box end
 struct CubicBox{T} <: Box
     side_length::T
 end
-CubicBox(number::Integer, density::Real) = CubicBox(cbrt(number / density))
+CubicBox(number::Integer, density) = CubicBox(cbrt(number / density))
 
 distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))  # Much faster than `norm`
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
