@@ -56,11 +56,6 @@ function Force(particle::Particle, particles, cell::Cell)
     neighbors = find_neighbors(particle, particles, cell)
     return sum(Force(particle), neighbors)
 end
-function Force(particles, cell)
-    return map(particles) do particle
-        Force(particle, particles, cell)
-    end
-end
 
 """
     Acceleration(particleᵢ::Particle)(particleⱼ::Particle)
@@ -76,9 +71,4 @@ end
 function Acceleration(particle::Particle, particles, cell::Cell)
     neighbors = find_neighbors(particle, particles, cell)
     return sum(Acceleration(particle), neighbors)
-end
-function Acceleration(particles, cell)
-    return map(particles) do particle
-        Acceleration(particle, particles, cell)
-    end
 end
