@@ -1,3 +1,5 @@
+using ThreadsX
+
 export LennardJones,
     LennardJonesGradient, potential_energy, kinetic_energy, potential_gradient
 
@@ -5,12 +7,16 @@ function potential_energy end
 
 abstract type PairPotential end
 (u::PairPotential)(a::Particle, b::Particle) = u(distance(a, b))
+# function (u::PairPotential)(particles)
+#     return sum(enumerate(particles[begin:(end - 1)])) do (i, particleᵢ)
+#         sum(particles[(i + 1):end]) do particleⱼ
+#             u(particleᵢ, particleⱼ)
+#         end
+#     end
+# end
 function (u::PairPotential)(particles)
-    return sum(enumerate(particles[begin:(end - 1)])) do (i, particleᵢ)
-        sum(particles[(i + 1):end]) do particleⱼ
-            u(particleᵢ, particleⱼ)
-        end
-    end
+    n = length(particles)
+    return ThreadsX.sum(u(particles[i], particles[j]) for i in 1:(n - 1) for j in (i + 1):n)
 end
 
 struct LennardJones{S,T} <: PairPotential
