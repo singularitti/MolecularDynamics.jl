@@ -60,11 +60,11 @@ Force(particleᵢ::Particle) =
     (particleⱼ::Particle) -> Force(-potential_gradient(particleᵢ, particleⱼ))
 function Force(i::Integer, particles, cell::Cell)
     neighbors = find_neighbors(i, particles, cell)
-    return ThreadsX.sum(Force(particles[i]), neighbors)
+    return sum(Force(particles[i]), neighbors)
 end
 function Force(particle::Particle, particles, cell::Cell)
     neighbors = find_neighbors(particle, particles, cell)
-    return ThreadsX.sum(Force(particle), neighbors)
+    return sum(Force(particle), neighbors)
 end
 
 struct Acceleration{T} <: FieldVector{3,T}
@@ -81,11 +81,11 @@ Acceleration(particleᵢ::Particle) =
     (particleⱼ::Particle) -> Force(particleᵢ)(particleⱼ) / particleᵢ.mass
 function Acceleration(i::Integer, particles, cell::Cell)
     neighbors = find_neighbors(i, particles, cell)
-    return ThreadsX.sum(Acceleration(particles[i]), neighbors)
+    return sum(Acceleration(particles[i]), neighbors)
 end
 function Acceleration(particle::Particle, particles, cell::Cell)
     neighbors = find_neighbors(particle, particles, cell)
-    return ThreadsX.sum(Acceleration(particle), neighbors)
+    return sum(Acceleration(particle), neighbors)
 end
 
 similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
