@@ -71,11 +71,6 @@ function generate_neighbor(a::Particle, b::Particle, cell::CubicCell)
     return Particle(b.mass, 𝐫′, b.velocity)
 end
 
-function generate_neighbors(i::Integer, particles, cell::Cell)
-    return map(filter(!=(i), eachindex(particles))) do j
-        generate_neighbor(particles[i], particles[j], cell)
-    end
-end
 function generate_neighbors(a::Particle, particles, cell::Cell)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
