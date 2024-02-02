@@ -44,7 +44,7 @@ function (∇u::LennardJonesGradient)(𝐫)  # 𝐫 = 𝐫ᵢ - 𝐫ⱼ
 end
 
 kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mass / 2
-kinetic_energy(particles) = sum(kinetic_energy, particles)
+kinetic_energy(particles) = ThreadsX.sum(kinetic_energy, particles)
 
 struct Force{T} <: FieldVector{3,T}
     x::T
@@ -60,11 +60,11 @@ Force(particleᵢ::Particle) =
     (particleⱼ::Particle) -> Force(-potential_gradient(particleᵢ, particleⱼ))
 function Force(i::Integer, particles, cell::Cell)
     neighbors = find_neighbors(i, particles, cell)
-    return sum(Force(particles[i]), neighbors)
+    return ThreadsX.sum(Force(particles[i]), neighbors)
 end
 function Force(particle::Particle, particles, cell::Cell)
     neighbors = find_neighbors(particle, particles, cell)
-    return sum(Force(particle), neighbors)
+    return ThreadsX.sum(Force(particle), neighbors)
 end
 
 struct Acceleration{T} <: FieldVector{3,T}

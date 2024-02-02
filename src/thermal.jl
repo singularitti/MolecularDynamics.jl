@@ -14,7 +14,7 @@ ensemble_average(property::AbstractArray) = mean(property)
 function virial(cell, logger, indices)
     return @showprogress map(indices, logger.trajectory[indices]) do i, step
         particles = step.snapshot
-        sum(eachindex(particles)) do j
+        ThreadsX.sum(eachindex(particles)) do j
             𝐫 = extract(Coordinates, logger, i, j)
             𝐟 = Force(j, particles, cell)
             muladd(𝐫.x, 𝐟.x, muladd(𝐫.y, 𝐟.y, 𝐫.z * 𝐟.z))  # 3 times faster than `dot`
