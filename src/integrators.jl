@@ -22,7 +22,7 @@ function take_one_step!(
         particle = particles[i]
         particle.velocity += accelerations[i] * Δt / 2  # 𝐯(t + Δt / 2) = 𝐯(t) + 𝐚(t) Δt / 2
         particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt) = 𝐫(t) + 𝐯(t + Δt / 2) Δt
-        particle.coordinates = map(Base.Fix2(mod, cell.side_length), particle.coordinates)   # Move `𝐫` back to `0 - L` range
+        movein!(particle, cell)  # Move `𝐫` back to `0 - L` range
     end
     # Re-compute accelerations after position updates
     Threads.@threads for i in eachindex(particles)
