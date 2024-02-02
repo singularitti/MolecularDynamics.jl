@@ -34,7 +34,7 @@ extract(::Type{Velocity}, particle::Particle) = getfield(particle, :velocity)
 extract(::Type{Coordinates}, particle::Particle) = getfield(particle, :coordinates)
 extract(::Type{Particle}, particle::Particle) = particle
 
-simulation_time(trajectory::Trajectory) = cumsum(step.Δt for step in trajectory.data)
+simulation_time(trajectory::Trajectory) = cumsum(step.Δt for step in trajectory)
 
 Base.size(trajectory::Trajectory) = size(trajectory.data)
 
