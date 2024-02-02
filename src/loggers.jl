@@ -4,7 +4,7 @@ export Step, Trajectory
 export extract, simulation_time
 
 struct Step{T,S}
-    Δt::T
+    dt::T
     snapshot::Vector{S}
 end
 

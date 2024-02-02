@@ -6,7 +6,7 @@ export iterate!, run!
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
 struct MetropolisHastings <: Integrator
-    β::Float64
+    beta::Float64
 end
 
 function iterate!(
@@ -47,7 +47,7 @@ function iterate!(particles, cell::Cell, δv, δr, integrator::MetropolisHasting
         ΔU = potential_energy(new_particles) - potential_energy(particles)
         ΔK = kinetic_energy(new_particle) - kinetic_energy(particle)
         ΔE = ΔU + ΔK
-        P = exp(-integrator.β * ΔE)
+        P = exp(-integrator.beta * ΔE)
         if P > rand()
             particles[i] = new_particle
         end
