@@ -56,15 +56,13 @@ end
 
 Calculate the force particle `j` exerts on particle `i` (direction: from `j` to `i`).
 """
-Force(particleᵢ::Particle) =
-    (particleⱼ::Particle) -> Force(-potential_gradient(particleᵢ, particleⱼ))
-function Force(i::Integer, particles, cell::Cell)
-    neighbors = generate_neighbors(i, particles, cell)
-    return sum(Force(particles[i]), neighbors)
-end
-function Force(particle::Particle, particles, cell::Cell)
-    neighbors = generate_neighbors(particle, particles, cell)
-    return sum(Force(particle), neighbors)
+function Force(particle::Particle)
+    force(particle′::Particle) = Force(-potential_gradient(particle, particle′))
+    function force(particles, cell::Cell)
+        neighbors = generate_neighbors(particle, particles, cell)
+        return sum(Force(particle), neighbors)
+    end
+    return force
 end
 
 struct Acceleration{T} <: FieldVector{3,T}
@@ -77,15 +75,13 @@ end
 
 Calculate the acceleration of particle `i` due to particle `j` (direction: from `j` to `i`).
 """
-Acceleration(particleᵢ::Particle) =
-    (particleⱼ::Particle) -> Force(particleᵢ)(particleⱼ) / particleᵢ.mass
-function Acceleration(i::Integer, particles, cell::Cell)
-    neighbors = generate_neighbors(i, particles, cell)
-    return sum(Acceleration(particles[i]), neighbors)
-end
-function Acceleration(particle::Particle, particles, cell::Cell)
-    neighbors = generate_neighbors(particle, particles, cell)
-    return sum(Acceleration(particle), neighbors)
+function Acceleration(particle::Particle)
+    acceleration(particle′::Particle) = Force(particle)(particle′) / particle.mass
+    function acceleration(particles, cell::Cell)
+        neighbors = generate_neighbors(particle, particles, cell)
+        return sum(Acceleration(particle), neighbors)
+    end
+    return acceleration
 end
 
 similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}

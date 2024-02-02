@@ -15,7 +15,7 @@ function take_one_step!(
     accelerations = Vector{Acceleration{typeof(zero(V) / Δt)}}(undef, length(particles))
     # Parallel computation of initial accelerations
     Threads.@threads for i in eachindex(particles)
-        accelerations[i] = Acceleration(particles[i], particles, cell)
+        accelerations[i] = Acceleration(particles[i])(particles, cell)
     end
     # Parallel update of particle positions and half-step velocities
     Threads.@threads for i in eachindex(particles)
@@ -26,7 +26,7 @@ function take_one_step!(
     end
     # Re-compute accelerations after position updates
     Threads.@threads for i in eachindex(particles)
-        accelerations[i] = Acceleration(particles[i], particles, cell)  # 𝐚(t + Δt)
+        accelerations[i] = Acceleration(particles[i])(particles, cell)  # 𝐚(t + Δt)
     end
     # Parallel update of final velocities
     Threads.@threads for i in eachindex(particles)
