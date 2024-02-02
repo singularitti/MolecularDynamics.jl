@@ -9,8 +9,10 @@ struct MetropolisHastings <: Integrator
     β::Float64
 end
 
-function take_one_step!(particles, cell::Cell, Δt, ::VelocityVerlet)
-    accelerations = [Acceleration(particle.velocity ./ Δt) for particle in particles]
+function take_one_step!(
+    particles::AbstractArray{<:Particle{M,C,V}}, cell::Cell, Δt, ::VelocityVerlet
+) where {M,C,V}
+    accelerations = Vector{Acceleration{typeof(zero(V) / Δt)}}(undef, length(particles))
     # Parallel computation of initial accelerations
     Threads.@threads for i in eachindex(particles)
         accelerations[i] = Acceleration(particles[i], particles, cell)
