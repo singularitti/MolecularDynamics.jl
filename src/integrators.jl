@@ -1,7 +1,7 @@
 using ProgressMeter: @showprogress
 
 export VelocityVerlet, MetropolisHastings
-export take_one_step!, run!
+export iterate!, run!
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
@@ -9,7 +9,7 @@ struct MetropolisHastings <: Integrator
     β::Float64
 end
 
-function take_one_step!(
+function iterate!(
     particles::AbstractArray{<:Particle{M,C,V}}, cell::Cell, Δt, ::VelocityVerlet
 ) where {M,C,V}
     accelerations = Vector{Acceleration{typeof(zero(V) / Δt)}}(undef, length(particles))
@@ -34,7 +34,7 @@ function take_one_step!(
     end
     return particles
 end
-function take_one_step!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
+function iterate!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
     for (i, particle) in enumerate(particles)
         r = rand(3) .- 0.5  # Random numbers from -0.5 to 0.5
         velocity = particle.velocity .+ δv .* r
@@ -57,14 +57,14 @@ end
 
 function run!(particles, cell::Cell, n, Δt, integrator::Integrator)
     trajectory = @showprogress map(1:n) do _
-        take_one_step!(particles, cell, Δt, integrator)
+        iterate!(particles, cell, Δt, integrator)
         Step(Δt, deepcopy(particles))
     end
     return trajectory
 end
 function run!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
     trajectory = @showprogress map(1:n) do _
-        take_one_step!(particles, cell, δv, δr, integrator)
+        iterate!(particles, cell, δv, δr, integrator)
         Step(Δt, deepcopy(particles))
     end
     return trajectory
