@@ -1,5 +1,6 @@
 using StaticArrays: FieldVector, Size
 using StructEquality: @struct_hash_equal_isequal_isapprox
+using ToggleableAsserts: @toggled_assert
 
 import StaticArrays: similar_type
 
@@ -62,9 +63,9 @@ convention (MIC), effectively simulating an infinite system using a finite cell.
 """
 function find_nearest_image(b::Particle, a::Particle, cell::CubicCell)
     L = cell.side_length
-    𝐫 = map(Base.Fix2(mod, L), b.coordinates)  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
-    Δ𝐫 = 𝐫 - a.coordinates  # Compute displacement
-    𝐫′ = map(𝐫, Δ𝐫) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
+    @toggled_assert b in cell "the particle is not in the simulation cell!"  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
+    Δ𝐫 = b.coordinates - a.coordinates  # Compute displacement
+    𝐫′ = map(b.coordinates, Δ𝐫) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
         if Δrᵢ > L / 2
             rᵢ - L
         elseif Δrᵢ < -L / 2
