@@ -11,6 +11,7 @@ end
 struct Trajectory{S<:Step} <: AbstractVector{S}
     data::ElasticVector{S}
 end
+Trajectory(data::AbstractArray) = Trajectory(ElasticVector(data))
 
 function extract(::Type{T}, trajectory::Trajectory) where {T}
     return map(trajectory.data) do step
