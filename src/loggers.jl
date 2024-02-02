@@ -43,3 +43,6 @@ Base.getindex(trajectory::Trajectory, i::Int) = trajectory.data[i]
 Base.setindex!(trajectory::Trajectory, v, i::Int) = setindex!(trajectory.data, v, i)
 
 Base.IndexStyle(::Type{<:Trajectory}) = IndexLinear()
+
+Base.similar(::Trajectory, ::Type{T}, dims::Dims) where {T} =
+    Trajectory{T}(ElasticVector{T}(undef, dims))
