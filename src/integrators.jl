@@ -22,11 +22,6 @@ function take_one_step!(particles, cell::Cell, Δt, ::VelocityVerlet)
         particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt) = 𝐫(t) + 𝐯(t + Δt / 2) Δt
         particle.coordinates = map(Base.Fix2(mod, cell.side_length), particle.coordinates)   # Move `𝐫` back to `0 - L` range
     end
-    # for (particle, 𝐚) in zip(particles, accelerations)
-    #     particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt / 2) = 𝐯(t) + 𝐚(t) Δt / 2
-    #     particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt) = 𝐫(t) + 𝐯(t + Δt / 2) Δt
-    #     particle.coordinates = map(Base.Fix2(mod, cell.side_length), particle.coordinates)  # Move `𝐫` back to `0 - L` range
-    # end
     # Re-compute accelerations after position updates
     Threads.@threads for i in eachindex(particles)
         accelerations[i] = Acceleration(particles[i], particles, cell)  # 𝐚(t + Δt)
@@ -35,10 +30,6 @@ function take_one_step!(particles, cell::Cell, Δt, ::VelocityVerlet)
     Threads.@threads for i in eachindex(particles)
         particles[i].velocity += accelerations[i] * Δt / 2  # 𝐯(t + Δt) = 𝐯(t + Δt / 2) + 𝐚(t + Δt) Δt / 2
     end
-    # for particle in particles
-    #     𝐚 = Acceleration(particle, particles, cell)  # 𝐚(t + Δt)
-    #     particle.velocity += 𝐚 * Δt / 2  # 𝐯(t + Δt) = 𝐯(t + Δt / 2) + 𝐚(t + Δt) Δt / 2
-    # end
     return particles
 end
 function take_one_step!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
