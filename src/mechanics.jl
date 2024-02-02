@@ -1,7 +1,12 @@
 using ThreadsX
 
 export LennardJones,
-    LennardJonesGradient, potential_energy, kinetic_energy, potential_gradient
+    LennardJonesGradient,
+    Force,
+    Acceleration,
+    potential_energy,
+    kinetic_energy,
+    potential_gradient
 
 function potential_energy end
 
@@ -41,6 +46,11 @@ end
 kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mass / 2
 kinetic_energy(particles) = sum(kinetic_energy, particles)
 
+struct Force{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
 """
     Force(particleᵢ::Particle)(particleⱼ::Particle)
 
@@ -57,6 +67,11 @@ function Force(particle::Particle, particles, cell::Cell)
     return sum(Force(particle), neighbors)
 end
 
+struct Acceleration{T} <: FieldVector{3,T}
+    x::T
+    y::T
+    z::T
+end
 """
     Acceleration(particleᵢ::Particle)(particleⱼ::Particle)
 
@@ -72,3 +87,6 @@ function Acceleration(particle::Particle, particles, cell::Cell)
     neighbors = find_neighbors(particle, particles, cell)
     return sum(Acceleration(particle), neighbors)
 end
+
+similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
+similar_type(::Type{<:Acceleration}, ::Type{T}, s::Size{(3,)}) where {T} = Acceleration{T}

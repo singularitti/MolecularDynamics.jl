@@ -3,9 +3,17 @@ using StructEquality: @struct_hash_equal_isequal_isapprox
 
 import StaticArrays: similar_type
 
-export Coordinates, Velocity, Force, Acceleration, Particle, CubicCell
-export distance,
-    find_neighbors, cellsize, cellvolume, number_density, getcoordinates, getvelocities
+export Coordinates,
+    Velocity,
+    Particle,
+    CubicCell,
+    distance,
+    find_neighbors,
+    cellsize,
+    cellvolume,
+    number_density,
+    getcoordinates,
+    getvelocities
 
 struct Coordinates{T} <: FieldVector{3,T}
     x::T
@@ -19,22 +27,8 @@ struct Velocity{T} <: FieldVector{3,T}
     z::T
 end
 
-struct Force{T} <: FieldVector{3,T}
-    x::T
-    y::T
-    z::T
-end
-
-struct Acceleration{T} <: FieldVector{3,T}
-    x::T
-    y::T
-    z::T
-end
-
 similar_type(::Type{<:Coordinates}, ::Type{T}, s::Size{(3,)}) where {T} = Coordinates{T}
 similar_type(::Type{<:Velocity}, ::Type{T}, s::Size{(3,)}) where {T} = Velocity{T}
-similar_type(::Type{<:Force}, ::Type{T}, s::Size{(3,)}) where {T} = Force{T}
-similar_type(::Type{<:Acceleration}, ::Type{T}, s::Size{(3,)}) where {T} = Acceleration{T}
 
 @struct_hash_equal_isequal_isapprox mutable struct Particle{M,C,V}
     mass::M
