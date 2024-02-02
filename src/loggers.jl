@@ -38,11 +38,9 @@ simulation_time(logger::Logger) = cumsum(step.Δt for step in logger.trajectory)
 
 nsteps(logger::Logger) = length(logger.trajectory)
 
-function Base.show(io::IO, logger::Logger)
-    if get(io, :compact, false) || get(io, :typeinfo, nothing) == typeof(logger)
-        Base.show_default(IOContext(io, :limit => true), logger)  # From https://github.com/mauro3/Parameters.jl/blob/ecbf8df/src/Parameters.jl#L556
-    else
-        println(io, summary(logger))
-        print(io, length(logger.trajectory), " steps")
-    end
+function Base.show(io::IO, ::MIME"text/plain", logger::Logger)
+    summary(io, logger)
+    println(io)
+    print(io, length(logger.trajectory), " steps")
+    return nothing
 end
