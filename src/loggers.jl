@@ -1,7 +1,7 @@
 using ElasticArrays: ElasticVector
 
 export Step, Logger
-export extract, nsteps, simulation_time
+export extract, simulation_time
 
 struct Step{T,S}
     Δt::T
@@ -36,7 +36,27 @@ extract(::Type{Particle}, particle::Particle) = particle
 
 simulation_time(logger::Logger) = cumsum(step.Δt for step in logger.trajectory)
 
-nsteps(logger::Logger) = length(logger.trajectory)
+# Implementing iteration interface for Logger
+function Base.iterate(logger::Logger, state=1)
+    if state > length(logger.trajectory)
+        return nothing
+    else
+        return (logger.trajectory[state], state + 1)
+    end
+end
+
+Base.length(logger::Logger) = length(logger.trajectory)
+
+Base.eltype(logger::Logger) = eltype(logger.trajectory)
+
+# Implementing indexing interface for Logger
+Base.getindex(logger::Logger, index) = logger.trajectory[index]
+
+Base.setindex!(logger::Logger, step, index) = (logger.trajectory[index] = step)
+
+Base.firstindex(logger::Logger) = 1
+
+Base.lastindex(logger::Logger) = length(logger.trajectory)
 
 function Base.show(io::IO, ::MIME"text/plain", logger::Logger)
     summary(io, logger)
