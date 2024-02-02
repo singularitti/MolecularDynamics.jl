@@ -13,8 +13,7 @@ export Coordinates,
     cellsize,
     cellvolume,
     number_density,
-    getcoordinates,
-    getvelocities
+    getcoordinates
 
 struct Coordinates{T} <: FieldVector{3,T}
     x::T
@@ -115,27 +114,6 @@ function getcoordinates(particles)
             end
             if z
                 push!(results[3], coordinates.z)
-            end
-        end
-        return results
-    end
-end
-
-function getvelocities(particles)
-    velocities = map(particles) do particle
-        particle.velocity
-    end
-    return function (; x=true, y=true, z=true)
-        results = ntuple(_ -> Float64[], 3)
-        map(velocities) do velocity
-            if x
-                push!(results[1], velocity.x)
-            end
-            if y
-                push!(results[2], velocity.y)
-            end
-            if z
-                push!(results[3], velocity.z)
             end
         end
         return results
