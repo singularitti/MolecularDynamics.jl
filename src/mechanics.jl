@@ -59,11 +59,11 @@ Calculate the force particle `j` exerts on particle `i` (direction: from `j` to 
 Force(particleᵢ::Particle) =
     (particleⱼ::Particle) -> Force(-potential_gradient(particleᵢ, particleⱼ))
 function Force(i::Integer, particles, cell::Cell)
-    neighbors = find_neighbors(i, particles, cell)
+    neighbors = generate_neighbors(i, particles, cell)
     return sum(Force(particles[i]), neighbors)
 end
 function Force(particle::Particle, particles, cell::Cell)
-    neighbors = find_neighbors(particle, particles, cell)
+    neighbors = generate_neighbors(particle, particles, cell)
     return sum(Force(particle), neighbors)
 end
 
@@ -80,11 +80,11 @@ Calculate the acceleration of particle `i` due to particle `j` (direction: from 
 Acceleration(particleᵢ::Particle) =
     (particleⱼ::Particle) -> Force(particleᵢ)(particleⱼ) / particleᵢ.mass
 function Acceleration(i::Integer, particles, cell::Cell)
-    neighbors = find_neighbors(i, particles, cell)
+    neighbors = generate_neighbors(i, particles, cell)
     return sum(Acceleration(particles[i]), neighbors)
 end
 function Acceleration(particle::Particle, particles, cell::Cell)
-    neighbors = find_neighbors(particle, particles, cell)
+    neighbors = generate_neighbors(particle, particles, cell)
     return sum(Acceleration(particle), neighbors)
 end
 

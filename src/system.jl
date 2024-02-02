@@ -9,7 +9,7 @@ export Coordinates,
     Particle,
     CubicCell,
     distance,
-    find_neighbors,
+    generate_neighbors,
     cellsize,
     cellvolume,
     number_density,
@@ -76,12 +76,12 @@ function generate_nearest_image(a::Particle, b::Particle, cell::CubicCell)
     return Particle(b.mass, 𝐫′, b.velocity)
 end
 
-function find_neighbors(i::Integer, particles, cell::Cell)
+function generate_neighbors(i::Integer, particles, cell::Cell)
     return map(filter(!=(i), eachindex(particles))) do j
         generate_nearest_image(particles[i], particles[j], cell)
     end
 end
-function find_neighbors(a::Particle, particles, cell::Cell)
+function generate_neighbors(a::Particle, particles, cell::Cell)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
         generate_nearest_image(a, b, cell)
