@@ -61,7 +61,7 @@ convention (MIC), effectively simulating an infinite system using a finite cell.
 - `b::Particle`: The particle for which we want to find the nearest image relative to another particle `a`.
 - `cell::CubicCell`: The simulation cell which defines the boundaries for PBCs.
 """
-function find_nearest_image(b::Particle, a::Particle, cell::CubicCell)
+function generate_nearest_image(a::Particle, b::Particle, cell::CubicCell)
     L = cell.side_length
     @toggled_assert b in cell "the particle is not in the simulation cell!"  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
     𝐫′ = map(b.coordinates, b.coordinates - a.coordinates) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
@@ -78,13 +78,13 @@ end
 
 function find_neighbors(i::Integer, particles, cell::Cell)
     return map(filter(!=(i), eachindex(particles))) do j
-        find_nearest_image(particles[j], particles[i], cell)
+        generate_nearest_image(particles[i], particles[j], cell)
     end
 end
 function find_neighbors(a::Particle, particles, cell::Cell)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
-        find_nearest_image(b, a, cell)
+        generate_nearest_image(a, b, cell)
     end
 end
 
