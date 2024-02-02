@@ -61,25 +61,25 @@ function take_n_steps!(particles, cell::Cell, n, Δt, integrator::Integrator)
     end
     return particles
 end
-function take_n_steps!(logger::Logger, particles, cell::Cell, n, Δt, integrator::Integrator)
-    if !isempty(logger.trajectory)
-        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
+function take_n_steps!(logger::Trajectory, particles, cell::Cell, n, Δt, integrator::Integrator)
+    if !isempty(logger.data)
+        push!(logger.data, Step(Δt, deepcopy(particles)))
     end
     @showprogress for _ in 1:n
         take_one_step!(particles, cell, Δt, integrator)
-        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
+        push!(logger.data, Step(Δt, deepcopy(particles)))
     end
     return particles
 end
 function take_n_steps!(
-    logger::Logger, particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings
+    logger::Trajectory, particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings
 )
-    if !isempty(logger.trajectory)
-        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
+    if !isempty(logger.data)
+        push!(logger.data, Step(Δt, deepcopy(particles)))
     end
     @showprogress for _ in 1:n
         take_one_step!(particles, cell, δv, δr, integrator)
-        push!(logger.trajectory, Step(Δt, deepcopy(particles)))
+        push!(logger.data, Step(Δt, deepcopy(particles)))
     end
     return particles
 end
