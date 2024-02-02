@@ -5,7 +5,7 @@ import StaticArrays: similar_type
 
 export Coordinates, Velocity, Force, Acceleration, Particle, CubicCell
 export distance,
-    find_neighbors, boxsize, boxvolume, number_density, getcoordinates, getvelocities
+    find_neighbors, cellsize, cellvolume, number_density, getcoordinates, getvelocities
 
 struct Coordinates{T} <: FieldVector{3,T}
     x::T
@@ -96,11 +96,11 @@ function find_neighbors(a::Particle, particles, cell::Cell)
     end
 end
 
-boxsize(cell::CubicCell) = ntuple(_ -> cell.side_length, 3)
+cellsize(cell::CubicCell) = ntuple(_ -> cell.side_length, 3)
 
-boxvolume(cell::CubicCell) = reduce(*, boxsize(cell))
+cellvolume(cell::CubicCell) = reduce(*, cellsize(cell))
 
-number_density(particles, cell::CubicCell) = length(particles) / boxvolume(cell)
+number_density(particles, cell::CubicCell) = length(particles) / cellvolume(cell)
 
 Base.in(particle::Particle, cell::CubicCell) = all(
     zero(cell.side_length) <= coordinate <= cell.side_length for

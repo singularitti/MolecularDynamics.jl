@@ -20,7 +20,7 @@ function init_coordinates!(particles, ::Cell, ::Even)
 end
 function init_coordinates!(particles, cell::Cell, ::Random)
     for particle in particles
-        particle.coordinates = boxsize(cell) .* rand(3)
+        particle.coordinates = cellsize(cell) .* rand(3)
     end
     @assert unique(particles) == particles
     return particles
