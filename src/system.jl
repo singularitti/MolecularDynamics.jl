@@ -72,7 +72,7 @@ function generate_neighbor(a::Particle, b::Particle, cell::CubicCell)
 end
 
 function generate_neighbors(a::Particle, particles, cell::Cell)
-    @assert a in particles
+    @toggled_assert a in particles
     return map(filter(!=(a), particles)) do b
         generate_neighbor(a, b, cell)
     end
