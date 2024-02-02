@@ -94,6 +94,17 @@ function Base.in(particle::Particle, cell::CubicCell)
     return all(@. zero(sizes) <= particle.coordinates <= sizes)
 end
 
+movein(particle::Particle, cell::CubicCell) = Particle(
+    particle.mass,
+    map(Base.Fix2(mod, cell.side_length), particle.coordinates),
+    particle.velocity,
+)
+
+function movein!(particle::Particle, cell::CubicCell)
+    particle.coordinates = map(Base.Fix2(mod, cell.side_length), particle.coordinates)
+    return particle
+end
+
 function getcoordinates(particles)
     allcoordinates = map(particles) do particle
         particle.coordinates
