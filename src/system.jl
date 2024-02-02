@@ -60,33 +60,31 @@ convention (MIC), effectively simulating an infinite system using a finite cell.
 - `b::Particle`: The particle for which we want to find the nearest image relative to another particle `a`.
 - `cell::CubicCell`: The simulation cell which defines the boundaries for PBCs.
 """
-function find_nearest_image(b::Particle, cell::CubicCell)
+function find_nearest_image(b::Particle, a::Particle, cell::CubicCell)
     L = cell.side_length
     𝐫 = map(Base.Fix2(mod, L), b.coordinates)  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
-    return function (a::Particle)
-        Δ𝐫 = 𝐫 - a.coordinates  # Compute displacement
-        𝐫′ = map(𝐫, Δ𝐫) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
-            if Δrᵢ > L / 2
-                rᵢ - L
-            elseif Δrᵢ < -L / 2
-                rᵢ + L
-            else  # abs(Δrᵢ) <= L / 2
-                rᵢ  # Do not shift, already nearest
-            end
+    Δ𝐫 = 𝐫 - a.coordinates  # Compute displacement
+    𝐫′ = map(𝐫, Δ𝐫) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
+        if Δrᵢ > L / 2
+            rᵢ - L
+        elseif Δrᵢ < -L / 2
+            rᵢ + L
+        else  # abs(Δrᵢ) <= L / 2
+            rᵢ  # Do not shift, already nearest
         end
-        return Particle(b.mass, 𝐫′, b.velocity)
     end
+    return Particle(b.mass, 𝐫′, b.velocity)
 end
 
 function find_neighbors(i::Integer, particles, cell::Cell)
     return map(filter(!=(i), eachindex(particles))) do j
-        find_nearest_image(particles[j], cell)(particles[i])
+        find_nearest_image(particles[j], particles[i], cell)
     end
 end
 function find_neighbors(a::Particle, particles, cell::Cell)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
-        find_nearest_image(b, cell)(a)
+        find_nearest_image(b, a, cell)
     end
 end
 
