@@ -60,12 +60,12 @@ function run!(particles, cell::Cell, n, Δt, integrator::Integrator)
         iterate!(particles, cell, Δt, integrator)
         Step(Δt, deepcopy(particles))
     end
-    return trajectory
+    return Trajectory(trajectory)
 end
 function run!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
     trajectory = @showprogress map(1:n) do _
         iterate!(particles, cell, δv, δr, integrator)
         Step(Δt, deepcopy(particles))
     end
-    return trajectory
+    return Trajectory(trajectory)
 end
