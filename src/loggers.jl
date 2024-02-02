@@ -35,27 +35,13 @@ extract(::Type{Particle}, particle::Particle) = particle
 
 simulation_time(logger::Trajectory) = cumsum(step.Δt for step in logger.data)
 
-# Implementing iteration interface for Logger
-function Base.iterate(logger::Trajectory, state=1)
-    if state > length(logger.data)
-        return nothing
-    else
-        return (logger.data[state], state + 1)
-    end
-end
+Base.size(trajectory::Trajectory) = size(trajectory.data)
 
-Base.length(logger::Trajectory) = length(logger.data)
+Base.getindex(trajectory::Trajectory, i::Int) = trajectory.data[i]
 
-Base.eltype(logger::Trajectory) = eltype(logger.data)
+Base.setindex!(trajectory::Trajectory, v, i::Int) = setindex!(trajectory.data, v, i)
 
-# Implementing indexing interface for Logger
-Base.getindex(logger::Trajectory, index) = logger.data[index]
-
-Base.setindex!(logger::Trajectory, step, index) = (logger.data[index] = step)
-
-Base.firstindex(logger::Trajectory) = 1
-
-Base.lastindex(logger::Trajectory) = length(logger.data)
+Base.IndexStyle(::Type{<:Trajectory}) = IndexLinear()
 
 function Base.show(io::IO, ::MIME"text/plain", logger::Trajectory)
     summary(io, logger)
