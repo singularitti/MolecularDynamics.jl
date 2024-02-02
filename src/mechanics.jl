@@ -49,17 +49,17 @@ Calculate the force particle `j` exerts on particle `i` (direction: from `j` to 
 """
 Force(particleᵢ::Particle) =
     (particleⱼ::Particle) -> Force(-potential_gradient(particleᵢ, particleⱼ))
-function Force(i::Integer, particles, box::Box)
-    neighbors = find_neighbors(i, particles, box)
+function Force(i::Integer, particles, cell::Cell)
+    neighbors = find_neighbors(i, particles, cell)
     return sum(Force(particles[i]), neighbors)
 end
-function Force(particle::Particle, particles, box::Box)
-    neighbors = find_neighbors(particle, particles, box)
+function Force(particle::Particle, particles, cell::Cell)
+    neighbors = find_neighbors(particle, particles, cell)
     return sum(Force(particle), neighbors)
 end
-function Force(particles, box)
+function Force(particles, cell)
     return map(particles) do particle
-        Force(particle, particles, box)
+        Force(particle, particles, cell)
     end
 end
 
@@ -70,16 +70,16 @@ Calculate the acceleration of particle `i` due to particle `j` (direction: from 
 """
 Acceleration(particleᵢ::Particle) =
     (particleⱼ::Particle) -> Force(particleᵢ)(particleⱼ) / particleᵢ.mass
-function Acceleration(i::Integer, particles, box::Box)
-    neighbors = find_neighbors(i, particles, box)
+function Acceleration(i::Integer, particles, cell::Cell)
+    neighbors = find_neighbors(i, particles, cell)
     return sum(Acceleration(particles[i]), neighbors)
 end
-function Acceleration(particle::Particle, particles, box::Box)
-    neighbors = find_neighbors(particle, particles, box)
+function Acceleration(particle::Particle, particles, cell::Cell)
+    neighbors = find_neighbors(particle, particles, cell)
     return sum(Acceleration(particle), neighbors)
 end
-function Acceleration(particles, box)
+function Acceleration(particles, cell)
     return map(particles) do particle
-        Acceleration(particle, particles, box)
+        Acceleration(particle, particles, cell)
     end
 end
