@@ -42,10 +42,3 @@ Base.getindex(trajectory::Trajectory, i::Int) = trajectory.data[i]
 Base.setindex!(trajectory::Trajectory, v, i::Int) = setindex!(trajectory.data, v, i)
 
 Base.IndexStyle(::Type{<:Trajectory}) = IndexLinear()
-
-function Base.show(io::IO, ::MIME"text/plain", logger::Trajectory)
-    summary(io, logger)
-    println(io)
-    print(io, length(logger.data), " steps")
-    return nothing
-end
