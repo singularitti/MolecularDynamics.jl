@@ -49,19 +49,14 @@ distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))  # Much faster than `
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
 
 """
-    find_nearest_image(b::Particle, cell::CubicCell)
+    generate_neighbor(a::Particle, b::Particle, cell::CubicCell)
 
-Return a function that, when given a particle `a`, computes the position of `b` as if it
-were in the nearest image to `a` under periodic boundary conditions (PBCs).
+Return a particle based on `b`, as if it were in the nearest image to `a` under periodic boundary conditions (PBCs).
 
 This implementation ensures that interactions between particles consider the minimum image
 convention (MIC), effectively simulating an infinite system using a finite cell.
-
-# Arguments
-- `b::Particle`: The particle for which we want to find the nearest image relative to another particle `a`.
-- `cell::CubicCell`: The simulation cell which defines the boundaries for PBCs.
 """
-function generate_nearest_image(a::Particle, b::Particle, cell::CubicCell)
+function generate_neighbor(a::Particle, b::Particle, cell::CubicCell)
     L = cell.side_length
     @toggled_assert b in cell "the particle is not in the simulation cell!"  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
     𝐫′ = map(b.coordinates, b.coordinates - a.coordinates) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
@@ -78,13 +73,13 @@ end
 
 function generate_neighbors(i::Integer, particles, cell::Cell)
     return map(filter(!=(i), eachindex(particles))) do j
-        generate_nearest_image(particles[i], particles[j], cell)
+        generate_neighbor(particles[i], particles[j], cell)
     end
 end
 function generate_neighbors(a::Particle, particles, cell::Cell)
     @assert a in particles
     return map(filter(!=(a), particles)) do b
-        generate_nearest_image(a, b, cell)
+        generate_neighbor(a, b, cell)
     end
 end
 
