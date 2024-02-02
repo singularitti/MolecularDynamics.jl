@@ -33,30 +33,29 @@ for _ in 1:100
 end
 
 integrator = VelocityVerlet()
-logger = Logger{typeof(Δt),eltype(particles)}()
-take_n_steps!(logger, particles, cell, 500, Δt, integrator);
+trajectory = run!(particles, cell, 500, Δt, integrator);
 
 while abs(temperature(particles) - 1.069) >= 0.01
-    take_n_steps!(logger, particles, cell, 2, Δt, integrator)
+    trajectory2 = run!(particles, cell, 2, Δt, integrator)
     thermostat!(particles, VelocityRescaling(1.069))
 end
 
-energyplot(logger)
+energyplot(trajectory)
 savefig("e-t.pdf")
 
 plot()
 let indices = 100:100:1000
     for index in indices
-        traceplot!(logger.trajectory[12200:50:end], index)
+        traceplot!(trajectory[12200:50:end], index)
     end
 end
 
 steps = (19000, 2000)
 function plothist(step)
-    velocities = norm.(extract(Velocity, logger, step))
+    velocities = norm.(extract(Velocity, trajectory, step))
     velocityhist(velocities)
     savefig("velocityhist_$step.pdf")
     return current()
 end
 
-temperatureplot(logger)
+temperatureplot(trajectory)
