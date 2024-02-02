@@ -1,4 +1,3 @@
-using ProgressMeter: progress_map
 using RecipesBase: RecipesBase, @recipe, @userplot, @series
 
 export energyplot, temperatureplot, traceplot, velocityhist
@@ -40,12 +39,12 @@ end
 @userplot EnergyPlot
 @recipe function f(plot::EnergyPlot)
     # See http://juliaplots.org/RecipesBase.jl/stable/types/#User-Recipes-2
-    logger = plot.args[end]  # Extract `trace` from the args
-    time = simulation_time(logger)
-    U = progress_map(logger.trajectory) do step
+    trajectory = plot.args[end]  # Extract `trace` from the args
+    time = simulation_time(trajectory)
+    U = map(trajectory) do step
         potential_energy(step.snapshot)
     end
-    T = map(logger.trajectory) do step
+    T = map(trajectory) do step
         kinetic_energy(step.snapshot)
     end
     E = U .+ T
