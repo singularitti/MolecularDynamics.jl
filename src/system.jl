@@ -96,7 +96,7 @@ function find_neighbors(a::Particle, particles, cell::Cell)
     end
 end
 
-cellsize(cell::CubicCell) = ntuple(_ -> cell.side_length, 3)
+cellsize(cell::CubicCell) = (cell.side_length, cell.side_length, cell.side_length)
 
 cellvolume(cell::CubicCell) = reduce(*, cellsize(cell))
 
