@@ -56,39 +56,16 @@ function take_one_step!(particles, cell::Cell, δv, δr, integrator::MetropolisH
 end
 
 function take_n_steps!(particles, cell::Cell, n, Δt, integrator::Integrator)
-    @showprogress for _ in 1:n
+    trajectory = @showprogress map(1:n) do _
         take_one_step!(particles, cell, Δt, integrator)
+        Step(Δt, deepcopy(particles))
     end
-    return particles
+    return trajectory
 end
-function take_n_steps!(
-    trajectory::Trajectory, particles, cell::Cell, n, Δt, integrator::Integrator
-)
-    if !isempty(trajectory.data)
-        push!(trajectory.data, Step(Δt, deepcopy(particles)))
-    end
-    @showprogress for _ in 1:n
-        take_one_step!(particles, cell, Δt, integrator)
-        push!(trajectory.data, Step(Δt, deepcopy(particles)))
-    end
-    return particles
-end
-function take_n_steps!(
-    trajectory::Trajectory,
-    particles,
-    cell::Cell,
-    n,
-    Δt,
-    δv,
-    δr,
-    integrator::MetropolisHastings,
-)
-    if !isempty(trajectory.data)
-        push!(trajectory.data, Step(Δt, deepcopy(particles)))
-    end
-    @showprogress for _ in 1:n
+function take_n_steps!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
+    trajectory = @showprogress map(1:n) do _
         take_one_step!(particles, cell, δv, δr, integrator)
-        push!(trajectory.data, Step(Δt, deepcopy(particles)))
+        Step(Δt, deepcopy(particles))
     end
-    return particles
+    return trajectory
 end
