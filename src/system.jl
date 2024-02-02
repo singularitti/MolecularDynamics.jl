@@ -96,10 +96,10 @@ cellvolume(cell::CubicCell) = reduce(*, cellsize(cell))
 
 number_density(particles, cell::CubicCell) = length(particles) / cellvolume(cell)
 
-Base.in(particle::Particle, cell::CubicCell) = all(
-    zero(cell.side_length) <= coordinate <= cell.side_length for
-    coordinate in particle.coordinates
-)
+function Base.in(particle::Particle, cell::CubicCell)
+    sizes = cellsize(cell)
+    return all(@. zero(sizes) <= particle.coordinates <= sizes)
+end
 
 function getcoordinates(particles)
     allcoordinates = map(particles) do particle
