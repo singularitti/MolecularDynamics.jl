@@ -1,7 +1,7 @@
 using ProgressMeter: @showprogress
 
 export VelocityVerlet, MetropolisHastings
-export take_one_step!, take_n_steps!
+export take_one_step!, run!
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
@@ -55,14 +55,14 @@ function take_one_step!(particles, cell::Cell, δv, δr, integrator::MetropolisH
     return particles
 end
 
-function take_n_steps!(particles, cell::Cell, n, Δt, integrator::Integrator)
+function run!(particles, cell::Cell, n, Δt, integrator::Integrator)
     trajectory = @showprogress map(1:n) do _
         take_one_step!(particles, cell, Δt, integrator)
         Step(Δt, deepcopy(particles))
     end
     return trajectory
 end
-function take_n_steps!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
+function run!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
     trajectory = @showprogress map(1:n) do _
         take_one_step!(particles, cell, δv, δr, integrator)
         Step(Δt, deepcopy(particles))

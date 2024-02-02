@@ -42,7 +42,7 @@ function init!(
 end
 
 function relax!(particles, cell, n, Δt)
-    take_n_steps!(particles, cell, n, Δt, VelocityVerlet())
+    run!(particles, cell, n, Δt, VelocityVerlet())
     init_velocities!(particles, Uniform(zeros(typeof(first(particles).velocity))))
     return particles
 end
