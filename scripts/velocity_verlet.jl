@@ -34,9 +34,8 @@ end
 
 integrator = VelocityVerlet()
 logger = Logger{typeof(Δt),eltype(particles)}()
-take_n_steps!(logger, particles, cell, 500, Δt, integrator)
+take_n_steps!(logger, particles, cell, 500, Δt, integrator);
 
-take_n_steps!(logger, particles, cell, 400, Δt, integrator);
 while abs(temperature(particles) - 1.069) >= 0.01
     take_n_steps!(logger, particles, cell, 2, Δt, integrator)
     thermostat!(particles, VelocityRescaling(1.069))
