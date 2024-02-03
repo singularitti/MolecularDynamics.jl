@@ -1,7 +1,12 @@
 using ProgressMeter: @showprogress
 using ResizableArrays: ResizableVector
 
-export VelocityVerlet, MetropolisHastings, integrate!
+export Step, VelocityVerlet, MetropolisHastings, integrate!, simulation_time
+
+struct Step{T,S}
+    dt::T
+    snapshot::Vector{S}
+end
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
@@ -71,3 +76,5 @@ function relax!(particles::Particles{M,C,V}, cell, Δt, n) where {M,C,V}
     init_velocities!(particles, Constant(zeros(V, 3)))
     return particles
 end
+
+simulation_time(trajectory) = cumsum(step.dt for step in trajectory)
