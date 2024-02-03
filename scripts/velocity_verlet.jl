@@ -4,9 +4,11 @@ using Plots
 
 import MolecularDynamics: potential_energy, potential_gradient
 
-ε = u"J"(0.0103u"eV")  # 119.8 kB
+ε = 119.8u"K" * k  # 119.8 kB
 σ = 3.405u"angstrom"  # angstrom
 mass = 39.948u"u"  # atomic mass unit
+N = 864  # number of particles
+target_T = 1382.26154u"K"  # Corresponds to 1.069
 
 u = LennardJones(ε, σ)
 ∇u = LennardJonesGradient(ε, σ)
