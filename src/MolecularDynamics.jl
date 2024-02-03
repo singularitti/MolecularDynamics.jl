@@ -6,7 +6,7 @@ include("mechanics.jl")
 include("trajectory.jl")
 include("integration.jl")
 include("thermostats.jl")
-include("thermal.jl")
+include("thermodynamics.jl")
 include("plotting.jl")
 
 end
