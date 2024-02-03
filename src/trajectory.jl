@@ -16,7 +16,7 @@ simulation_time(trajectory::Trajectory) = cumsum(step.dt for step in trajectory)
 
 Base.size(trajectory::Trajectory) = size(trajectory.data)
 
-Base.getindex(trajectory::Trajectory, i::Int) = trajectory.data[i]
+Base.getindex(trajectory::Trajectory, i::Int) = getindex(trajectory.data, i)
 
 Base.setindex!(trajectory::Trajectory, v, i::Int) = setindex!(trajectory.data, v, i)
 
