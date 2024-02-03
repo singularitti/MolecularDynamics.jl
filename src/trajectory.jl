@@ -12,7 +12,7 @@ struct Trajectory{S<:Step} <: AbstractVector{S}
 end
 Trajectory(data::AbstractArray) = Trajectory(ElasticVector(data))
 
-simulation_time(trajectory::Trajectory) = cumsum(step.Δt for step in trajectory)
+simulation_time(trajectory::Trajectory) = cumsum(step.dt for step in trajectory)
 
 Base.size(trajectory::Trajectory) = size(trajectory.data)
 
