@@ -38,6 +38,8 @@ end
 Particle(mass, coordinates::AbstractArray, velocity::AbstractArray) =
     Particle(mass, Coordinates(coordinates), Velocity(velocity))
 
+const Particles{M,C,V} = AbstractVector{Particle{M,C,V}}
+
 abstract type Cell end
 struct CubicCell{T} <: Cell
     side_length::T
