@@ -1,7 +1,7 @@
 using ProgressMeter: @showprogress
 
 export VelocityVerlet, MetropolisHastings
-export iterate!, run!
+export iterate!
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
@@ -34,6 +34,13 @@ function iterate!(
     end
     return particles
 end
+function iterate!(particles, cell::Cell, n, Δt, integrator::Integrator)
+    trajectory = @showprogress map(1:n) do _
+        iterate!(particles, cell, Δt, integrator)
+        Step(Δt, deepcopy(particles))
+    end
+    return Trajectory(trajectory)
+end
 function iterate!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
     for (i, particle) in enumerate(particles)
         r = rand(3) .- 0.5  # Random numbers from -0.5 to 0.5
@@ -54,15 +61,7 @@ function iterate!(particles, cell::Cell, δv, δr, integrator::MetropolisHasting
     end
     return particles
 end
-
-function run!(particles, cell::Cell, n, Δt, integrator::Integrator)
-    trajectory = @showprogress map(1:n) do _
-        iterate!(particles, cell, Δt, integrator)
-        Step(Δt, deepcopy(particles))
-    end
-    return Trajectory(trajectory)
-end
-function run!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
+function iterate!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
     trajectory = @showprogress map(1:n) do _
         iterate!(particles, cell, δv, δr, integrator)
         Step(Δt, deepcopy(particles))
@@ -71,7 +70,7 @@ function run!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHas
 end
 
 function relax!(particles::Particles{M,C,V}, cell, n, Δt) where {M,C,V}
-    run!(particles, cell, n, Δt, VelocityVerlet())
+    iterate!(particles, cell, n, Δt, VelocityVerlet())
     init_velocities!(particles, Constant(zeros(V, 3)))
     return particles
 end
