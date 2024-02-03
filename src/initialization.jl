@@ -1,5 +1,5 @@
 export Random, Even, Uniform
-export init!, init_coordinates!, init_velocities!, relax!
+export init_coordinates!, init_velocities!, relax!
 
 abstract type CoordinatesDistribution end
 struct Random <: CoordinatesDistribution end
@@ -30,13 +30,5 @@ function init_velocities!(particles, dist::Uniform)
     for particle in particles
         particle.velocity = dist.velocity
     end
-    return particles
-end
-
-function init!(
-    particles, cell::Cell, xdist::CoordinatesDistribution, vdist::VelocityDistribution
-)
-    init_coordinates!(particles, cell, xdist)
-    init_velocities!(particles, vdist)
     return particles
 end
