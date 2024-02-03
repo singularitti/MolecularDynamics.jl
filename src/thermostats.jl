@@ -2,8 +2,8 @@ export VelocityRescaling
 export thermostat!
 
 abstract type Thermostat end
-struct VelocityRescaling <: Thermostat
-    target_temperature::Float64
+struct VelocityRescaling{T} <: Thermostat
+    target_temperature::T
 end
 
 function thermostat!(particles, thermostat::VelocityRescaling)
