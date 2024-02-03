@@ -9,7 +9,7 @@ struct Trajectory{S<:Step} <: AbstractVector{S}
     data::Vector{S}
 end
 
-simulation_time(trajectory::Trajectory) = cumsum(step.dt for step in trajectory)
+simulation_time(trajectory) = cumsum(step.dt for step in trajectory)
 
 Base.size(trajectory::Trajectory) = size(trajectory.data)
 
