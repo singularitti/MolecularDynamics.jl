@@ -2,9 +2,9 @@ using Statistics: mean
 
 export temperature, virial, pressure
 
-function temperature(particles)
+function temperature(particles, kB)
     K = kinetic_energy(particles)
-    return 2K / 3 / length(particles)  # kB is treated as one
+    return 2K / 3kB / length(particles)
 end
 
 ensemble_average(property::AbstractArray) = mean(property)
