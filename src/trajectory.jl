@@ -1,5 +1,3 @@
-using ElasticArrays: ElasticVector
-
 export Step, Trajectory, simulation_time
 
 struct Step{T,S}
@@ -8,9 +6,8 @@ struct Step{T,S}
 end
 
 struct Trajectory{S<:Step} <: AbstractVector{S}
-    data::ElasticVector{S}
+    data::Vector{S}
 end
-Trajectory(data::AbstractArray) = Trajectory(ElasticVector(data))
 
 simulation_time(trajectory::Trajectory) = cumsum(step.dt for step in trajectory)
 
@@ -22,5 +19,4 @@ Base.setindex!(trajectory::Trajectory, v, i::Int) = setindex!(trajectory.data, v
 
 Base.IndexStyle(::Type{<:Trajectory}) = IndexLinear()
 
-Base.similar(::Trajectory{T}, dims::Dims) where {T} =
-    Trajectory{T}(ElasticVector{T}(undef, dims))
+Base.similar(::Trajectory{T}, dims::Dims) where {T} = Trajectory{T}(Vector{T}(undef, dims))
