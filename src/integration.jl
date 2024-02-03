@@ -8,27 +8,24 @@ struct MetropolisHastings <: Integrator
     beta::Float64
 end
 
-function integrate!(
-    particles::Particles{M,C,V}, cell::Cell, Δt, ::VelocityVerlet
-) where {M,C,V}
-    accelerations = Vector{Acceleration{typeof(zero(V) / Δt)}}(undef, length(particles))
+function integrate!(particles, cell::Cell, Δt, ::VelocityVerlet)
     # Parallel computation of initial accelerations
-    Threads.@threads for i in eachindex(particles)
-        accelerations[i] = Acceleration(particles[i])(particles, cell)
+    accelerations = ThreadsX.map(particles) do particle
+        Acceleration(particle)(particles, cell)
     end
     # Parallel update of particle positions and half-step velocities
-    Threads.@threads for i in eachindex(particles)
+    ThreadsX.foreach(eachindex(particles)) do i
         particle = particles[i]
         particle.velocity += accelerations[i] * Δt / 2  # 𝐯(t + Δt / 2) = 𝐯(t) + 𝐚(t) Δt / 2
         particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt) = 𝐫(t) + 𝐯(t + Δt / 2) Δt
-        movein!(particle, cell)  # Move `𝐫` back to `0 - L` range
+        movein!(particle, cell)  # Ensure particle is within cell bounds, i.e., back to `0 - L` range
     end
     # Re-compute accelerations after position updates
-    Threads.@threads for i in eachindex(particles)
-        accelerations[i] = Acceleration(particles[i])(particles, cell)  # 𝐚(t + Δt)
+    accelerations = ThreadsX.map(particles) do particle
+        Acceleration(particle)(particles, cell)
     end
     # Parallel update of final velocities
-    Threads.@threads for i in eachindex(particles)
+    ThreadsX.foreach(eachindex(particles)) do i
         particles[i].velocity += accelerations[i] * Δt / 2  # 𝐯(t + Δt) = 𝐯(t + Δt / 2) + 𝐚(t + Δt) Δt / 2
     end
     return particles
