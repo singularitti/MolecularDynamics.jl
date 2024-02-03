@@ -1,4 +1,5 @@
 using ProgressMeter: @showprogress
+using ResizableArrays: ResizableVector
 
 export VelocityVerlet, MetropolisHastings, integrate!
 
@@ -35,7 +36,7 @@ function integrate!(particles, cell::Cell, Δt, n, integrator::Integrator)
         integrate!(particles, cell, Δt, integrator)
         Step(Δt, deepcopy(particles))
     end
-    return Trajectory(trajectory)
+    return ResizableVector{eltype(trajectory)}(trajectory)
 end
 function integrate!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
     for (i, particle) in enumerate(particles)
@@ -62,7 +63,7 @@ function integrate!(particles, cell::Cell, δv, δr, Δt, n, integrator::Metropo
         integrate!(particles, cell, δv, δr, integrator)
         Step(Δt, deepcopy(particles))
     end
-    return Trajectory(trajectory)
+    return ResizableVector{eltype(trajectory)}(trajectory)
 end
 
 function relax!(particles::Particles{M,C,V}, cell, Δt, n) where {M,C,V}
