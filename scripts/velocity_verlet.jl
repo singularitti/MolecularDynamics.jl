@@ -25,20 +25,21 @@ particles = [
 ];
 cell = CubicCell(length(particles), 0.75u"angstrom^-3")
 init_coordinates!(particles, cell, Random());
-init_velocities!(particles, cell, Constant(zeros(Velocity{typeof(1.0u"angstrom/s")})));
+init_velocities!(particles, Constant(zeros(Velocity{typeof(1.0u"angstrom/s")})));
 Δt = 1e-18u"s"
 
-for _ in 1:100
-    relax!(particles, cell, 1, Δt)
+for _ in 1:50
+    relax!(particles, cell, Δt, 1)
     println(potential_energy(particles))
 end
 
 integrator = VelocityVerlet()
-trajectory = run!(particles, cell, 500, Δt, integrator);
+trajectory = integrate!(particles, cell, Δt, 1000, integrator);
 
-while abs(temperature(particles) - 1.069) >= 0.01
-    trajectory2 = run!(particles, cell, 2, Δt, integrator)
-    thermostat!(particles, VelocityRescaling(1.069))
+while abs(temperature(particles, k) - target_t) / target_t >= 0.001
+    trajectory′ = integrate!(particles, cell, Δt, 500, integrator)
+    append!(trajectory, trajectory′)
+    thermostat!(particles, VelocityRescaling(target_t))
 end
 
 energyplot(trajectory)
