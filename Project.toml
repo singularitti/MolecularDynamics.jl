@@ -4,7 +4,6 @@ authors = ["Qi Zhang <qz2280@columbia.edu>"]
 version = "0.1.0"
 
 [deps]
-ElasticArrays = "fdbdab4c-e67f-52f5-8c3f-e7b388dad3d4"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
@@ -14,7 +13,6 @@ ThreadsX = "ac1d9e8a-700a-412c-b207-f0111f4b6c0d"
 ToggleableAsserts = "07ecc579-1b30-493c-b961-3180daf6e3ae"
 
 [compat]
-ElasticArrays = "1"
 ProgressMeter = "1"
 RecipesBase = "1"
 StaticArrays = "1"
