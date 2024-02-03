@@ -25,7 +25,7 @@ particles = [
 ];
 cell = CubicCell(length(particles), 0.75u"angstrom^-3")
 init_coordinates!(particles, cell, Random());
-init_velocities!(particles, cell, Uniform(zeros(Velocity{typeof(1.0u"angstrom/s")})));
+init_velocities!(particles, cell, Constant(zeros(Velocity{typeof(1.0u"angstrom/s")})));
 Δt = 1e-18u"s"
 
 for _ in 1:100
