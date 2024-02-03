@@ -41,7 +41,7 @@ function init!(
     return particles
 end
 
-function relax!(particles, cell, n, Δt)
+function relax!(particles::Particles{M,C,V}, cell, n, Δt) where {M,C,V}
     run!(particles, cell, n, Δt, VelocityVerlet())
     init_velocities!(particles, Uniform(zeros(typeof(first(particles).velocity))))
     return particles

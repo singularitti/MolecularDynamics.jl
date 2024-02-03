@@ -10,7 +10,7 @@ struct MetropolisHastings <: Integrator
 end
 
 function iterate!(
-    particles::AbstractArray{<:Particle{M,C,V}}, cell::Cell, Δt, ::VelocityVerlet
+    particles::Particles{M,C,V}, cell::Cell, Δt, ::VelocityVerlet
 ) where {M,C,V}
     accelerations = Vector{Acceleration{typeof(zero(V) / Δt)}}(undef, length(particles))
     # Parallel computation of initial accelerations
