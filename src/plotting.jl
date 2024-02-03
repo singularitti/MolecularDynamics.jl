@@ -48,7 +48,6 @@ end
         kinetic_energy(step.snapshot)
     end
     E = U .+ T
-    size --> (700, 400)
     seriestype --> :path
     xlims --> extrema(time)
     xguide --> raw"simulation time ($t$)"
@@ -73,10 +72,9 @@ end
 @userplot TemperaturePlot
 @recipe function f(plot::TemperaturePlot)
     # See http://juliaplots.org/RecipesBase.jl/stable/types/#User-Recipes-2
-    logger = plot.args[end]  # Extract `trace` from the args
-    time = simulation_time(logger)
-    T = temperature.(step.snapshot for step in logger.trajectory)
-    size --> (700, 400)
+    trajectory, kB = plot.args
+    time = simulation_time(trajectory)
+    T = [temperature(step.snapshot, kB) for step in trajectory]
     seriestype --> :path
     xlims --> extrema(time)
     xguide --> raw"simulation time ($t$)"
