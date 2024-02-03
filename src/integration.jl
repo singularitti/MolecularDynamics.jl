@@ -1,7 +1,6 @@
 using ProgressMeter: @showprogress
 
-export VelocityVerlet, MetropolisHastings
-export iterate!
+export VelocityVerlet, MetropolisHastings, integrate!
 
 abstract type Integrator end
 struct VelocityVerlet <: Integrator end
@@ -9,7 +8,7 @@ struct MetropolisHastings <: Integrator
     beta::Float64
 end
 
-function iterate!(
+function integrate!(
     particles::Particles{M,C,V}, cell::Cell, Δt, ::VelocityVerlet
 ) where {M,C,V}
     accelerations = Vector{Acceleration{typeof(zero(V) / Δt)}}(undef, length(particles))
@@ -34,14 +33,14 @@ function iterate!(
     end
     return particles
 end
-function iterate!(particles, cell::Cell, n, Δt, integrator::Integrator)
+function integrate!(particles, cell::Cell, Δt, n, integrator::Integrator)
     trajectory = @showprogress map(1:n) do _
-        iterate!(particles, cell, Δt, integrator)
+        integrate!(particles, cell, Δt, integrator)
         Step(Δt, deepcopy(particles))
     end
     return Trajectory(trajectory)
 end
-function iterate!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
+function integrate!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
     for (i, particle) in enumerate(particles)
         r = rand(3) .- 0.5  # Random numbers from -0.5 to 0.5
         velocity = particle.velocity .+ δv .* r
@@ -61,16 +60,16 @@ function iterate!(particles, cell::Cell, δv, δr, integrator::MetropolisHasting
     end
     return particles
 end
-function iterate!(particles, cell::Cell, n, Δt, δv, δr, integrator::MetropolisHastings)
+function integrate!(particles, cell::Cell, δv, δr, Δt, n, integrator::MetropolisHastings)
     trajectory = @showprogress map(1:n) do _
-        iterate!(particles, cell, δv, δr, integrator)
+        integrate!(particles, cell, δv, δr, integrator)
         Step(Δt, deepcopy(particles))
     end
     return Trajectory(trajectory)
 end
 
-function relax!(particles::Particles{M,C,V}, cell, n, Δt) where {M,C,V}
-    iterate!(particles, cell, n, Δt, VelocityVerlet())
+function relax!(particles::Particles{M,C,V}, cell, Δt, n) where {M,C,V}
+    integrate!(particles, cell, Δt, n, VelocityVerlet())
     init_velocities!(particles, Constant(zeros(V, 3)))
     return particles
 end
