@@ -10,8 +10,8 @@ export Coordinates,
     CuboidCell,
     distance,
     generate_neighbors,
-    cellsize,
-    cellvolume,
+    dimensions,
+    volume,
     number_density,
     getcoordinates
 
@@ -59,7 +59,7 @@ convention (MIC), effectively simulating an infinite system using a finite cell.
 """
 function generate_neighbor(a::Particle, b::Particle, cell::CuboidCell)
     @toggled_assert b in cell "the particle is not in the simulation cell!"  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
-    𝐫′ = map(b.coordinates, b.coordinates - a.coordinates, cellsize(cell)) do rᵢ, Δrᵢ, Lᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
+    𝐫′ = map(b.coordinates, b.coordinates - a.coordinates, dimensions(cell)) do rᵢ, Δrᵢ, Lᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
         if Δrᵢ > Lᵢ / 2
             rᵢ - Lᵢ
         elseif Δrᵢ < -Lᵢ / 2
@@ -78,21 +78,21 @@ function generate_neighbors(a::Particle, particles, cell::Cell)
     end
 end
 
-cellsize(cell::CuboidCell) = cell.dimensions
+dimensions(cell::CuboidCell) = cell.dimensions
 
-cellvolume(cell::CuboidCell) = reduce(*, cellsize(cell))
+volume(cell::CuboidCell) = reduce(*, dimensions(cell))
 
-number_density(particles, cell::CuboidCell) = length(particles) / cellvolume(cell)
+number_density(particles, cell::CuboidCell) = length(particles) / volume(cell)
 
 function Base.in(particle::Particle, cell::CuboidCell)
-    sizes = cellsize(cell)
-    return all(@. zero(sizes) <= particle.coordinates <= sizes)
+    dimensions = dimensions(cell)
+    return all(@. zero(dimensions) <= particle.coordinates <= dimensions)
 end
 
 function movein(particle::Particle, cell::CuboidCell)
     coordinates = Coordinates(
         mod(coordinate, dimension) for
-        (coordinate, dimension) in zip(particle.coordinates, cell.dimensions)
+        (coordinate, dimension) in zip(particle.coordinates, dimensions(cell))
     )
     return Particle(particle.mass, coordinates, particle.velocity)
 end
@@ -100,7 +100,7 @@ end
 function movein!(particle::Particle, cell::CuboidCell)
     particle.coordinates = Coordinates(
         mod(coordinate, dimension) for
-        (coordinate, dimension) in zip(particle.coordinates, cell.dimensions)
+        (coordinate, dimension) in zip(particle.coordinates, dimensions(cell))
     )
     return particle
 end
