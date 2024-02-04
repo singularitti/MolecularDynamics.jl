@@ -58,14 +58,13 @@ This implementation ensures that interactions between particles consider the min
 convention (MIC), effectively simulating an infinite system using a finite cell.
 """
 function generate_neighbor(a::Particle, b::Particle, cell::CuboidCell)
-    L = cell.dimensions
     @toggled_assert b in cell "the particle is not in the simulation cell!"  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
-    𝐫′ = map(b.coordinates, b.coordinates - a.coordinates) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
-        if Δrᵢ > L / 2
-            rᵢ - L
-        elseif Δrᵢ < -L / 2
-            rᵢ + L
-        else  # abs(Δrᵢ) <= L / 2
+    𝐫′ = map(b.coordinates, b.coordinates - a.coordinates, cellsize(cell)) do rᵢ, Δrᵢ, Lᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
+        if Δrᵢ > Lᵢ / 2
+            rᵢ - Lᵢ
+        elseif Δrᵢ < -Lᵢ / 2
+            rᵢ + Lᵢ
+        else  # abs(Δrᵢ) <= Lᵢ / 2
             rᵢ  # Do not shift, already nearest
         end
     end
