@@ -8,6 +8,7 @@ export Coordinates,
     Velocity,
     Particle,
     CuboidCell,
+    CubicCell,
     distance,
     generate_neighbors,
     dimensions,
@@ -44,7 +45,8 @@ abstract type Cell end
 struct CuboidCell{T} <: Cell
     dimensions::NTuple{3,T}
 end
-CuboidCell(number::Integer, density) = CuboidCell(cbrt(number / density))
+
+CubicCell(number::Integer, density) = CuboidCell(ntuple(_ -> cbrt(number / density), 3))
 
 distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))  # Much faster than `norm`
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
@@ -85,8 +87,8 @@ volume(cell::CuboidCell) = reduce(*, dimensions(cell))
 number_density(particles, cell::CuboidCell) = length(particles) / volume(cell)
 
 function Base.in(particle::Particle, cell::CuboidCell)
-    dimensions = dimensions(cell)
-    return all(@. zero(dimensions) <= particle.coordinates <= dimensions)
+    dims = dimensions(cell)
+    return all(@. zero(dims) <= particle.coordinates <= dims)
 end
 
 function movein(particle::Particle, cell::CuboidCell)
