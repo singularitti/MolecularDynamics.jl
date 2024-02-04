@@ -7,7 +7,7 @@ import StaticArrays: similar_type
 export Coordinates,
     Velocity,
     Particle,
-    CubicCell,
+    CuboidCell,
     distance,
     generate_neighbors,
     cellsize,
@@ -41,10 +41,10 @@ Particle(mass, coordinates::AbstractArray, velocity::AbstractArray) =
 const Particles{M,C,V} = AbstractVector{Particle{M,C,V}}
 
 abstract type Cell end
-struct CubicCell{T} <: Cell
-    side_length::T
+struct CuboidCell{T} <: Cell
+    dimensions::NTuple{3,T}
 end
-CubicCell(number::Integer, density) = CubicCell(cbrt(number / density))
+CuboidCell(number::Integer, density) = CuboidCell(cbrt(number / density))
 
 distance(𝐫, 𝐫′) = sqrt(sum(abs2, 𝐫 .- 𝐫′))  # Much faster than `norm`
 distance(a::Particle, b::Particle) = distance(a.coordinates, b.coordinates)
@@ -57,8 +57,8 @@ Return a particle based on `b`, as if it were in the nearest image to `a` under 
 This implementation ensures that interactions between particles consider the minimum image
 convention (MIC), effectively simulating an infinite system using a finite cell.
 """
-function generate_neighbor(a::Particle, b::Particle, cell::CubicCell)
-    L = cell.side_length
+function generate_neighbor(a::Particle, b::Particle, cell::CuboidCell)
+    L = cell.dimensions
     @toggled_assert b in cell "the particle is not in the simulation cell!"  # Ensures b's coordinates are wrapped into the primary simulation cell, addressing cases where b might have moved beyond the cell boundaries.
     𝐫′ = map(b.coordinates, b.coordinates - a.coordinates) do rᵢ, Δrᵢ  # Adjust coordinates for nearest image, ensuring MIC is followed.
         if Δrᵢ > L / 2
@@ -79,25 +79,25 @@ function generate_neighbors(a::Particle, particles, cell::Cell)
     end
 end
 
-cellsize(cell::CubicCell) = (cell.side_length, cell.side_length, cell.side_length)
+cellsize(cell::CuboidCell) = cell.dimensions
 
-cellvolume(cell::CubicCell) = reduce(*, cellsize(cell))
+cellvolume(cell::CuboidCell) = reduce(*, cellsize(cell))
 
-number_density(particles, cell::CubicCell) = length(particles) / cellvolume(cell)
+number_density(particles, cell::CuboidCell) = length(particles) / cellvolume(cell)
 
-function Base.in(particle::Particle, cell::CubicCell)
+function Base.in(particle::Particle, cell::CuboidCell)
     sizes = cellsize(cell)
     return all(@. zero(sizes) <= particle.coordinates <= sizes)
 end
 
-movein(particle::Particle, cell::CubicCell) = Particle(
+movein(particle::Particle, cell::CuboidCell) = Particle(
     particle.mass,
-    map(Base.Fix2(mod, cell.side_length), particle.coordinates),
+    map(Base.Fix2(mod, cell.dimensions), particle.coordinates),
     particle.velocity,
 )
 
-function movein!(particle::Particle, cell::CubicCell)
-    particle.coordinates = map(Base.Fix2(mod, cell.side_length), particle.coordinates)
+function movein!(particle::Particle, cell::CuboidCell)
+    particle.coordinates = map(Base.Fix2(mod, cell.dimensions), particle.coordinates)
     return particle
 end
 
