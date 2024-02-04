@@ -51,10 +51,38 @@ numerical errors.
 The temperature is represented by Equation~\eqref{eq:T}
 %
 \begin{equation}\label{eq:T}
-    T = \frac{ 16 }{ N } \sum_{i=1}^{N} \lvert \bm{v}_i \rvert^2,
+    T = \frac{ 16\varepsilon }{ N k_B } \sum_{i=1}^{N} \lvert \bm{v}'_i \rvert^2,
 \end{equation}
 %
-where \(N\) is the number of particles, and \(\bm{v}_i\) is the velocity of the \(i\)-th particle.
+where \(N\) is the number of particles, and \(\bm{v}_i\) is the reduced velocity of the \(i\)-th particle.
+So what is this \(1.069\) in terms of real world temperature?
+Since \(\varepsilon \approx 119.8 k_B\), we know that
+%
+\begin{equation}\label{eq:1069}
+    1.069 = \frac{ 16 \times 119.8 }{ 864 } \sum_{i=1}^{864} \lvert \bm{v}'_i \rvert^2,
+\end{equation}
+%
+so \(\sum_{i=1}^{864} \lvert \bm{v}'_i \rvert^2 \approx 0.48185 \), and since we also know
+%
+\begin{equation}
+    v' = v \sqrt{ \frac{ m }{ 48\varepsilon } },
+\end{equation}
+%
+replace the above relation into~\eqref{eq:1069}, we get
+%
+\begin{equation}
+    \sum_{i=1}^{864} \lvert \bm{v}'_i \rvert^2 = \sum_{i=1}^{864} \lvert \bm{v}_i \rvert^2 \frac{m}{48\varepsilon}
+    = 0.48185,
+\end{equation}
+%
+so
+%
+\begin{equation}
+    \nicefrac{1}{2} m\sum_{i=1}^{864} \lvert \bm{v}_i \rvert^2 = 0.48185 \times 48\varepsilon \approx \qty{0.238772}{\electronvolt}.
+\end{equation}
+%
+which is approximatly \qty{2770.93}{\kelvin}.
+
 However, at \(t = 160\), the temperature is only around \(0.472\), far away from our desired
 value: \(1.069\). So we need to add more kinetic energy to our system. How do we do that?
 We should use what is called a \emph{thermostat}, which is
