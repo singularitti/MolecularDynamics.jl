@@ -31,27 +31,27 @@ init_coordinates!(particles, cell, Random());
 init_velocities!(particles, Constant(zeros(Velocity{typeof(1.0u"angstrom/s")})));
 Δt = 1e-18u"s"
 
-for _ in 1:55
+for _ in 1:100
     relax!(particles, cell, Δt, 1)
     println(potential_energy(particles))
 end
 
 integrator = VelocityVerlet()
-trajectory = integrate!(particles, cell, Δt, 1, integrator);
+trajectory = integrate!(particles, cell, Δt, 500, integrator);
 
-@showprogress dt = 3 for round in 1:10
-    error = abs(temperature(particles, k) - target_T) / target_T
+@showprogress dt = 5 for round in 1:100
+    error = abs(temperature(particles, k) - target_T)
     println("round: ", round, ", error: ", error)
-    if error <= 0.001
+    if error <= 20u"K"
         break
     else
-        trajectory′ = integrate!(particles, cell, Δt, 500, integrator)
-        append!(trajectory, trajectory′)
         thermostat!(particles, k, VelocityRescaling(target_T))
+        trajectory′ = integrate!(particles, cell, Δt, 800, integrator)
+        append!(trajectory, trajectory′)
     end
 end
 
-energyplot(trajectory)
+energyplot(trajectory; yunit=u"eV")
 savefig("e-t.pdf")
 
 plot()
