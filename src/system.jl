@@ -89,14 +89,19 @@ function Base.in(particle::Particle, cell::CuboidCell)
     return all(@. zero(sizes) <= particle.coordinates <= sizes)
 end
 
-movein(particle::Particle, cell::CuboidCell) = Particle(
-    particle.mass,
-    map(Base.Fix2(mod, cell.dimensions), particle.coordinates),
-    particle.velocity,
-)
+function movein(particle::Particle, cell::CuboidCell)
+    coordinates = Coordinates(
+        mod(coordinate, dimension) for
+        (coordinate, dimension) in zip(particle.coordinates, cell.dimensions)
+    )
+    return Particle(particle.mass, coordinates, particle.velocity)
+end
 
 function movein!(particle::Particle, cell::CuboidCell)
-    particle.coordinates = map(Base.Fix2(mod, cell.dimensions), particle.coordinates)
+    particle.coordinates = Coordinates(
+        mod(coordinate, dimension) for
+        (coordinate, dimension) in zip(particle.coordinates, cell.dimensions)
+    )
     return particle
 end
 
