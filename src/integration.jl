@@ -1,7 +1,12 @@
 using ProgressMeter: @showprogress
-using ResizableArrays: ResizableVector
+using ResizableArrays: ResizableArray
+
+import ResizableArrays: ResizableVector
 
 export Step, VelocityVerlet, MetropolisHastings, integrate!, simulation_time
+
+# See https://github.com/emmt/ResizableArrays.jl/pull/3
+ResizableVector(A::AbstractArray{T}) where {T} = ResizableArray{T,1}(A)
 
 struct Step{T,S}
     dt::T
@@ -41,7 +46,7 @@ function integrate!(particles, cell::Cell, Δt, n, integrator::Integrator)
         integrate!(particles, cell, Δt, integrator)
         Step(Δt, deepcopy(particles))
     end
-    return ResizableVector{eltype(trajectory)}(trajectory)
+    return ResizableVector(trajectory)
 end
 function integrate!(particles, cell::Cell, δv, δr, integrator::MetropolisHastings)
     for (i, particle) in enumerate(particles)
@@ -68,7 +73,7 @@ function integrate!(particles, cell::Cell, δv, δr, Δt, n, integrator::Metropo
         integrate!(particles, cell, δv, δr, integrator)
         Step(Δt, deepcopy(particles))
     end
-    return ResizableVector{eltype(trajectory)}(trajectory)
+    return ResizableVector(trajectory)
 end
 
 function relax!(particles::Particles{M,C,V}, cell, Δt, n) where {M,C,V}
