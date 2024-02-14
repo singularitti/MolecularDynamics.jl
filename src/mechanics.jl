@@ -1,3 +1,4 @@
+using OhMyThreads: tmapreduce
 using ThreadsX
 
 export LennardJones,
@@ -44,7 +45,7 @@ function (∇u::LennardJonesGradient)(𝐫)  # 𝐫 = 𝐫ᵢ - 𝐫ⱼ
 end
 
 kinetic_energy(particle::Particle) = sum(abs2, particle.velocity) * particle.mass / 2
-kinetic_energy(particles) = ThreadsX.sum(kinetic_energy, particles)
+kinetic_energy(particles) = tmapreduce(kinetic_energy, +, particles)
 
 struct Force{T} <: FieldVector{3,T}
     x::T
