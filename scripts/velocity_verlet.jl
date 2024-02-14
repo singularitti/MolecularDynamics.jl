@@ -9,7 +9,7 @@ import MolecularDynamics: potential_energy, potential_gradient
 σ = 3.405u"angstrom"  # angstrom
 mass = 39.948u"u"  # atomic mass unit
 N = 864  # number of particles
-target_T = 1382.26154u"K"  # Corresponds to 1.069
+target_T = 1385.42u"K"  # Corresponds to 1.069
 
 u = LennardJones(ε, σ)
 ∇u = LennardJonesGradient(ε, σ)
@@ -27,11 +27,11 @@ particles = [
     ) for _ in 1:N
 ];
 cell = CubicCell(length(particles), 0.75u"angstrom^-3")
-init_coordinates!(particles, cell, Random());
+init_coordinates!(particles, cell, Even());
 init_velocities!(particles, Constant(zeros(Velocity{typeof(1.0u"angstrom/s")})));
 Δt = 1e-18u"s"
 
-for _ in 1:100
+for _ in 1:50
     relax!(particles, cell, Δt, 1)
     println(potential_energy(particles))
 end
