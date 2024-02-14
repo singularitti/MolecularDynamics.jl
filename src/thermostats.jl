@@ -10,7 +10,7 @@ function thermostat!(particles, kB, thermostat::VelocityRescaling)
     T = temperature(particles, kB)
     λ = sqrt(thermostat.target_temperature / T)
     # Parallel in-place modification of particle velocities
-    ThreadsX.foreach(particles) do particle
+    tforeach(particles) do particle
         particle.velocity *= λ
     end
     return particles
