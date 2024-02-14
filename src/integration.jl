@@ -1,3 +1,4 @@
+using OhMyThreads: tmap, tforeach
 using ProgressMeter: @showprogress
 using ResizableArrays: ResizableArray
 
@@ -21,22 +22,22 @@ end
 
 function integrate!(particles, cell::Cell, Δt, ::VelocityVerlet)
     # Parallel computation of initial accelerations
-    accelerations = ThreadsX.map(particles) do particle
+    accelerations = tmap(particles) do particle
         Acceleration(particle)(particles, cell)
     end
     # Parallel update of particle positions and half-step velocities
-    ThreadsX.foreach(eachindex(particles)) do i
+    tforeach(eachindex(particles)) do i
         particle = particles[i]
         particle.velocity += accelerations[i] * Δt / 2  # 𝐯(t + Δt / 2) = 𝐯(t) + 𝐚(t) Δt / 2
         particle.coordinates += particle.velocity * Δt  # 𝐫(t + Δt) = 𝐫(t) + 𝐯(t + Δt / 2) Δt
         movein!(particle, cell)  # Ensure particle is within cell bounds, i.e., back to `0 - L` range
     end
     # Re-compute accelerations after position updates
-    accelerations = ThreadsX.map(particles) do particle
+    accelerations = tmap(particles) do particle
         Acceleration(particle)(particles, cell)
     end
     # Parallel update of final velocities
-    ThreadsX.foreach(eachindex(particles)) do i
+    tforeach(eachindex(particles)) do i
         particles[i].velocity += accelerations[i] * Δt / 2  # 𝐯(t + Δt) = 𝐯(t + Δt / 2) + 𝐚(t + Δt) Δt / 2
     end
     return particles
