@@ -1,13 +1,8 @@
 using OhMyThreads: tmap, tforeach
 using ProgressMeter: @showprogress
-using ResizableArrays: ResizableArray
-
-import ResizableArrays: ResizableVector
+using ResizableArrays: ResizableVector
 
 export Step, VelocityVerlet, MetropolisHastings, integrate!, simulation_time
-
-# See https://github.com/emmt/ResizableArrays.jl/pull/3
-ResizableVector(A::AbstractArray{T}) where {T} = ResizableArray{T,1}(A)
 
 struct Step{T,S}
     dt::T
