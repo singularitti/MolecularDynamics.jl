@@ -15,6 +15,7 @@ ThreadsX = "ac1d9e8a-700a-412c-b207-f0111f4b6c0d"
 ToggleableAsserts = "07ecc579-1b30-493c-b961-3180daf6e3ae"
 
 [compat]
+OhMyThreads = "0.5"
 ProgressMeter = "1"
 RecipesBase = "1"
 StaticArrays = "1"
