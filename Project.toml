@@ -17,6 +17,7 @@ ToggleableAsserts = "07ecc579-1b30-493c-b961-3180daf6e3ae"
 [compat]
 ProgressMeter = "1"
 RecipesBase = "1"
+ResizableArrays = "0.3"
 StaticArrays = "1"
 StructEquality = "2"
 julia = "1"
