@@ -19,7 +19,7 @@ jobs:
           latexmk_use_xelatex: true
           extra_system_packages: "py-pygments"
           extra_fonts: /usr/share/fonts/JuliaMono-ttf/*.ttf
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: PDF
           path: tex/main.pdf
